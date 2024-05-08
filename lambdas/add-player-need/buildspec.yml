@@ -5,6 +5,7 @@ phases:
     runtime-versions:
       python: 3.12
     commands:
+      - cd lambdas/add-player-need
       - python -m venv venv
       - . venv/bin/activate
       - pwd
