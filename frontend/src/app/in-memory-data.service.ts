@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { InMemoryDbService, RequestInfoUtilities, ParsedRequestUrl } from 'angular-in-memory-web-api';
 import { v4 as uuidv4 } from 'uuid';
-import { PlayerRequest } from './player-request';
+import { PlayerNeed } from './player-need';
 
 @Injectable({
     providedIn: 'root'
@@ -16,7 +16,7 @@ export class InMemoryDataService implements InMemoryDbService {
         return { "player-requests": playerRequests };
     }
 
-    genId(_: PlayerRequest[]): string {
+    genId(_: PlayerNeed[]): string {
         return uuidv4();
     }
 }

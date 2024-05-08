@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../environments/environment';
-import { PlayerRequest } from './player-request';
+import { PlayerNeed } from './player-need';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -14,8 +14,8 @@ export class ApiService {
 
     constructor(private http: HttpClient) { }
 
-    add(playerRequest: PlayerRequest): Observable<PlayerRequest> {
+    add(playerRequest: PlayerNeed): Observable<PlayerNeed> {
 
-        return this.http.post<PlayerRequest>(environment.apiUrl, playerRequest, this.httpOptions);
+        return this.http.post<PlayerNeed>(environment.apiUrl, playerRequest, this.httpOptions);
     }
 }

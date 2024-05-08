@@ -16,7 +16,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
 import { ApiService } from './api.service';
-import { PlayerRequest } from './player-request';
+import { PlayerNeed } from './player-need';
+import { District } from './district';
 
 @Component({
     selector: 'app-root',
@@ -44,21 +45,23 @@ import { PlayerRequest } from './player-request';
     styleUrl: './app.component.sass'
 })
 export class AppComponent {
+    districtNames: string[];
     districtsCtrl: FormControl;
     filteredDistricts: Observable<string[]>;
     @ViewChild('districtsInput') districtsInput: ElementRef<HTMLInputElement>;
 
-    playerForm: FormGroup;
+    playerNeedForm: FormGroup;
     feedbackForm: FormGroup;
 
     constructor(private formBuilder: FormBuilder, private api: ApiService) {
+        this.districtNames = this._getAllDistricts().map(d => d.name);
         this.districtsCtrl = new FormControl('');
         this.filteredDistricts = this.districtsCtrl.valueChanges.pipe(
             startWith(null),
             map((d: string | null) => (d ? this._filter(d) : this._getAllButSelectedDistricts().slice())),
         );
 
-        this.playerForm = this.formBuilder.group({
+        this.playerNeedForm = this.formBuilder.group({
             name: ['', Validators.required],
             districts: [[] as Array<string>, Validators.required],
             availability: ['', Validators.required],
@@ -80,7 +83,7 @@ export class AppComponent {
             const districts = [...this.getSelectedDistricts()];
             districts.splice(index, 1);
 
-            this.playerForm.patchValue({
+            this.playerNeedForm.patchValue({
                 districts
             });
         }
@@ -89,18 +92,25 @@ export class AppComponent {
     onSelected(event: MatAutocompleteSelectedEvent): void {
         const districts = [...this.getSelectedDistricts()];
         districts.push(event.option.viewValue);
-        this.playerForm.patchValue({
+        this.playerNeedForm.patchValue({
             districts
         });
-        
+
         this.districtsInput.nativeElement.value = '';
         this.districtsCtrl.setValue(null);
     }
 
     onSubmit(): void {
-        const playerRequest = this.playerForm.value as PlayerRequest;
+        const playerNeedFormModel = this.playerNeedForm.value;
 
-        this.api.add(playerRequest).subscribe(pr => {
+        // form model is bit different to real model because we were strugglign with autocomplete if districts 
+        // were complex values rather than strings
+        const playerNeed: PlayerNeed = {
+            ...playerNeedFormModel,
+            districts: this._mapDistrictNamesToDistrictCodes(playerNeedFormModel.districts)
+        }
+
+        this.api.add(playerNeed).subscribe(pr => {
             console.log("API call result", pr);
         });
     }
@@ -110,13 +120,17 @@ export class AppComponent {
     }
 
     getSelectedDistricts(): string[] {
-        return this.playerForm.value.districts ?? [];
+        return this.playerNeedForm.value.districts ?? [];
+    }
+
+    private _mapDistrictNamesToDistrictCodes(districtNames: string[]): number[] {
+        return districtNames.map(dn => this._getAllDistricts().filter(d => d.name === dn)[0].code);
     }
 
     private _filter(value: string): string[] {
         const filterValue = this._normalize(value);
 
-        return this._getAllDistricts().filter(
+        return this.districtNames.filter(
             d => this._normalize(d).includes(filterValue)
                 // do not allow adding same item multiple times
                 && !this.getSelectedDistricts().includes(d)
@@ -128,90 +142,90 @@ export class AppComponent {
     }
 
     private _getAllButSelectedDistricts(): string[] {
-        return this._getAllDistricts().filter(d => !this.getSelectedDistricts().includes(d));
+        return this.districtNames.filter(d => !this.getSelectedDistricts().includes(d));
     }
 
-    private _getAllDistricts(): string[] {
+    private _getAllDistricts(): District[] {
         return [
-            "Bánovce nad Bebravou (BN)",
-            "Banská Bystrica (BB, BC, BK)",
-            "Banská Štiavnica (BS)",
-            "Bardejov (BJ)",
-            "Bratislava I (BA, BL, BT, BD, BE, BI)",
-            "Bratislava II (BA, BL, BT, BD, BE, BI)",
-            "Bratislava III (BA, BL, BT, BD, BE, BI)",
-            "Bratislava IV (BA, BL, BT, BD, BE, BI)",
-            "Bratislava V (BA, BL, BT, BD, BE, BI)",
-            "Brezno (BR)",
-            "Bytča (BY)",
-            "Čadca (CA)",
-            "Detva (DT)",
-            "Dolný Kubín (DK)",
-            "Dunajská Streda (DS)",
-            "Galanta (GA)",
-            "Gelnica (GL)",
-            "Hlohovec (HC)",
-            "Humenné (HE)",
-            "Ilava (IL)",
-            "Kežmarok (KK)",
-            "Komárno (KN)",
-            "Košice I (KE, KC, KI)",
-            "Košice II (KE, KC, KI)",
-            "Košice III (KE, KC, KI)",
-            "Košice IV (KE, KC, KI)",
-            "Košice-okolie (KS)",
-            "Krupina (KA)",
-            "Kysucké Nové Mesto (KM)",
-            "Levice (LV, LL)",
-            "Levoča (LE)",
-            "Liptovský Mikuláš (LM)",
-            "Lučenec (LC)",
-            "Malacky (MA)",
-            "Martin (MT)",
-            "Medzilaborce (ML)",
-            "Michalovce (MI)",
-            "Myjava (MY)",
-            "Námestovo (NO)",
-            "Nitra (NR, NI, NT)",
-            "Nové Mesto nad Váhom (NM)",
-            "Nové Zámky (NZ, NC)",
-            "Partizánske (PE)",
-            "Pezinok (PK)",
-            "Piešťany (PN)",
-            "Poltár (PT)",
-            "Poprad (PP)",
-            "Považská Bystrica (PB)",
-            "Prešov (PO, PV, PS)",
-            "Prievidza (PD)",
-            "Púchov (PU)",
-            "Revúca (RA)",
-            "Rimavská Sobota (RS)",
-            "Rožňava (RV)",
-            "Ružomberok (RK)",
-            "Sabinov (SB)",
-            "Senec (SC)",
-            "Senica (SE)",
-            "Skalica (SI)",
-            "Snina (SV)",
-            "Sobrance (SO)",
-            "Spišská Nová Ves (SN)",
-            "Stará Ľubovňa (SL)",
-            "Stropkov (SP)",
-            "Svidník (SK)",
-            "Šaľa (SA)",
-            "Topoľčany (TO)",
-            "Trebišov (TV)",
-            "Trenčín (TN, TC, TE)",
-            "Trnava (TT, TA, TB)",
-            "Turčianske Teplice (TR)",
-            "Tvrdošín (TS)",
-            "Veľký Krtíš (VK)",
-            "Vranov nad Topľou (VT)",
-            "Zlaté Moravce (ZM)",
-            "Zvolen (ZV)",
-            "Žarnovica (ZC)",
-            "Žiar nad Hronom (ZH)",
-            "Žilina (ZA, ZI, ZL)"
+            { name: "Bánovce nad Bebravou (BN)", code: 301 },
+            { name: "Banská Bystrica (BB, BC, BK)", code: 601 },
+            { name: "Banská Štiavnica (BS)", code: 602 },
+            { name: "Bardejov (BJ)", code: 701 },
+            { name: "Bratislava I (BA, BL, BT, BD, BE, BI)", code: 101 },
+            { name: "Bratislava II (BA, BL, BT, BD, BE, BI)", code: 102 },
+            { name: "Bratislava III (BA, BL, BT, BD, BE, BI)", code: 103 },
+            { name: "Bratislava IV (BA, BL, BT, BD, BE, BI)", code: 104 },
+            { name: "Bratislava V (BA, BL, BT, BD, BE, BI)", code: 105 },
+            { name: "Brezno (BR)", code: 603 },
+            { name: "Bytča (BY)", code: 501 },
+            { name: "Čadca (CA)", code: 502 },
+            { name: "Detva (DT)", code: 604 },
+            { name: "Dolný Kubín (DK)", code: 503 },
+            { name: "Dunajská Streda (DS)", code: 201 },
+            { name: "Galanta (GA)", code: 202 },
+            { name: "Gelnica (GL)", code: 801 },
+            { name: "Hlohovec (HC)", code: 203 },
+            { name: "Humenné (HE)", code: 702 },
+            { name: "Ilava (IL)", code: 302 },
+            { name: "Kežmarok (KK)", code: 703 },
+            { name: "Komárno (KN)", code: 401 },
+            { name: "Košice I (KE, KC, KI)", code: 802 },
+            { name: "Košice II (KE, KC, KI)", code: 803 },
+            { name: "Košice III (KE, KC, KI)", code: 804 },
+            { name: "Košice IV (KE, KC, KI)", code: 805 },
+            { name: "Košice-okolie (KS)", code: 806 },
+            { name: "Krupina (KA)", code: 605 },
+            { name: "Kysucké Nové Mesto (KM)", code: 504 },
+            { name: "Levice (LV, LL)", code: 402 },
+            { name: "Levoča (LE)", code: 704 },
+            { name: "Liptovský Mikuláš (LM)", code: 505 },
+            { name: "Lučenec (LC)", code: 606 },
+            { name: "Malacky (MA)", code: 106 },
+            { name: "Martin (MT)", code: 506 },
+            { name: "Medzilaborce (ML)", code: 705 },
+            { name: "Michalovce (MI)", code: 807 },
+            { name: "Myjava (MY)", code: 303 },
+            { name: "Námestovo (NO)", code: 507 },
+            { name: "Nitra (NR, NI, NT)", code: 403 },
+            { name: "Nové Mesto nad Váhom (NM)", code: 304 },
+            { name: "Nové Zámky (NZ, NC)", code: 404 },
+            { name: "Partizánske (PE)", code: 305 },
+            { name: "Pezinok (PK)", code: 107 },
+            { name: "Piešťany (PN)", code: 204 },
+            { name: "Poltár (PT)", code: 607 },
+            { name: "Poprad (PP)", code: 706 },
+            { name: "Považská Bystrica (PB)", code: 306 },
+            { name: "Prešov (PO, PV, PS)", code: 707 },
+            { name: "Prievidza (PD)", code: 307 },
+            { name: "Púchov (PU)", code: 308 },
+            { name: "Revúca (RA)", code: 608 },
+            { name: "Rimavská Sobota (RS)", code: 609 },
+            { name: "Rožňava (RV)", code: 808 },
+            { name: "Ružomberok (RK)", code: 508 },
+            { name: "Sabinov (SB)", code: 708 },
+            { name: "Senec (SC)", code: 108 },
+            { name: "Senica (SE)", code: 205 },
+            { name: "Skalica (SI)", code: 206 },
+            { name: "Snina (SV)", code: 709 },
+            { name: "Sobrance (SO)", code: 809 },
+            { name: "Spišská Nová Ves (SN)", code: 810 },
+            { name: "Stará Ľubovňa (SL)", code: 710 },
+            { name: "Stropkov (SP)", code: 711 },
+            { name: "Svidník (SK)", code: 712 },
+            { name: "Šaľa (SA)", code: 405 },
+            { name: "Topoľčany (TO)", code: 406 },
+            { name: "Trebišov (TV)", code: 811 },
+            { name: "Trenčín (TN, TC, TE)", code: 309 },
+            { name: "Trnava (TT, TA, TB)", code: 207 },
+            { name: "Turčianske Teplice (TR)", code: 509 },
+            { name: "Tvrdošín (TS)", code: 510 },
+            { name: "Veľký Krtíš (VK)", code: 610 },
+            { name: "Vranov nad Topľou (VT)", code: 713 },
+            { name: "Zlaté Moravce (ZM)", code: 407 },
+            { name: "Zvolen (ZV)", code: 611 },
+            { name: "Žarnovica (ZC)", code: 612 },
+            { name: "Žiar nad Hronom (ZH)", code: 613 },
+            { name: "Žilina (ZA, ZI, ZL)", code: 511 }
         ];
     }
 }
