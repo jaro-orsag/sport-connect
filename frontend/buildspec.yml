@@ -12,8 +12,8 @@ phases:
 #   post_build:
 #     commands:
 #       - aws s3 sync dist/frontend/browser s3://staging.futbal-spoluhrac.sk --delete
-# artifacts:
-#     files:
-#         - '**/*'
-#     base-directory: 'dist/frontend/browser/*'
-#     discard-paths: yes
+artifacts:
+    files:
+        - '**/*'
+    base-directory: 'dist/frontend'
+    discard-paths: no
