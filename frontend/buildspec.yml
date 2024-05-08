@@ -1,0 +1,12 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - npm install
+  build:
+    commands:
+      - npm run build --configuration --staging
+  post_build:
+    commands:
+      - aws s3 sync dist/frontend/browser s3://staging.futbal-spoluhrac.sk --delete
