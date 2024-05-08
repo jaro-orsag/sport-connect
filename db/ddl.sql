@@ -30,14 +30,14 @@ ALTER TABLE District
 ADD UNIQUE (districtName);
 
 INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Bánovce nad Bebravou", "BN", 301, "Trenčiansky");
-INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Banská Bystrica", "BB, BC, BK", 601, "Banskobystrický"); 
+INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Banská Bystrica", "BB, BC, BK", 601, "Banskobystrický"); 
 INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Banská Štiavnica", "BS", 602, "Banskobystrický"); 
 INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Bardejov", "BJ", 701, "Prešovský"); 
-INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Bratislava I", "BA, BL, BT, BD, BE, BI", 101, "Bratislavský"); 
-INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Bratislava II", "BA, BL, BT, BD, BE, BI", 102, "Bratislavský"); 
-INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Bratislava III", "BA, BL, BT, BD, BE, BI", 103, "Bratislavský"); 
-INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Bratislava IV", "BA, BL, BT, BD, BE, BI", 104, "Bratislavský"); 
-INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Bratislava V", "BA, BL, BT, BD, BE, BI", 105, "Bratislavský"); 
+INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Bratislava I", "BA, BL, BT, BD, BE, BI", 101, "Bratislavský"); 
+INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Bratislava II", "BA, BL, BT, BD, BE, BI", 102, "Bratislavský"); 
+INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Bratislava III", "BA, BL, BT, BD, BE, BI", 103, "Bratislavský"); 
+INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Bratislava IV", "BA, BL, BT, BD, BE, BI", 104, "Bratislavský"); 
+INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Bratislava V", "BA, BL, BT, BD, BE, BI", 105, "Bratislavský"); 
 INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Brezno", "BR", 603, "Banskobystrický"); 
 INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Bytča", "BY", 501, "Žilinský"); 
 INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Čadca", "CA", 502, "Žilinský"); 
@@ -51,14 +51,14 @@ INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Humenné
 INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Ilava", "IL", 302, "Trenčiansky"); 
 INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Kežmarok", "KK", 703, "Prešovský"); 
 INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Komárno", "KN", 401, "Nitriansky"); 
-INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Košice I", "KE, KC, KI", 802, "Košický"); 
-INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Košice II", "KE, KC, KI", 803, "Košický"); 
-INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Košice III", "KE, KC, KI", 804, "Košický"); 
-INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Košice IV", "KE, KC, KI", 805, "Košický"); 
+INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Košice I", "KE, KC, KI", 802, "Košický"); 
+INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Košice II", "KE, KC, KI", 803, "Košický"); 
+INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Košice III", "KE, KC, KI", 804, "Košický"); 
+INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Košice IV", "KE, KC, KI", 805, "Košický"); 
 INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Košice-okolie", "KS", 806, "Košický"); 
 INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Krupina", "KA", 605, "Banskobystrický"); 
 INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Kysucké Nové Mesto", "KM", 504, "Žilinský"); 
-INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Levice", "LV, LL", 402, "Nitriansky"); 
+INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Levice", "LV, LL", 402, "Nitriansky"); 
 INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Levoča", "LE", 704, "Prešovský"); 
 INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Liptovský Mikuláš", "LM", 505, "Žilinský"); 
 INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Lučenec", "LC", 606, "Banskobystrický"); 
@@ -68,16 +68,16 @@ INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Medzilab
 INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Michalovce", "MI", 807, "Košický"); 
 INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Myjava", "MY", 303, "Trenčiansky"); 
 INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Námestovo", "NO", 507, "Žilinský"); 
-INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Nitra", "NR, NI, NT", 403, "Nitriansky"); 
+INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Nitra", "NR, NI, NT", 403, "Nitriansky"); 
 INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Nové Mesto nad Váhom", "NM", 304, "Trenčiansky"); 
-INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Nové Zámky", "NZ, NC", 404, "Nitriansky"); 
+INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Nové Zámky", "NZ, NC", 404, "Nitriansky"); 
 INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Partizánske", "PE", 305, "Trenčiansky"); 
 INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Pezinok", "PK", 107, "Bratislavský"); 
 INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Piešťany", "PN", 204, "Trnavský"); 
 INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Poltár", "PT", 607, "Banskobystrický"); 
 INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Poprad", "PP", 706, "Prešovský"); 
 INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Považská Bystrica", "PB", 306, "Trenčiansky"); 
-INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Prešov", "PO, PV, PS", 707, "Prešovský"); 
+INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Prešov", "PO, PV, PS", 707, "Prešovský"); 
 INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Prievidza", "PD", 307, "Trenčiansky"); 
 INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Púchov", "PU", 308, "Trenčiansky"); 
 INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Revúca", "RA", 608, "Banskobystrický"); 
@@ -97,8 +97,8 @@ INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Svidník
 INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Šaľa", "SA", 405, "Nitriansky"); 
 INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Topoľčany", "TO", 406, "Nitriansky"); 
 INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Trebišov", "TV", 811, "Košický"); 
-INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Trenčín", "TN, TC, TE", 309, "Trenčiansky"); 
-INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Trnava", "TT, TA, TB", 207, "Trnavský"); 
+INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Trenčín", "TN, TC, TE", 309, "Trenčiansky"); 
+INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Trnava", "TT, TA, TB", 207, "Trnavský"); 
 INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Turčianske Teplice", "TR", 509, "Žilinský"); 
 INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Tvrdošín", "TS", 510, "Žilinský"); 
 INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Veľký Krtíš", "VK", 610, "Banskobystrický"); 
@@ -107,7 +107,7 @@ INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Zlaté M
 INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Zvolen", "ZV", 611, "Banskobystrický"); 
 INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Žarnovica", "ZC", 612, "Banskobystrický"); 
 INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Žiar nad Hronom", "ZH", 613, "Banskobystrický"); 
-INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Žilina", "ZA, ZI, ZL", 511, "Žilinský");
+INSERT INTO District(districtName, abbreviations, code, region) VALUE ("Žilina", "ZA, ZI, ZL", 511, "Žilinský");
 
 CREATE TABLE PlayerNeedDistrict (
     playerNeedId int NOT NULL,
