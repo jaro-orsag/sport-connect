@@ -5,9 +5,10 @@ phases:
     commands:
       - cd frontend
       - npm install
+      - npm install -g @angular/cli
   build:
     commands:
-      - npm run build --configuration --staging
+      - ng build --configuration --staging
   post_build:
     commands:
       - aws s3 sync dist/frontend/browser s3://staging.futbal-spoluhrac.sk --delete
