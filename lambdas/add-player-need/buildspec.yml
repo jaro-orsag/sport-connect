@@ -16,7 +16,8 @@ phases:
     commands:
       - echo "Post-build stage; prepare deployment package"
       - pwd
-      - deactivate
+      - echo $VIRTUAL_ENV 
+      - source deactivate
       - cd venv/lib/python3.12/site-packages
       - zip -r ../../../../my_deployment_package.zip .
       - cd ../../../../
