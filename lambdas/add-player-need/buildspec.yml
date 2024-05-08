@@ -1,0 +1,29 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.12
+    commands:
+      - python -m venv venv
+      - . venv/bin/activate
+      - pip install -r requirements.txt
+  build:
+    commands:
+      - echo "Build or compile steps if necessary"
+  post_build:
+    commands:
+      - echo "Post-build stage; prepare deployment package"
+      - deactivate
+      - cd venv/lib/python3.12/site-packages
+      - zip -r ../../../../my_deployment_package.zip .
+      - cd ../../../../
+      - zip my_deployment_package.zip lambda_function.py
+
+artifacts:
+  files:
+    - my_deployment_package.zip
+
+cache:
+  paths:
+    - 'venv/**/*'
