@@ -24,9 +24,6 @@ logger.info("SUCCESS: Connection to RDS for MySQL instance succeeded")
 
 def handler(event, context): 
 
-    logger.info(event)
-    logger.info(context)
-
     body_str = event.get('body', '')
     body_dict = json.loads(body_str)
 
