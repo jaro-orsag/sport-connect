@@ -9,12 +9,11 @@ phases:
   build:
     commands:
       - ng build --configuration staging
-      - ls -R -I node-modules
 #   post_build:
 #     commands:
 #       - aws s3 sync dist/frontend/browser s3://staging.futbal-spoluhrac.sk --delete
 artifacts:
     files:
         - '**/*'
-    base-directory: 'frontend/dist/frontend'
+    base-directory: 'frontend/dist/frontend/browser'
     discard-paths: no
