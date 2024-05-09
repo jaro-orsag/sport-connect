@@ -10,6 +10,7 @@ password = os.environ['PASSWORD']
 host = os.environ['HOST']
 db_name = os.environ['DB_NAME']
 
+logging.basicConfig()
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
@@ -22,19 +23,28 @@ except pymysql.MySQLError as e:
 
 logger.info("SUCCESS: Connection to RDS for MySQL instance succeeded")
 
-def handler(event, context): 
+def handler(event, _): 
 
     body_str = event.get('body', '')
     body_dict = json.loads(body_str)
 
     body_dict['id'] = str(uuid.uuid4())
-    
 
     with conn.cursor() as cursor:
-        sql = "INSERT INTO PlayerNeed (uuid, playerName, availability, email, consent) VALUES (%s, %s, %s, %s, 'WHATEVER')"
-        user_data = (body_dict['id'], body_dict['name'], body_dict['availability'], body_dict['email'], )
+        sql = "INSERT INTO PlayerNeed (uuid, playerName, availability, email, phone, about, consent, dateAdded) VALUES (%s, %s, %s, %s, %s, %s, %s, NOW())"
+        user_data = (body_dict['id'], body_dict['name'], body_dict['availability'], body_dict['email'], body_dict['phone'], body_dict['about'], 'WHATEVER')
         cursor.execute(sql, user_data)
+        playerNeedId = int(cursor.lastrowid)
         conn.commit()
+        cursor.close()
+
+    playerNeedDistrictPairs = [(playerNeedId, district) for district in body_dict['districts']]
+
+    with conn.cursor() as cursor:
+        sql = "INSERT INTO PlayerNeedDistrict (playerNeedId, districtCode) VALUES (%s, %s)"
+        cursor.executemany(sql, playerNeedDistrictPairs)
+        conn.commit()
+        cursor.close()
 
     return {
         'statusCode': 200,

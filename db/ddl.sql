@@ -11,6 +11,7 @@ CREATE TABLE PlayerNeed (
     phone varchar(32),
     about varchar(512),
     consent varchar(512) NOT NULL,
+    dateAdded DATETIME,
     
     PRIMARY KEY (id)
 );
