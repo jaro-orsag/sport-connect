@@ -11,10 +11,4 @@ phases:
       - ng build --configuration staging
   post_build:
     commands:
-      - pwd
-      - aws s3 sync frontend/dist/frontend/browser s3://your-bucket-name --delete
-# artifacts:
-#     files:
-#         - '**/*'
-#     base-directory: 'frontend/dist/frontend/browser'
-#     discard-paths: no
+      - aws s3 sync dist/frontend/browser s3://your-bucket-name --delete
