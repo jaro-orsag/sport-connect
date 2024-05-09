@@ -11,4 +11,4 @@ phases:
       - ng build --configuration staging
   post_build:
     commands:
-      - aws s3 sync dist/frontend/browser s3://your-bucket-name --delete
+      - aws s3 sync dist/frontend/browser s3://staging.futbal-spoluhrac.sk --delete
