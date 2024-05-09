@@ -9,8 +9,11 @@ phases:
   build:
     commands:
       - ng build --configuration staging
-artifacts:
-    files:
-        - '**/*'
-    base-directory: 'frontend/dist/frontend/browser'
-    discard-paths: no
+  post_build:
+    commands:
+      - aws s3 sync frontend/dist/frontend/browser s3://your-bucket-name --delete
+# artifacts:
+#     files:
+#         - '**/*'
+#     base-directory: 'frontend/dist/frontend/browser'
+#     discard-paths: no
