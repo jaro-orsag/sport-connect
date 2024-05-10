@@ -20,7 +20,7 @@ ALTER TABLE PlayerNeed
 ADD UNIQUE (uuid);
 
 CREATE TABLE District (
-	code int NOT NULL,
+    code int NOT NULL,
     districtName varchar(128) NOT NULL,
     abbreviations varchar(512) NOT NULL,
     region varchar(128) NOT NULL,
@@ -119,6 +119,32 @@ CREATE TABLE PlayerNeedDistrict (
     FOREIGN KEY (districtCode) REFERENCES District(code) ON DELETE CASCADE
 );
 
+CREATE TABLE Consent (
+    id int NOT NULL,
+    consentTarget varchar(512) NOT NULL,
+    wording varchar(1024) NOT NULL,
+    
+    PRIMARY KEY (id)
+);
+
+INSERT INTO Consent(id, consentTarget, wording) VALUE (1, "PLAYER", "Súhlasím s tým, aby prevádzkovateľ služby futbal-spoluhráč.sk ukladal moje meno, preferované okresy a časy, email telefón a daľšie informácie o mne na svojich serveroch za účelom hľadania futbalového tímu. Beriem na vedomie, že tento súhlas môžem kedykoľvek odvolať kliknutím na link, ktorý bude poskytnutý v potvrdzovaco emaile.");
+INSERT INTO Consent(id, consentTarget, wording) VALUE (2, "PLAYER", "Súhlasím s tým, aby prevádzkovateľ služby futbal-spoluhráč.sk poskytol moje meno, preferované okresy a časy, email telefón a daľšie informácie o mne tretím stranám za účelom hľadania futbalového tímu. Tretími stranami sa tu myslia futbalové tímy, ktoré hľadajú hráčov. Beriem na vedomie, že tento súhlas môžem kedykoľvek odvolať kliknutím na link, ktorý bude poskytnutý v potvrdzovaco emaile.");
+INSERT INTO Consent(id, consentTarget, wording) VALUE (3, "PLAYER", "Potvrdzujem, že môj vek je 18 rokov, alebo viac.");
+INSERT INTO Consent(id, consentTarget, wording) VALUE (4, "PLAYER", "Súhlasím s tým, aby prevádzkovateľ služby futbal-spoluhráč.sk poskytol moje meno, preferované okresy a časy, email telefón a daľšie informácie o mne tretím stranám za účelom marketingovej komunikácie. Beriem na vedomie, že tento súhlas môžem kedykoľvek odvolať. Beriem na vedomie, že tento súhlas môžem kedykoľvek odvolať kliknutím na link, ktorý bude poskytnutý v potvrdzovaco emaile.");
+
+CREATE TABLE PlayerNeedConsent (
+    playerNeedId int NOT NULL,
+    consentId int NOT NULL,
+    isValid boolean default true,
+    dateGranted datetime NOT NULL,
+    dateRevoked datetime,
+
+    PRIMARY KEY (playerNeedId, consentId),
+    FOREIGN KEY (playerNeedId) REFERENCES PlayerNeed(id) ON DELETE CASCADE,
+    FOREIGN KEY (consentId) REFERENCES Consent(id) ON DELETE CASCADE
+);
+
 CREATE USER 'application' IDENTIFIED BY 'XXXXXXX';
 GRANT SELECT, INSERT, UPDATE ON StagingFootballBuddy.PlayerNeed TO 'application';
 GRANT SELECT, INSERT, UPDATE ON StagingFootballBuddy.PlayerNeedDistrict TO 'application';
+GRANT SELECT, INSERT, UPDATE ON StagingFootballBuddy.PlayerNeedConsent TO 'application';
