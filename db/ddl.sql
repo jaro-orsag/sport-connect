@@ -10,7 +10,6 @@ CREATE TABLE PlayerNeed (
     email varchar(255) NOT NULL,
     phone varchar(32),
     about varchar(512),
-    consent varchar(512) NOT NULL,
     dateAdded DATETIME,
     
     PRIMARY KEY (id)
