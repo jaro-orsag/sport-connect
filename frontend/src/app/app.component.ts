@@ -146,7 +146,6 @@ export class AppComponent {
     }
 
     private _mapCheckboxesToConsents(generalConditions: boolean, thirdPartyMarketing: boolean): number[] {
-        console.log(generalConditions, thirdPartyMarketing);
         const generalConditionsConsents = generalConditions
             ? [Consent.PLAYER_STORE_DATA, Consent.PLAYER_PROVIDE_DATA_TO_TEAMS, Consent.PLAYER_AGE]
             : [];
