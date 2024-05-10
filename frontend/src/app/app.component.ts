@@ -18,6 +18,9 @@ import { MatListModule } from '@angular/material/list';
 import { ApiService } from './api.service';
 import { PlayerNeed } from './player-need';
 import { District } from './district';
+import { CommonModule } from '@angular/common';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Consent } from './consent';
 
 @Component({
     selector: 'app-root',
@@ -38,9 +41,10 @@ import { District } from './district';
         MatCardModule,
         MatButtonModule,
         MatDividerModule,
-        MatListModule
+        MatListModule,
+        CommonModule
     ],
-    providers: [ ApiService ],
+    providers: [ApiService],
     templateUrl: './app.component.html',
     styleUrl: './app.component.sass'
 })
@@ -53,7 +57,7 @@ export class AppComponent {
     playerNeedForm: FormGroup;
     feedbackForm: FormGroup;
 
-    constructor(private formBuilder: FormBuilder, private api: ApiService) {
+    constructor(private formBuilder: FormBuilder, private api: ApiService, private formInvalidSnackBar: MatSnackBar) {
         this.districtNames = this._getAllDistricts().map(d => d.name);
         this.districtsCtrl = new FormControl('');
         this.filteredDistricts = this.districtsCtrl.valueChanges.pipe(
@@ -67,7 +71,9 @@ export class AppComponent {
             availability: ['', Validators.required],
             email: ['', Validators.required],
             phone: [''],
-            about: ['']
+            about: [''],
+            generalConditions: [true, Validators.requiredTrue],
+            thirdPartyMarketing: [true]
         });
         this.feedbackForm = this.formBuilder.group({
             feedback: ['', Validators.required],
@@ -101,14 +107,11 @@ export class AppComponent {
     }
 
     onSubmit(): void {
-        const playerNeedFormModel = this.playerNeedForm.value;
-
-        // form model is bit different to real model because we were strugglign with autocomplete if districts 
-        // were complex values rather than strings
-        const playerNeed: PlayerNeed = {
-            ...playerNeedFormModel,
-            districts: this._mapDistrictNamesToDistrictCodes(playerNeedFormModel.districts)
+        if (this.playerNeedForm.invalid) {
+            this.formInvalidSnackBar.open("Formulár nebol odoslaný. Najskôr vyplň všetky povinné polia.", "OK");
         }
+
+        const playerNeed = this._mapFormToPlayerNeed(this.playerNeedForm.value);
 
         this.api.add(playerNeed).subscribe(pr => {
             console.log("API call result", pr);
@@ -123,8 +126,33 @@ export class AppComponent {
         return this.playerNeedForm.value.districts ?? [];
     }
 
+    private _mapFormToPlayerNeed(formModel: any): PlayerNeed {
+        // form model is bit different to real model
+        //      - we were strugglign with autocomplete if districts were complex values rather than strings
+        //      - we are mapping coarse-grained checkboxes to fine-grained consents
+        return {
+            name: formModel.name,
+            availability: formModel.availability,
+            email: formModel.email,
+            phone: formModel.phone,
+            about: formModel.about,
+            districts: this._mapDistrictNamesToDistrictCodes(formModel.districts),
+            consents: this._mapCheckboxesToConsents(formModel.generalConditions, formModel.thirdPartyMarketing)
+        }
+    }
+
     private _mapDistrictNamesToDistrictCodes(districtNames: string[]): number[] {
         return districtNames.map(dn => this._getAllDistricts().filter(d => d.name === dn)[0].code);
+    }
+
+    private _mapCheckboxesToConsents(generalConditions: boolean, thirdPartyMarketing: boolean): number[] {
+        console.log(generalConditions, thirdPartyMarketing);
+        const generalConditionsConsents = generalConditions
+            ? [Consent.PLAYER_STORE_DATA, Consent.PLAYER_PROVIDE_DATA_TO_TEAMS, Consent.PLAYER_AGE]
+            : [];
+        const thirdPartyMarketingConsents = thirdPartyMarketing ? [Consent.PLAYER_PROVIDE_DATA_TO_THIRD_PARTIES] : [];
+
+        return generalConditionsConsents.concat(thirdPartyMarketingConsents);
     }
 
     private _filter(value: string): string[] {

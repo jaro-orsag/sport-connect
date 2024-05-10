@@ -1,0 +1,6 @@
+export enum Consent {
+    PLAYER_STORE_DATA = 1,
+    PLAYER_PROVIDE_DATA_TO_TEAMS = 2,
+    PLAYER_AGE = 3,
+    PLAYER_PROVIDE_DATA_TO_THIRD_PARTIES = 4
+}

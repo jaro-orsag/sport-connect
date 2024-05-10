@@ -86,6 +86,23 @@
           rows="3"
         ></textarea>
       </mat-form-field>
+      
+      <mat-checkbox 
+        #generalConditions
+        formControlName="generalConditions" 
+        color="primary" 
+        class="conent-item consents">
+        Súhlasím so <a xmat-button href="#" target="_blank">Všeobecnými obchodnými podmienkami</a>.
+      </mat-checkbox>
+      <mat-error 
+        class="conent-item vop-error" 
+        *ngIf="!generalConditions.checked">
+        Súhlas so <a xmat-button href="#" target="_blank">Všeobecnými obchodnými podmienkami</a> je povinný.
+    </mat-error>
+      
+      <mat-checkbox formControlName="thirdPartyMarketing" color="primary" class="conent-item consents indent-top">
+        Súhlasím s poskytnutím svojich údajov tretím stranám za účelom marketingovej komunikácie. Nepovinné.
+      </mat-checkbox>
       <button
         mat-flat-button
         color="primary"
@@ -94,20 +111,6 @@
       >
         Odoslať
       </button>
-
-      <p class="conent-item">
-        Odoslaním formulára súhlasíš so zasielaním emailov za účelom hľadania
-        futbalového tímu.
-      </p>
-      <p class="conent-item">
-        Budeš emailom dostávať informácie o tímoch, ktoré hľadajú hráča v Tvojom
-        okrese. Budete sa môcť kontaktovať.
-      </p>
-      <p class="conent-item">Odoslaním formulára sa k ničomu nezaväzuješ.</p>
-
-      <p class="conent-item">
-        Svoju požiadavku na hľadanie tímu budeš môcť kedykoľvek odstrániť.
-      </p>
     </div>
   </form>
   <h2>Spätná väzba</h2>
