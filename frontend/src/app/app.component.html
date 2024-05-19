@@ -1,11 +1,36 @@
-<h1>Angular Router App</h1>
-<nav>
-  <ul>
-    <li><a routerLink="/player-need" routerLinkActive="active" ariaCurrentWhenActive="page">Player Need</a></li>
-    <li><a routerLink="/team-need" routerLinkActive="active" ariaCurrentWhenActive="page">Team Need</a></li>
-  </ul>
-</nav>
+<mat-toolbar class="toolbar">
+  <span>
+    <img class="toolbar__app-icon" src="../assets/icon.png"/>
+  </span>
+  <span>futbal-spoluhráč.sk</span>
+  <span class="toolbar__space-filler"></span>
+  <span>
+    <button mat-icon-button aria-label="Menu" class="toolbar__menu-button">
+      <mat-icon (click)="toggleSideNav()" class="toolbar__menu-icon">menu</mat-icon>
+    </button>
+  </span>
+</mat-toolbar>
 
-
-<!-- The routed views render in the <router-outlet>-->
-<router-outlet></router-outlet>
+<mat-sidenav-container class="example-container">
+  <mat-sidenav>
+    <ul>
+      <li>
+        <a
+          routerLink="/player-need"
+          routerLinkActive="active"
+          ariaCurrentWhenActive="page"
+          >Player Need</a
+        >
+      </li>
+      <li>
+        <a
+          routerLink="/team-need"
+          routerLinkActive="active"
+          ariaCurrentWhenActive="page"
+          >Team Need</a
+        >
+      </li>
+    </ul>
+  </mat-sidenav>
+  <mat-sidenav-content><router-outlet></router-outlet></mat-sidenav-content>
+</mat-sidenav-container>
