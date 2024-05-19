@@ -1,4 +1,4 @@
 export interface District {
-readonly code: number;
+    readonly code: number;
     readonly name: string;
 };

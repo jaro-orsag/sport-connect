@@ -8,7 +8,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { importProvidersFrom } from '@angular/core';
 
 import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
-import { InMemoryDataService } from './in-memory-data.service';
+import { InMemoryDataService } from './services/in-memory-data.service';
 import { environment } from '../environments/environment';
 
 export const appConfig: ApplicationConfig = {
