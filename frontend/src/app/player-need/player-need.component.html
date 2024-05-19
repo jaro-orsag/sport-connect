@@ -1,0 +1,160 @@
+<main class="mat-typography">
+  <h1 class="centered-row title">
+    <img
+      class="icon-with-margin app-icon"
+      src="../assets/icon.png" 
+    />futbal-spoluhráč.sk
+  </h1>
+  <h2>Chcem hrať futbal, hľadám tím</h2>
+  <form [formGroup]="playerNeedForm" novalidate (ngSubmit)="onSubmit()">
+    <div class="centered-column">
+      <mat-form-field class="conent-item" appearance="outline">
+        <mat-label>Meno</mat-label>
+        <input
+          formControlName="name"
+          autocomplete="name"
+          type="text"
+          matInput
+        />
+      </mat-form-field>
+      <mat-form-field class="conent-item" appearance="outline">
+        <mat-label>Okresy kde chcem hrať</mat-label>
+        <mat-chip-grid
+          formControlName="districts"
+          #chipGrid
+          aria-label="District selection"
+        >
+          @for (district of getSelectedDistricts(); track district) {
+          <mat-chip-row (removed)="removeDistrict(district)">
+            {{ district }}
+            <button matChipRemove [attr.aria-label]="'Remove ' + district">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip-row>
+          }
+        </mat-chip-grid>
+        <input
+          placeholder="Začni písať meno okresu"
+          #districtsInput
+          [formControl]="districtsCtrl"
+          [matChipInputFor]="chipGrid"
+          [matAutocomplete]="auto"
+        />
+        <mat-autocomplete
+          #auto="matAutocomplete"
+          (optionSelected)="onSelected($event)"
+        >
+          @for (district of filteredDistricts | async; track district) {
+          <mat-option [value]="district">{{ district }}</mat-option>
+          }
+        </mat-autocomplete>
+      </mat-form-field>
+      <mat-form-field class="conent-item" appearance="outline">
+        <mat-label>Kedy chcem hrať</mat-label>
+        <textarea
+          formControlName="availability"
+          placeholder="Napr.: Každý deň po 16:00 okrem utorka"
+          matInput
+          rows="2"
+        ></textarea>
+      </mat-form-field>
+      <mat-form-field class="conent-item" appearance="outline">
+        <mat-label>Email</mat-label>
+        <input
+          formControlName="email"
+          type="email"
+          autocomplete="email"
+          email
+          matInput
+        />
+      </mat-form-field>
+      <mat-form-field class="conent-item" appearance="outline">
+        <mat-label>Telefón</mat-label>
+        <input
+          formControlName="phone"
+          type="text"
+          autocomplete="tel"
+          matInput
+        />
+      </mat-form-field>
+      <mat-form-field class="conent-item" appearance="outline">
+        <mat-label>O mne</mat-label>
+        <textarea
+          formControlName="about"
+          placeholder="Vek, úroveň, skúsenosti. Čokoľvek, čo môže zaujímať ľudí v Tvojom novom tíme."
+          matInput
+          rows="3"
+        ></textarea>
+      </mat-form-field>
+      
+      <mat-checkbox 
+        #generalConditions
+        formControlName="generalConditions" 
+        color="primary" 
+        class="conent-item consents">
+        Súhlasím so <a xmat-button href="#" target="_blank">Všeobecnými obchodnými podmienkami</a>.
+      </mat-checkbox>
+      <mat-error 
+        class="conent-item vop-error" 
+        *ngIf="!generalConditions.checked">
+        Súhlas so <a xmat-button href="#" target="_blank">Všeobecnými obchodnými podmienkami</a> je povinný.
+    </mat-error>
+      
+      <mat-checkbox formControlName="thirdPartyMarketing" color="primary" class="conent-item consents indent-top">
+        Súhlasím s poskytnutím svojich údajov tretím stranám za účelom marketingovej komunikácie. Nepovinné.
+      </mat-checkbox>
+      <button
+        mat-flat-button
+        color="primary"
+        type="submit"
+        class="form-submit-button conent-item"
+      >
+        Odoslať
+      </button>
+    </div>
+  </form>
+  <h2>Spätná väzba</h2>
+  <form [formGroup]="feedbackForm" novalidate (ngSubmit)="onFeedbackSubmit()">
+    <div class="centered-column">
+      <mat-form-field class="conent-item" appearance="outline">
+        <mat-label>Spätná väzba</mat-label>
+        <textarea
+          formControlName="feedback"
+          placeholder="Ako by sa dala služba futbal-spoluhrac.sk vylepšiť? Budeme vďační za každý návrh a nápad."
+          matInput
+          rows="3"
+        ></textarea>
+      </mat-form-field>
+      <mat-form-field class="conent-item" appearance="outline">
+        <mat-label>Email</mat-label>
+        <input
+          formControlName="email"
+          placeholder="Ak by sme mali doplňujúce otázky."
+          type="email"
+          autocomplete="email"
+          email
+          matInput
+        />
+      </mat-form-field>
+      <button
+        mat-flat-button
+        color="primary"
+        type="submit"
+        class="form-submit-button conent-item"
+      >
+        Odoslať spätnú väzbu
+      </button>
+    </div>
+  </form>
+  <h2>Kontakt</h2>
+  <div class="centered-row footer">
+    <mat-icon
+      aria-hidden="false"
+      aria-label="email"
+      fontIcon="email"
+      class="icon-with-margin"
+    ></mat-icon>
+
+    <a href="mailto:futbalspoluhrac@gmail.com">futbalspoluhrac&#64;gmail.com</a>
+  </div>
+</main>
