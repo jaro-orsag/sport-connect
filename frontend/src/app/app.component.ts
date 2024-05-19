@@ -4,7 +4,7 @@ import { Component, ViewChild } from '@angular/core';
 import { MatSidenavContainer, MatSidenavContent, MatSidenav } from '@angular/material/sidenav';
 import { MatToolbar } from '@angular/material/toolbar';
 import { MatIcon } from '@angular/material/icon';
-import { MatNavList } from '@angular/material/list';
+import { MatNavList, MatListItem } from '@angular/material/list';
 import { menuRoutes } from './app.routes';
 
 @Component({
@@ -20,7 +20,8 @@ import { menuRoutes } from './app.routes';
         MatSidenav, 
         MatToolbar, 
         MatIcon,
-        MatNavList
+        MatNavList,
+        MatListItem
     ],
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.sass']
