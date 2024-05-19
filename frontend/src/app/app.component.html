@@ -1,36 +1,30 @@
 <mat-toolbar class="toolbar">
   <span>
-    <img class="toolbar__app-icon" src="../assets/icon.png"/>
+    <img class="toolbar__app-icon" src="../assets/icon.png" />
   </span>
   <span>futbal-spoluhráč.sk</span>
   <span class="toolbar__space-filler"></span>
   <span>
     <button mat-icon-button aria-label="Menu" class="toolbar__menu-button">
-      <mat-icon (click)="toggleSideNav()" class="toolbar__menu-icon">menu</mat-icon>
+      <mat-icon (click)="toggleSideNav()" class="toolbar__menu-icon"
+        >menu</mat-icon
+      >
     </button>
   </span>
 </mat-toolbar>
 
-<mat-sidenav-container class="example-container">
+<mat-sidenav-container>
   <mat-sidenav>
-    <ul>
-      <li>
-        <a
-          routerLink="/player-need"
-          routerLinkActive="active"
-          ariaCurrentWhenActive="page"
-          >Player Need</a
-        >
-      </li>
-      <li>
-        <a
-          routerLink="/team-need"
-          routerLinkActive="active"
-          ariaCurrentWhenActive="page"
-          >Team Need</a
-        >
-      </li>
-    </ul>
+    <mat-nav-list>
+      <a
+        *ngFor="let route of this.routes"
+        routerLinkActive="mdc-list-item--activated"
+        mat-list-item
+        (click)="toggleSideNav()"
+        [routerLink]="route.path"
+        >{{route?.data?.[0]["title"]}}
+      </a>
+    </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content><router-outlet></router-outlet></mat-sidenav-content>
 </mat-sidenav-container>
