@@ -1,5 +1,11 @@
 <mat-sidenav-container>
   <mat-sidenav>
+    <mat-toolbar class="toolbar">
+        <span>
+          <img class="toolbar__app-icon" src="../assets/icon.png" />
+        </span>
+        <span>futbal-spoluhráč.sk</span>
+      </mat-toolbar>
     <mat-nav-list>
       <a
         *ngFor="let route of this.routes"
