@@ -23,15 +23,14 @@ export class AppToolbarComponent {
         private router: Router
     ) { }
 
-    toggleSideNav(e: any) {
+    toggleSideNav() {
         this.sideNav.toggle();
-        e?.stopPropagation();
     }
 
     navigateToLandingPage() {
         this.router.navigate(['']);
         if (this.insideSideNav) {
-            this.toggleSideNav(null);
+            this.toggleSideNav();
         }
     }
 }
