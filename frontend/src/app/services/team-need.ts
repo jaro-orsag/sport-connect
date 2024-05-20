@@ -1,8 +1,9 @@
-export interface PlayerNeed {
+export interface TeamNeed {
     readonly id?: string;
+    readonly district: number;
+    readonly address?: string;
+    readonly time: string;
     readonly name: string;
-    readonly districts: Array<number>;
-    readonly availability: string;
     readonly email: string;
     readonly phone?: string;
     readonly about?: string;

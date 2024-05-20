@@ -1,10 +1,104 @@
-<p>team-need works!</p>
-<p>team-need works!</p>
-<p>team-need works!</p>
-<p>team-need works!</p>
-<p>team-need works!</p>
-<p>team-need works!</p>
-<p>team-need works!</p>
-<p>team-need works!</p>
-<p>team-need works!</p>
-<p>team-need works!</p>
+<main class="mat-typography">
+    <h2 class="form__title">Hľadáme hráča do tímu</h2>
+    <form
+      class="form"
+      [formGroup]="teamNeedForm"
+      novalidate
+      (ngSubmit)="onSubmit()"
+    >
+      <mat-form-field class="form__element" appearance="outline">
+        <mat-label>Okres v ktorom hráme</mat-label>
+        <input #districtInput
+               type="text"
+               placeholder="Začni písať meno okresu"
+               matInput
+               formControlName="district"
+               [matAutocomplete]="auto"
+               (input)="filterDistricts()"
+               (focus)="filterDistricts()">
+        <mat-autocomplete requireSelection #auto="matAutocomplete">
+          @for (district of filteredDistricts; track district) {
+            <mat-option [value]="district">{{district}}</mat-option>
+          }
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <mat-form-field class="form__element" appearance="outline">
+        <mat-label>Presná adresa</mat-label>
+        <input formControlName="address" placeholder="Kde hráme futbal" type="text" matInput />
+      </mat-form-field>
+
+      <mat-form-field class="form__element" appearance="outline">
+        <mat-label>Kedy hráme</mat-label>
+        <input formControlName="time" placeholder="Napr. každý utorok o 18:00" type="text" matInput />
+      </mat-form-field>
+
+      <mat-form-field class="form__element" appearance="outline">
+        <mat-label>Meno</mat-label>
+        <input formControlName="name" autocomplete="name" type="text" matInput />
+      </mat-form-field>
+
+       <mat-form-field class="form__element" appearance="outline">
+        <mat-label>Email</mat-label>
+        <input
+          formControlName="email"
+          type="email"
+          autocomplete="email"
+          email
+          matInput
+        />
+      </mat-form-field>
+      <mat-form-field class="form__element" appearance="outline">
+        <mat-label>Telefón</mat-label>
+        <input formControlName="phone" type="text" autocomplete="tel" matInput />
+      </mat-form-field>
+      <mat-form-field class="form__element" appearance="outline">
+        <mat-label>O našom tíme</mat-label>
+        <textarea
+          formControlName="about"
+          placeholder="Čo sme za ľudia? Ako dlho spolu hrávame? Čokoľvek, čo môže zaujímať hráča pre Tvoj tím."
+          matInput
+          rows="3"
+        ></textarea>
+      </mat-form-field>
+  
+      <mat-checkbox
+        #generalConditions
+        formControlName="generalConditions"
+        color="primary"
+        class="form__element form__checkbox"
+      >
+        Súhlasím so
+        <a xmat-button [routerLink]="['/terms-conditions']" target="_blank"
+          >Všeobecnými obchodnými podmienkami</a
+        >.
+      </mat-checkbox>
+      <mat-error
+        class="form__element form__checkbox"
+        *ngIf="!generalConditions.checked"
+      >
+        Súhlas s <a [routerLink]="['/terms-conditions']" target="_blank"
+          >VOP</a
+        >
+        je povinný.
+      </mat-error>
+  
+      <mat-checkbox
+        formControlName="thirdPartyMarketing"
+        color="primary"
+        class="form__element form__checkbox"
+      >
+        Súhlasím s poskytnutím svojich údajov tretím stranám za účelom
+        marketingovej komunikácie. Nepovinné.
+      </mat-checkbox>
+      <button
+        mat-flat-button
+        color="primary"
+        type="submit"
+        class="form__submit-button form__element"
+      >
+        Odoslať
+      </button>
+    </form>
+  </main>
+  
