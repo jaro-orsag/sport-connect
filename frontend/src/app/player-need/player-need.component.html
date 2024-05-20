@@ -2,7 +2,7 @@
   <h2>Chcem hrať futbal, hľadám tím</h2>
   <form [formGroup]="playerNeedForm" novalidate (ngSubmit)="onSubmit()">
     <div class="centered-column">
-        <mat-form-field class="conent-item" appearance="outline">
+      <mat-form-field class="conent-item" appearance="outline">
         <mat-label>Meno</mat-label>
         <input
           formControlName="name"
@@ -11,17 +11,7 @@
           matInput
         />
       </mat-form-field>
-
       <mat-form-field class="conent-item" appearance="outline">
-        <mat-label>Meno 2</mat-label>
-        <input
-          autocomplete="name"
-          type="text"
-          matInput
-        />
-      </mat-form-field>
-
-         <mat-form-field class="conent-item" appearance="outline">
         <mat-label>Okresy kde chcem hrať</mat-label>
         <mat-chip-grid
           formControlName="districts"
@@ -37,7 +27,6 @@
           </mat-chip-row>
           }
         </mat-chip-grid>
-          
         <input
           placeholder="Začni písať meno okresu"
           #districtsInput
@@ -54,7 +43,6 @@
           }
         </mat-autocomplete>
       </mat-form-field>
-      
       <mat-form-field class="conent-item" appearance="outline">
         <mat-label>Kedy chcem hrať</mat-label>
         <textarea
@@ -64,15 +52,6 @@
           rows="2"
         ></textarea>
       </mat-form-field>
-      <!-- <mat-form-field class="conent-item" appearance="outline">
-        <mat-label>Abcd</mat-label>
-        <textarea
-          formControlName="abcd"
-          placeholder="Napr.: aaaaa"
-          matInput
-          rows="2"
-        ></textarea>
-      </mat-form-field> -->
       <mat-form-field class="conent-item" appearance="outline">
         <mat-label>Email</mat-label>
         <input
@@ -92,17 +71,16 @@
           matInput
         />
       </mat-form-field>
-       <!--  
       <mat-form-field class="conent-item" appearance="outline">
         <mat-label>O mne</mat-label>
         <textarea
           formControlName="about"
           placeholder="Vek, úroveň, skúsenosti. Čokoľvek, čo môže zaujímať ľudí v Tvojom novom tíme."
           matInput
-          rows="2"
+          rows="3"
         ></textarea>
       </mat-form-field>
-           
+      
       <mat-checkbox 
         #generalConditions
         formControlName="generalConditions" 
@@ -118,7 +96,7 @@
       
       <mat-checkbox formControlName="thirdPartyMarketing" color="primary" class="conent-item consents indent-top">
         Súhlasím s poskytnutím svojich údajov tretím stranám za účelom marketingovej komunikácie. Nepovinné.
-      </mat-checkbox> -->
+      </mat-checkbox>
       <button
         mat-flat-button
         color="primary"
@@ -129,7 +107,6 @@
       </button>
     </div>
   </form>
-  <!-- 
   <h2>Spätná väzba</h2>
   <form [formGroup]="feedbackForm" novalidate (ngSubmit)="onFeedbackSubmit()">
     <div class="centered-column">
@@ -173,5 +150,5 @@
     ></mat-icon>
 
     <a href="mailto:futbalspoluhrac@gmail.com">futbalspoluhrac&#64;gmail.com</a>
-  </div> -->
+  </div>
 </main>
