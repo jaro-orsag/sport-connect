@@ -14,7 +14,11 @@
    ```sh
    python -m venv venv
    ```
-4. Install dependencies
+4. Activate `venv`
+   ```sh
+   source ./venv/bin/activate
+   ```
+5. Install dependencies
    ```sh
    pip install -r requirements.txt
    ```
@@ -42,18 +46,17 @@ Also see then next section "Running Locally".
     - user/password
     - application/XXXXXXX - our lambdas are going to connect using this user
 
-2. Run lambda by running following shell script
+2. Run lambda by running `runLocally.sh` shell script parameterized by lambda name. For example:
     ```sh
-    ./runLocally.sh
+    ./run_locally.sh add-player-need
+    ./run_locally.sh add-team-need
     ```
-
-    This script will be parameterized in the future to be able to work with several diffeerent lambdas.
 
 ## Deploying to AWS
-1. Run script that builds the deployment package and stores it into `<lambda_name>/dist` folder.
+1. Build deployment package and store it in `<lambda_name>/dist` folder by running `buildDeploymentPackage.sh` shell script parameterized by lambda name. For example:
     ```sh
-    ./buildDeploymentPackage.sh
+    ./buildDeploymentPackage.sh add-player-need
+    ./buildDeploymentPackage.sh add-team-need
     ```
-    This script will be parameterized in the future to be able to work with several diffeerent lambdas.
 2. Navigate to your lambda in AWS lambda console.
 3. Upload new deployment package from `<lambda_name>/dist` folder.

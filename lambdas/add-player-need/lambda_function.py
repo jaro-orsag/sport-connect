@@ -33,13 +33,13 @@ def handler(event, _):
     if 'districts' not in body_dict.keys() or not body_dict['districts']: 
         return {
         'statusCode': 400,
-        'body': '\'districts\' array must be defined and not be empty.'
+        'body': '\'districts\' array must be defined and not empty.'
     }
 
     if 'consents' not in body_dict.keys() or not body_dict['consents']: 
         return {
         'statusCode': 400,
-        'body': '\'consents\' array must be defined and not be empty.'
+        'body': '\'consents\' array must be defined and not empty.'
     }
 
     if not body_dict['name'] or not body_dict['availability'] or not body_dict['email']: 

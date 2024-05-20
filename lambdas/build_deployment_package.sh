@@ -1,4 +1,6 @@
-LAMBDA_NAME=add-player-need
+LAMBDA_NAME=$1
+echo Going to build deployment package for lambda $LAMBDA_NAME.
+
 TIMESTAMP=$(date +"%Y-%m-%d-%H-%M-%S")
 PACKAGE_NAME=$LAMBDA_NAME"_deployment_package_"$TIMESTAMP".zip"
 
