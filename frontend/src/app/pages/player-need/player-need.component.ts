@@ -14,12 +14,12 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
-import { ApiService } from '../services/api.service';
-import { PlayerNeed } from '../services/player-need';
-import { District } from '../services/district';
+import { ApiService } from '../../services/api.service';
+import { PlayerNeed } from '../../services/player-need';
+import { District } from '../../services/district';
 import { CommonModule } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Consent } from '../services/consent';
+import { Consent } from '../../services/consent';
 
 @Component({
     selector: 'player-need',
@@ -50,7 +50,7 @@ export class PlayerNeedComponent {
     districtNames: string[];
     districtsCtrl: FormControl;
     filteredDistricts: Observable<string[]>;
-    @ViewChild('districtsInput') districtsInput: ElementRef<HTMLInputElement>;
+    @ViewChild('districtsInput') districtsInput!: ElementRef<HTMLInputElement>;
 
     playerNeedForm: FormGroup;
     feedbackForm: FormGroup;

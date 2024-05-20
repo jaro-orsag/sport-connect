@@ -1,0 +1,14 @@
+<mat-toolbar class="toolbar" (click)="navigateToLandingPage()">
+  <span>
+    <img class="toolbar__app-icon" src="../assets/icon.png" />
+  </span>
+  <span>futbal-spoluhráč.sk</span>
+  <span class="toolbar__space-filler"></span>
+  <span *ngIf="!insideSideNav">
+    <button mat-icon-button aria-label="Menu" class="toolbar__menu-button">
+      <mat-icon (click)="toggleSideNav($event)" class="toolbar__menu-icon"
+        >menu</mat-icon
+      >
+    </button>
+  </span>
+</mat-toolbar>
