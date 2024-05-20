@@ -54,7 +54,6 @@ export class PlayerNeedComponent {
     @ViewChild('districtsInput') districtsInput!: ElementRef<HTMLInputElement>;
 
     playerNeedForm: FormGroup;
-    feedbackForm: FormGroup;
 
     constructor(private formBuilder: FormBuilder, private api: ApiService, private formInvalidSnackBar: MatSnackBar) {
         this.districtNames = this._getAllDistricts().map(d => d.name);
@@ -73,10 +72,6 @@ export class PlayerNeedComponent {
             about: [''],
             generalConditions: [true, Validators.requiredTrue],
             thirdPartyMarketing: [true]
-        });
-        this.feedbackForm = this.formBuilder.group({
-            feedback: ['', Validators.required],
-            email: ['']
         });
     }
 
@@ -115,10 +110,6 @@ export class PlayerNeedComponent {
         this.api.add(playerNeed).subscribe(pr => {
             console.log("API call result", pr);
         });
-    }
-
-    onFeedbackSubmit(): void {
-        console.log('Feedback submission', JSON.stringify(this.feedbackForm.value));
     }
 
     getSelectedDistricts(): string[] {
