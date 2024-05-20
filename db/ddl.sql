@@ -126,10 +126,15 @@ CREATE TABLE Consent (
     PRIMARY KEY (id)
 );
 
-INSERT INTO Consent(id, consentTarget, wording) VALUE (1, "PLAYER", "Súhlasím s tým, aby prevádzkovateľ služby futbal-spoluhráč.sk ukladal moje meno, preferované okresy a časy, email telefón a daľšie informácie o mne na svojich serveroch za účelom hľadania futbalového tímu. Beriem na vedomie, že tento súhlas môžem kedykoľvek odvolať kliknutím na link, ktorý bude poskytnutý v potvrdzovacom emaile.");
-INSERT INTO Consent(id, consentTarget, wording) VALUE (2, "PLAYER", "Súhlasím s tým, aby prevádzkovateľ služby futbal-spoluhráč.sk poskytol moje meno, preferované okresy a časy, email telefón a daľšie informácie o mne tretím stranám za účelom hľadania futbalového tímu. Tretími stranami sa tu myslia futbalové tímy, ktoré hľadajú hráčov. Beriem na vedomie, že tento súhlas môžem kedykoľvek odvolať kliknutím na link, ktorý bude poskytnutý v potvrdzovacom emaile.");
+INSERT INTO Consent(id, consentTarget, wording) VALUE (1, "PLAYER", "Súhlasím s tým, aby prevádzkovateľ služby futbal-spoluhráč.sk ukladal moje meno, preferované okresy a časy, email telefón a daľšie informácie o mne na svojich serveroch za účelom hľadania futbalového tímu. Beriem na vedomie, že tento súhlas môžem kedykoľvek odvolať prostredníctvom linku, ktorý bude poskytnutý v potvrdzovacom emaile.");
+INSERT INTO Consent(id, consentTarget, wording) VALUE (2, "PLAYER", "Súhlasím s tým, aby prevádzkovateľ služby futbal-spoluhráč.sk poskytol moje meno, preferované okresy a časy, email telefón a daľšie informácie o mne tretím stranám za účelom hľadania futbalového tímu. Tretími stranami sa tu myslia futbalové tímy, ktoré hľadajú hráčov. Beriem na vedomie, že tento súhlas môžem kedykoľvek odvolať prostredníctvom linku, ktorý bude poskytnutý v potvrdzovacom emaile.");
 INSERT INTO Consent(id, consentTarget, wording) VALUE (3, "PLAYER", "Potvrdzujem, že môj vek je 18 rokov, alebo viac.");
-INSERT INTO Consent(id, consentTarget, wording) VALUE (4, "PLAYER", "Súhlasím s tým, aby prevádzkovateľ služby futbal-spoluhráč.sk poskytol moje meno, preferované okresy a časy, email telefón a daľšie informácie o mne tretím stranám za účelom marketingovej komunikácie. Beriem na vedomie, že tento súhlas môžem kedykoľvek odvolať kliknutím na link, ktorý bude poskytnutý v potvrdzovacom emaile.");
+INSERT INTO Consent(id, consentTarget, wording) VALUE (4, "PLAYER", "Súhlasím s tým, aby prevádzkovateľ služby futbal-spoluhráč.sk poskytol moje meno, preferované okresy a časy, email telefón a daľšie informácie o mne tretím stranám za účelom marketingovej komunikácie. Beriem na vedomie, že tento súhlas môžem kedykoľvek odvolať prostredníctvom linku, ktorý bude poskytnutý v potvrdzovacom emaile.");
+
+INSERT INTO Consent(id, consentTarget, wording) VALUE (101, "TEAM", "Súhlasím s tým, aby prevádzkovateľ služby futbal-spoluhráč.sk ukladal adresu hry, čas hry, moje meno, email, telefón a daľšie informácie o mojom tíme na svojich serveroch za účelom hľadania futbalového tímu. Beriem na vedomie, že tento súhlas môžem kedykoľvek odvolať prostredníctvom linku, ktorý bude poskytnutý v potvrdzovacom emaile.");
+INSERT INTO Consent(id, consentTarget, wording) VALUE (102, "TEAM", "Súhlasím s tým, aby prevádzkovateľ služby futbal-spoluhráč.sk poskytol adresu hry, čas hry, moje meno, email, telefón a daľšie informácie o mojom tíme tretím stranám za účelom hľadania futbalového tímu. Tretími stranami sa tu myslia hráči, ktorí hľadajú futbalové tímy. Beriem na vedomie, že tento súhlas môžem kedykoľvek odvolať prostredníctvom linku, ktorý bude poskytnutý v potvrdzovacom emaile.");
+INSERT INTO Consent(id, consentTarget, wording) VALUE (103, "TEAM", "Potvrdzujem, že môj vek a vek mojich spoluhráčov je 18 rokov, alebo viac.");
+INSERT INTO Consent(id, consentTarget, wording) VALUE (104, "TEAM", "Súhlasím s tým, aby prevádzkovateľ služby futbal-spoluhráč.sk poskytol adresu hry, čas hry, moje meno, email, telefón a daľšie informácie o mojom tíme tretím stranám za účelom marketingovej komunikácie. Beriem na vedomie, že tento súhlas môžem kedykoľvek odvolať prostredníctvom linku, ktorý bude poskytnutý v potvrdzovacom emaile.");
 
 CREATE TABLE PlayerNeedConsent (
     playerNeedId int NOT NULL,
@@ -143,7 +148,40 @@ CREATE TABLE PlayerNeedConsent (
     FOREIGN KEY (consentId) REFERENCES Consent(id) ON DELETE CASCADE
 );
 
+CREATE TABLE TeamNeed (
+	id int NOT NULL AUTO_INCREMENT,
+    uuid varchar(36) NOT NULL,
+    districtCode int NOT NULL,
+    address varchar(512),
+    time varchar(512) NOT NULL,
+    playerName varchar(255) NOT NULL,
+    email varchar(255) NOT NULL,
+    phone varchar(32),
+    about varchar(512),
+    dateAdded DATETIME,
+    
+    PRIMARY KEY (id),
+    FOREIGN KEY (districtCode) REFERENCES District(code) ON DELETE CASCADE
+);
+
+ALTER TABLE TeamNeed
+ADD UNIQUE (uuid);
+
+CREATE TABLE TeamNeedConsent (
+    teamNeedId int NOT NULL,
+    consentId int NOT NULL,
+    isValid boolean default true,
+    dateGranted datetime NOT NULL,
+    dateRevoked datetime,
+
+    PRIMARY KEY (teamNeedId, consentId),
+    FOREIGN KEY (teamNeedId) REFERENCES TeamNeed(id) ON DELETE CASCADE,
+    FOREIGN KEY (consentId) REFERENCES Consent(id) ON DELETE CASCADE
+);
+
 CREATE USER 'application' IDENTIFIED BY 'XXXXXXX';
 GRANT SELECT, INSERT, UPDATE ON StagingFootballBuddy.PlayerNeed TO 'application';
 GRANT SELECT, INSERT, UPDATE ON StagingFootballBuddy.PlayerNeedDistrict TO 'application';
 GRANT SELECT, INSERT, UPDATE ON StagingFootballBuddy.PlayerNeedConsent TO 'application';
+GRANT SELECT, INSERT, UPDATE ON StagingFootballBuddy.TeamNeed TO 'application';
+GRANT SELECT, INSERT, UPDATE ON StagingFootballBuddy.TeamNeedConsent TO 'application';
