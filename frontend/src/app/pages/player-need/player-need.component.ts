@@ -1,5 +1,5 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterOutlet, RouterLink } from '@angular/router';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteSelectedEvent, MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -27,6 +27,7 @@ import { Consent } from '../../services/consent';
     imports: [
         FormsModule,
         RouterOutlet,
+        RouterLink,
         MatFormFieldModule,
         MatInputModule,
         MatAutocompleteModule,
