@@ -1,18 +1,3 @@
-<mat-toolbar class="toolbar">
-  <span>
-    <img class="toolbar__app-icon" src="../assets/icon.png" />
-  </span>
-  <span>futbal-spoluhráč.sk</span>
-  <span class="toolbar__space-filler"></span>
-  <span>
-    <button mat-icon-button aria-label="Menu" class="toolbar__menu-button">
-      <mat-icon (click)="toggleSideNav()" class="toolbar__menu-icon"
-        >menu</mat-icon
-      >
-    </button>
-  </span>
-</mat-toolbar>
-
 <mat-sidenav-container>
   <mat-sidenav>
     <mat-nav-list>
@@ -26,5 +11,19 @@
       </a>
     </mat-nav-list>
   </mat-sidenav>
-  <mat-sidenav-content><router-outlet></router-outlet></mat-sidenav-content>
+  <mat-sidenav-content>
+    <mat-toolbar class="toolbar">
+      <span>
+        <img class="toolbar__app-icon" src="../assets/icon.png" />
+      </span>
+      <span>futbal-spoluhráč.sk</span>
+      <span class="toolbar__space-filler"></span>
+      <span>
+        <button mat-icon-button aria-label="Menu" class="toolbar__menu-button">
+          <mat-icon (click)="toggleSideNav()" class="toolbar__menu-icon">menu</mat-icon>
+        </button>
+      </span>
+    </mat-toolbar>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
 </mat-sidenav-container>
