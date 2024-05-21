@@ -17,7 +17,7 @@ export class ApiService {
 
     addPlayerNeed(playerNeed: PlayerNeed): Observable<PlayerNeed> {
 
-        return this.http.post<PlayerNeed>(`${environment.apiRoot}/player-requests`, playerNeed, this.httpOptions);
+        return this.http.post<PlayerNeed>(`${environment.apiRoot}/player-needs`, playerNeed, this.httpOptions);
     }
 
     addTeamNeed(teamNeed: TeamNeed): Observable<TeamNeed> {
