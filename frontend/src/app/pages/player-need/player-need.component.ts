@@ -80,11 +80,11 @@ export class PlayerNeedComponent {
 
         if (index >= 0) {
             // making copy in order to avoid mutating original array with splice below
-            const districts = [...this.getSelectedDistrictNames()];
-            districts.splice(index, 1);
+            const districtNames = [...this.getSelectedDistrictNames()];
+            districtNames.splice(index, 1);
 
             this.playerNeedForm.patchValue({
-                districts
+                districtNames
             });
         }
     }
