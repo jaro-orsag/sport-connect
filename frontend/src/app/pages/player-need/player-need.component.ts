@@ -107,8 +107,8 @@ export class PlayerNeedComponent {
 
         const playerNeed = this._mapFormToPlayerNeed(this.playerNeedForm.value);
 
-        this.api.add(playerNeed).subscribe(pr => {
-            console.log("API call result", pr);
+        this.api.addPlayerNeed(playerNeed).subscribe(pn => {
+            console.log("API call result", pn);
         });
     }
 

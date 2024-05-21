@@ -1,4 +1,4 @@
 export const environment = {
     isDevelopment: false,
-    apiUrl: 'PLACEHOLDER'
+    apiRoot: 'PLACEHOLDER'
 };

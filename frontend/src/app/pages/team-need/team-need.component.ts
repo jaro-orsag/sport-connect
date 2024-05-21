@@ -89,9 +89,9 @@ export class TeamNeedComponent {
 
         console.log(teamNeed);
 
-        // this.api.add(playerNeed).subscribe(pr => {
-        //     console.log("API call result", pr);
-        // });
+        this.api.addTeamNeed(teamNeed).subscribe(tn => {
+            console.log("API call result", tn);
+        });
     }
 
     private _mapFormToPlayerNeed(formModel: any): TeamNeed {
