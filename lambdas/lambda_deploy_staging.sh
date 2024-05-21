@@ -17,3 +17,7 @@ cd ../../../../
 zip $PACKAGE_NAME lambda_function.py
 mv $PACKAGE_NAME dist
 source ./venv/bin/activate
+
+echo
+echo Going to deploy package $PACKAGE_NAME
+aws lambda update-function-code --function-name staging-$LAMBDA_NAME --zip-file fileb://./dist/$PACKAGE_NAME | cat
