@@ -55,8 +55,8 @@ Also see then next section "Running Locally".
 ## Deploying to AWS
 1. Build deployment package and store it in `<lambda_name>/dist` folder by running `buildDeploymentPackage.sh` shell script parameterized by lambda name. For example:
     ```sh
-    ./buildDeploymentPackage.sh add-player-need
-    ./buildDeploymentPackage.sh add-team-need
+    ./build_deployment_package.sh add-player-need
+    ./build_deployment_package.sh add-team-need
     ```
 2. Navigate to your lambda in AWS lambda console.
 3. Upload new deployment package from `<lambda_name>/dist` folder.
