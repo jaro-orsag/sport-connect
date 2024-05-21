@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { TeamNeedComponent } from './pages/team-need/team-need.component';
 import { PlayerNeedComponent } from './pages/player-need/player-need.component';
+import { PlayerNeedDetailComponent } from './pages/player-need-detail/player-need-detail.component';
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
 import { TermsAndConditionsComponent } from './pages/terms-and-conditions/terms-and-conditions.component';
 import { AboutUsComponent } from './pages/about-us/about-us.component';
@@ -15,6 +16,7 @@ export const menuRoutes: Routes = [
 
 export const routes: Routes = [
     ...menuRoutes,
+    { path: 'player-need/:uuid', component: PlayerNeedDetailComponent },
     { path: '', component: LandingComponent },
     { path: '**', component: PageNotFoundComponent },
 ];

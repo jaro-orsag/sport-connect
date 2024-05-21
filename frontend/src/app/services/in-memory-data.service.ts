@@ -9,11 +9,25 @@ import { PlayerNeed } from './player-need';
 export class InMemoryDataService implements InMemoryDbService {
 
     createDb() {
-        const playerRequests = [
+        const playerNeeds = [
+            {
+                "id": "72c63f2c-6b02-4854-affd-7a41c3bae6de",
+                "uuid": "72c63f2c-6b02-4854-affd-7a41c3bae6de",
+                "playerName":"Jaroslav Orság",
+                "districtCodes":[
+                    301,
+                    701
+                ],
+                "availability":"aaaaaaa",
+                "email":"jorsag@gmail.com",
+                "phone":"917777614",
+                "about":"bbbbbbb",
+                "consentIds": [1,2,3,4]
+            },
             { id: 12, playerName: 'Dr. Nice' },
             { id: 13, playerName: 'Bombasto' }
         ];
-        return { "player-requests": playerRequests, "team-needs": playerRequests  };
+        return { "player-needs": playerNeeds, "team-needs": playerNeeds  };
     }
 
     genId(_: PlayerNeed[]): number {
