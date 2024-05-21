@@ -35,7 +35,6 @@ def lambda_handler(event, _):
             'statusCode': 400,
             'body': '\'consentIds\' array must be defined and not empty.'
         }
-        
 
     if ('districtCode' not in body_dict.keys() or not body_dict['districtCode']
         or 'time' not in body_dict.keys() or not body_dict['time']
