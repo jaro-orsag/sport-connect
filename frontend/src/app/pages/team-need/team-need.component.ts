@@ -13,7 +13,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
 import { ApiService } from '../../services/api.service';
-import { District } from '../../services/district';
 import { CommonModule } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Consent } from '../../services/consent';
@@ -62,10 +61,10 @@ export class TeamNeedComponent {
         this.filteredDistricts = this.options.slice();
 
         this.teamNeedForm = this.formBuilder.group({
-            district: ['', Validators.required],
+            districtName: ['', Validators.required],
             address: [''],
             time: ['', Validators.required],
-            name: ['', Validators.required],
+            playerName: ['', Validators.required],
             email: ['', Validators.required],
             phone: [''],
             about: [''],
@@ -99,14 +98,14 @@ export class TeamNeedComponent {
         //      - we were strugglign with autocomplete if districts were complex values rather than strings
         //      - we are mapping coarse-grained checkboxes to fine-grained consents
         return {
-            district: getDistrictCode(formModel.district),
+            districtCode: getDistrictCode(formModel.districtName),
             address: formModel.address,
             time: formModel.time,
-            name: formModel.name,            
+            playerName: formModel.playerName,            
             email: formModel.email,
             phone: formModel.phone,
             about: formModel.about,
-            consents: this._mapCheckboxesToConsents(formModel.generalConditions, formModel.thirdPartyMarketing)
+            consentIds: this._mapCheckboxesToConsents(formModel.generalConditions, formModel.thirdPartyMarketing)
         }
     }
 

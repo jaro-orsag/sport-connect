@@ -10,13 +10,13 @@ export class InMemoryDataService implements InMemoryDbService {
 
     createDb() {
         const playerRequests = [
-            { id: '12', name: 'Dr. Nice' },
-            { id: '13', name: 'Bombasto' }
+            { id: 12, playerName: 'Dr. Nice' },
+            { id: 13, playerName: 'Bombasto' }
         ];
-        return { "player-requests": playerRequests };
+        return { "player-requests": playerRequests, "team-needs": playerRequests  };
     }
 
-    genId(_: PlayerNeed[]): string {
-        return uuidv4();
+    genId(_: PlayerNeed[]): number {
+        return Math.floor(Math.random() * 1000);
     }
 }

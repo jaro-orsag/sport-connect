@@ -1,10 +1,12 @@
 export interface PlayerNeed {
-    readonly id?: string;
-    readonly name: string;
-    readonly districts: Array<number>;
+    readonly id?: number;
+    readonly uuid?: string;
+    readonly playerName: string;
+    readonly districtCodes: Array<number>;
     readonly availability: string;
     readonly email: string;
     readonly phone?: string;
     readonly about?: string;
-    readonly consents: Array<number>;
+    readonly dateAdded?: Date;
+    readonly consentIds: Array<number>;
 };

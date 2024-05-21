@@ -4,7 +4,7 @@ export interface District {
 };
 
 export function getDistrictCode(districtName: string): number {
-    return getDistricts().filter(d => d.name === districtName)[0].code;
+    return getDistricts().filter(d => d.name === districtName)[0]?.code;
 }
 
 export function getDistrictNames(): Array<string> {

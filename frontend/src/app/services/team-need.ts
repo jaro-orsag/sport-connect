@@ -1,11 +1,13 @@
 export interface TeamNeed {
-    readonly id?: string;
-    readonly district: number;
+    readonly id?: number;
+    readonly uuid?: string
+    readonly districtCode: number;
     readonly address?: string;
     readonly time: string;
-    readonly name: string;
+    readonly playerName: string;
     readonly email: string;
     readonly phone?: string;
     readonly about?: string;
-    readonly consents: Array<number>;
+    readonly dateAdded?: Date;
+    readonly consentIds: Array<number>;
 };

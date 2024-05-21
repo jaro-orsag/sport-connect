@@ -8,16 +8,16 @@
   >
     <mat-form-field class="form__element" appearance="outline">
       <mat-label>Meno</mat-label>
-      <input formControlName="name" autocomplete="name" type="text" matInput />
+      <input formControlName="playerName" autocomplete="name" type="text" matInput />
     </mat-form-field>
     <mat-form-field class="form__element" appearance="outline">
       <mat-label>Okresy kde chcem hrať</mat-label>
       <mat-chip-grid
-        formControlName="districts"
+        formControlName="districtNames"
         #chipGrid
         aria-label="District selection"
       >
-        @for (district of getSelectedDistricts(); track district) {
+        @for (district of getSelectedDistrictNames(); track district) {
         <mat-chip-row (removed)="removeDistrict(district)">
           {{ district }}
           <button matChipRemove [attr.aria-label]="'Remove ' + district">

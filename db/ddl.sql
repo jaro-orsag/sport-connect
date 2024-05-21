@@ -10,7 +10,7 @@ CREATE TABLE PlayerNeed (
     email varchar(255) NOT NULL,
     phone varchar(32),
     about varchar(512),
-    dateAdded DATETIME,
+    dateAdded DATETIME NOT NULL,
     
     PRIMARY KEY (id)
 );
@@ -158,7 +158,7 @@ CREATE TABLE TeamNeed (
     email varchar(255) NOT NULL,
     phone varchar(32),
     about varchar(512),
-    dateAdded DATETIME,
+    dateAdded DATETIME NOT NULL,
     
     PRIMARY KEY (id),
     FOREIGN KEY (districtCode) REFERENCES District(code) ON DELETE CASCADE

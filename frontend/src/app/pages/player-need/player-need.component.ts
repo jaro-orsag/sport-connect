@@ -60,12 +60,12 @@ export class PlayerNeedComponent {
         this.districtsCtrl = new FormControl('');
         this.filteredDistricts = this.districtsCtrl.valueChanges.pipe(
             startWith(null),
-            map((d: string | null) => (d ? this._filter(d) : this._getAllButSelectedDistricts().slice())),
+            map((d: string | null) => (d ? this._filter(d) : this._getAllButSelectedDistrictNames().slice())),
         );
 
         this.playerNeedForm = this.formBuilder.group({
-            name: ['', Validators.required],
-            districts: [[] as Array<string>, Validators.required],
+            playerName: ['', Validators.required],
+            districtNames: [[] as Array<string>, Validators.required],
             availability: ['', Validators.required],
             email: ['', Validators.required],
             phone: [''],
@@ -76,11 +76,11 @@ export class PlayerNeedComponent {
     }
 
     removeDistrict(district: string): void {
-        const index = this.getSelectedDistricts().indexOf(district);
+        const index = this.getSelectedDistrictNames().indexOf(district);
 
         if (index >= 0) {
             // making copy in order to avoid mutating original array with splice below
-            const districts = [...this.getSelectedDistricts()];
+            const districts = [...this.getSelectedDistrictNames()];
             districts.splice(index, 1);
 
             this.playerNeedForm.patchValue({
@@ -90,10 +90,10 @@ export class PlayerNeedComponent {
     }
 
     onSelected(event: MatAutocompleteSelectedEvent): void {
-        const districts = [...this.getSelectedDistricts()];
-        districts.push(event.option.viewValue);
+        const districtNames = [...this.getSelectedDistrictNames()];
+        districtNames.push(event.option.viewValue);
         this.playerNeedForm.patchValue({
-            districts
+            districtNames
         });
 
         this.districtsInput.nativeElement.value = '';
@@ -112,8 +112,8 @@ export class PlayerNeedComponent {
         });
     }
 
-    getSelectedDistricts(): string[] {
-        return this.playerNeedForm.value.districts ?? [];
+    getSelectedDistrictNames(): string[] {
+        return this.playerNeedForm.value.districtNames ?? [];
     }
 
     private _mapFormToPlayerNeed(formModel: any): PlayerNeed {
@@ -121,13 +121,13 @@ export class PlayerNeedComponent {
         //      - we were strugglign with autocomplete if districts were complex values rather than strings
         //      - we are mapping coarse-grained checkboxes to fine-grained consents
         return {
-            name: formModel.name,
+            playerName: formModel.playerName,
             availability: formModel.availability,
             email: formModel.email,
             phone: formModel.phone,
             about: formModel.about,
-            districts: this._mapDistrictNamesToDistrictCodes(formModel.districts),
-            consents: this._mapCheckboxesToConsents(formModel.generalConditions, formModel.thirdPartyMarketing)
+            districtCodes: this._mapDistrictNamesToDistrictCodes(formModel.districtNames),
+            consentIds: this._mapCheckboxesToConsents(formModel.generalConditions, formModel.thirdPartyMarketing)
         }
     }
 
@@ -150,7 +150,7 @@ export class PlayerNeedComponent {
         return this.districtNames.filter(
             d => this._normalize(d).includes(filterValue)
                 // do not allow adding same item multiple times
-                && !this.getSelectedDistricts().includes(d)
+                && !this.getSelectedDistrictNames().includes(d)
         );
     }
 
@@ -158,9 +158,8 @@ export class PlayerNeedComponent {
         return denormalized.toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu, '');
     }
 
-    private _getAllButSelectedDistricts(): string[] {
-        return this.districtNames.filter(d => !this.getSelectedDistricts().includes(d));
+    private _getAllButSelectedDistrictNames(): string[] {
+        return this.districtNames.filter(d => !this.getSelectedDistrictNames().includes(d));
     }
 
 }
-

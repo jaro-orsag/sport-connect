@@ -28,33 +28,39 @@ def lambda_handler(event, _):
     body_str = event.get('body', '')
     body_dict = json.loads(body_str)
 
-    body_dict['id'] = str(uuid.uuid4())
+    body_dict['uuid'] = str(uuid.uuid4())
 
-    if 'consents' not in body_dict.keys() or not body_dict['consents']: 
+    if 'consentIds' not in body_dict.keys() or not body_dict['consentIds']: 
         return {
             'statusCode': 400,
-            'body': '\'consents\' array must be defined and not empty.'
+            'body': '\'consentIds\' array must be defined and not empty.'
         }
         
 
-    if not body_dict['district'] or not body_dict['time'] or not body_dict['name'] or not body_dict['email']: 
+    if ('districtCode' not in body_dict.keys() or not body_dict['districtCode']
+        or 'time' not in body_dict.keys() or not body_dict['time']
+        or 'playerName' not in body_dict.keys() or not body_dict['playerName']
+        or 'email' not in body_dict.keys() or not body_dict['email']):
+         
         return {
         'statusCode': 400,
-        'body': '\'district\', \'time\', \'name\' and \'email\' attributes must be defined and not empty.'
+        'body': '\'districtCode\', \'time\', \'playerName\' and \'email\' attributes must be defined and not empty.'
     }
 
     with conn.cursor() as cursor:
         sql = "INSERT INTO TeamNeed (uuid, districtCode, address, time, playerName, email, phone, about, dateAdded) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, NOW())"
-        user_data = (body_dict['id'], body_dict['district'], body_dict['address'], body_dict['time'], body_dict['name'], body_dict['email'], body_dict['phone'], body_dict['about'])
+        user_data = (body_dict['uuid'], body_dict['districtCode'], body_dict['address'], body_dict['time'], body_dict['playerName'], body_dict['email'], body_dict['phone'], body_dict['about'])
         cursor.execute(sql, user_data)
         teamNeedId = int(cursor.lastrowid)
         conn.commit()
         cursor.close()
 
-    teamNeedConsentPairs = [(teamNeedId, consent) for consent in body_dict['consents']]
+    body_dict['id'] = teamNeedId
+
+    teamNeedConsentIdPairs = [(teamNeedId, consentId) for consentId in body_dict['consentIds']]
     with conn.cursor() as cursor:
         sql = "INSERT INTO TeamNeedConsent (teamNeedId, consentId, dateGranted) VALUES (%s, %s, NOW())"
-        cursor.executemany(sql, teamNeedConsentPairs)
+        cursor.executemany(sql, teamNeedConsentIdPairs)
         conn.commit()
         cursor.close()
 
