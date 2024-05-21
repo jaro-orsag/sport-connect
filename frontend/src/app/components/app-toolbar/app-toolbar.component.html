@@ -1,8 +1,8 @@
 <mat-toolbar class="toolbar">
   <span (click)="navigateToLandingPage()">
-    <img class="toolbar__app-icon" src="../assets/icon.png" />
+    <img class="toolbar__app-icon toolbar__link-to-landing" src="../assets/icon.png" />
   </span>
-  <span (click)="navigateToLandingPage()">futbal-spoluhráč.sk</span>
+  <span (click)="navigateToLandingPage()" class="toolbar__link-to-landing">futbal-spoluhráč.sk</span>
   <span class="toolbar__space-filler"></span>
   <span *ngIf="!insideSideNav">
     <button mat-icon-button aria-label="Menu" class="toolbar__menu-button">
