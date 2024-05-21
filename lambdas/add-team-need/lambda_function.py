@@ -23,7 +23,7 @@ except pymysql.MySQLError as e:
 
 logger.info("SUCCESS: Connection to RDS for MySQL instance succeeded")
 
-def handler(event, _): 
+def lambda_handler(event, _): 
 
     body_str = event.get('body', '')
     body_dict = json.loads(body_str)
