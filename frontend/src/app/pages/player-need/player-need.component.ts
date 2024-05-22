@@ -1,5 +1,5 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { RouterOutlet, RouterLink } from '@angular/router';
+import { RouterOutlet, RouterLink, Router } from '@angular/router';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteSelectedEvent, MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -55,7 +55,12 @@ export class PlayerNeedComponent {
 
     playerNeedForm: FormGroup;
 
-    constructor(private formBuilder: FormBuilder, private api: ApiService, private formInvalidSnackBar: MatSnackBar) {
+    constructor(
+        private formBuilder: FormBuilder, 
+        private api: ApiService, 
+        private formInvalidSnackBar: MatSnackBar, 
+        private router: Router
+    ) {
         this.districtNames = getDistrictNames();
         this.districtsCtrl = new FormControl('');
         this.filteredDistricts = this.districtsCtrl.valueChanges.pipe(
@@ -103,12 +108,13 @@ export class PlayerNeedComponent {
     onSubmit(): void {
         if (this.playerNeedForm.invalid) {
             this.formInvalidSnackBar.open("Formulár nebol odoslaný. Najskôr vyplň všetky povinné polia.", "OK");
+
+            return;
         }
 
         const playerNeed = this._mapFormToPlayerNeed(this.playerNeedForm.value);
-
         this.api.addPlayerNeed(playerNeed).subscribe(pn => {
-            console.log("API call result", pn);
+            this.router.navigate(["/player-need", pn.uuid]);
         });
     }
 
