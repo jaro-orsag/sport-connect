@@ -20,11 +20,11 @@
           <p matListItemLine>Email</p>
         </mat-list-item>
         <mat-list-item role="listitem">
-          <h4 matListItemTitle>{{ playerNeed.phone ?? "-" }}</h4>
+          <h4 matListItemTitle>{{ playerNeed.phone || "-" }}</h4>
           <p matListItemLine>Telefón</p>
         </mat-list-item>
         <mat-list-item role="listitem">
-          <h4 matListItemTitle>{{ playerNeed.about ?? "-" }}</h4>
+          <h4 matListItemTitle>{{ playerNeed.about || "-" }}</h4>
           <p matListItemLine>O mne</p>
         </mat-list-item>
         <mat-list-item role="listitem">

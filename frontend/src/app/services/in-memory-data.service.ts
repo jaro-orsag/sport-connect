@@ -28,6 +28,7 @@ export class InMemoryDataService implements InMemoryDbService {
                 "playerName": "Jaroslav Ors\u00e1g", 
                 "availability": "gssg", 
                 "email": "jorsag@gmail.com",
+                "about": "", 
                 "dateAdded": "2024-05-22T11:00:37+02:00", 
                 "districtCodes": [301, 302, 303], 
                 "consentIds": [1, 2, 3, 4] 
