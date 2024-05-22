@@ -25,17 +25,12 @@ export class InMemoryDataService implements InMemoryDbService {
             {
                 "id": "72c63f2c-6b02-4854-affd-7a41c3bae6de",
                 "uuid": "72c63f2c-6b02-4854-affd-7a41c3bae6de",
-                "playerName": "Jaroslav Orság",
-                "districtCodes": [
-                    301,
-                    701
-                ],
-                "availability": "aaaaaaa",
+                "playerName": "Jaroslav Ors\u00e1g", 
+                "availability": "gssg", 
                 "email": "jorsag@gmail.com",
-                "phone": "917777614",
-                "about": "bbbbbbb",
-                "consentIds": [1, 2, 3, 4],
-                "dateAdded": "2022-05-05 22:22:22"
+                "dateAdded": "2024-05-22T11:00:37+02:00", 
+                "districtCodes": [301, 302, 303], 
+                "consentIds": [1, 2, 3, 4] 
             },
             { id: 12, playerName: 'Dr. Nice' },
             { id: 13, playerName: 'Bombasto' }
