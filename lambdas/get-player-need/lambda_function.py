@@ -3,6 +3,7 @@ import pymysql
 import os
 import sys
 import logging
+import pytz
 
 user_name = os.environ['USER_NAME']
 password = os.environ['PASSWORD']
@@ -25,9 +26,14 @@ def get_db_connection():
     
     return conn
 
-def format_datetime(dt):
+def get_utc_datetime_in_local_zone(dt):
     if dt:
-        return dt.strftime('%Y-%m-%d %H:%M:%S')
+        # Ensure the datetime is timezone-aware
+        utc_dt = dt.replace(tzinfo=pytz.utc)
+        # Convert to local time
+        local_dt = utc_dt.astimezone(pytz.timezone("Europe/Bratislava"))
+
+        return local_dt.isoformat()
     return None
 
 def lambda_handler(event, _): 
@@ -73,7 +79,7 @@ def lambda_handler(event, _):
                 'email': result[4],
                 'phone': result[5],
                 'about': result[6],
-                'dateAdded': format_datetime(result[7]),
+                'dateAdded': get_utc_datetime_in_local_zone(result[7]),
                 'districtCodes': district_codes,
                 'consentsIds': consents_ids
             }

@@ -4,6 +4,8 @@ import pymysql
 import os
 import sys
 import logging
+import pytz
+from datetime import datetime
 
 user_name = os.environ['USER_NAME']
 password = os.environ['PASSWORD']
@@ -14,14 +16,22 @@ logging.basicConfig()
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-try:
-    conn = pymysql.connect(host=host, user=user_name, passwd=password, db=db_name, connect_timeout=5)
-except pymysql.MySQLError as e:
-    logger.error("ERROR: Unexpected error: Could not connect to MySQL instance.")
-    logger.error(e)
-    sys.exit(1)
+def get_current_datetime_in_utc():
+    local_datetime = pytz.timezone("Europe/Bratislava").localize(datetime.now())
+    utc_datetime = local_datetime.astimezone(pytz.utc)
+    return utc_datetime
 
-logger.info("SUCCESS: Connection to RDS for MySQL instance succeeded")
+def get_db_connection():
+    try:
+        conn = pymysql.connect(host=host, user=user_name, passwd=password, db=db_name, connect_timeout=5)
+    except pymysql.MySQLError as e:
+        logger.error("ERROR: Unexpected error: Could not connect to MySQL instance.")
+        logger.error(e)
+        sys.exit(1)
+        
+    logger.info("SUCCESS: Connection to RDS for MySQL instance succeeded")        
+    
+    return conn
 
 def lambda_handler(event, _): 
 
@@ -50,10 +60,13 @@ def lambda_handler(event, _):
         'statusCode': 400,
         'body': '\'playerName\', \'availability\' and \'email\' attributes must be defined and not empty.'
     }
-
+        
+    utc_now = get_current_datetime_in_utc()
+    
+    conn = get_db_connection()
     with conn.cursor() as cursor:
-        sql = "INSERT INTO PlayerNeed (uuid, playerName, availability, email, phone, about, dateAdded) VALUES (%s, %s, %s, %s, %s, %s, NOW())"
-        user_data = (body_dict['uuid'], body_dict['playerName'], body_dict['availability'], body_dict['email'], body_dict['phone'], body_dict['about'])
+        sql = "INSERT INTO PlayerNeed (uuid, playerName, availability, email, phone, about, dateAdded) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+        user_data = (body_dict['uuid'], body_dict['playerName'], body_dict['availability'], body_dict['email'], body_dict['phone'], body_dict['about'], utc_now)
         cursor.execute(sql, user_data)
         playerNeedId = int(cursor.lastrowid)
         conn.commit()
@@ -68,10 +81,10 @@ def lambda_handler(event, _):
         conn.commit()
         cursor.close()
 
-    playerNeedConsentIdPairs = [(playerNeedId, consentId) for consentId in body_dict['consentIds']]
+    playerNeedConsents = [(playerNeedId, consentId, utc_now) for consentId in body_dict['consentIds']]
     with conn.cursor() as cursor:
-        sql = "INSERT INTO PlayerNeedConsent (playerNeedId, consentId, dateGranted) VALUES (%s, %s, NOW())"
-        cursor.executemany(sql, playerNeedConsentIdPairs)
+        sql = "INSERT INTO PlayerNeedConsent (playerNeedId, consentId, dateGranted) VALUES (%s, %s, %s)"
+        cursor.executemany(sql, playerNeedConsents)
         conn.commit()
         cursor.close()
 
