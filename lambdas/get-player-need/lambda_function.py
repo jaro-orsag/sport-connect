@@ -69,7 +69,7 @@ def lambda_handler(event, _):
             consents_sql = "SELECT consentId FROM PlayerNeedConsent WHERE playerNeedId = %s"
             cursor.execute(consents_sql, (player_need_id))
             consents_result = cursor.fetchall()
-            consents_ids = [item[0] for item in consents_result]
+            consent_ids = [item[0] for item in consents_result]
             
             response = {
                 'id': player_need_id,
@@ -81,7 +81,7 @@ def lambda_handler(event, _):
                 'about': result[6],
                 'dateAdded': get_utc_datetime_in_local_zone(result[7]),
                 'districtCodes': district_codes,
-                'consentsIds': consents_ids
+                'consentIds': consent_ids
             }
             
             return {
