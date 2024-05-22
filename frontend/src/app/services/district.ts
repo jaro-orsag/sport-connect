@@ -3,6 +3,10 @@ export interface District {
     readonly name: string;
 };
 
+export function getDistrictName(districtCode: number): string {
+    return getDistricts().filter(d => d.code === districtCode)[0]?.name;
+}
+
 export function getDistrictCode(districtName: string): number {
     return getDistricts().filter(d => d.name === districtName)[0]?.code;
 }

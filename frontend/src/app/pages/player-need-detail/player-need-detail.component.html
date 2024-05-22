@@ -1,17 +1,41 @@
-<div *ngIf="playerNeed">
-    <h2>{{playerNeed.playerName}}</h2>
-    <h2>{{playerNeed.about}}</h2>
-    <h2>{{playerNeed.dateAdded}}</h2>
-</div>
-<p>player-need-detail works!</p>
-<p>player-need-detail works!</p>
-<p>player-need-detail works!</p>
-<p>player-need-detail works!</p>
-<p>player-need-detail works!</p>
-<p>player-need-detail works!</p>
-<p>player-need-detail works!</p>
-<p>player-need-detail works!</p>
-<p>player-need-detail works!</p>
-<p>player-need-detail works!</p>
-<p>player-need-detail works!</p>
-<p>player-need-detail works!</p>
+<main class="mat-typography">
+  <mat-card>
+    <mat-card-header><h2>Hľadám tím - zhrnutie</h2></mat-card-header>
+    <mat-card-content *ngIf="playerNeed">
+      <mat-list role="list">
+        <mat-list-item role="listitem">
+          <h4 matListItemTitle>{{ playerNeed.playerName }}</h4>
+          <p matListItemLine>Meno</p>
+        </mat-list-item>
+        <mat-list-item role="listitem">
+          <h4 matListItemTitle>{{ getDistrictNames() }}</h4>
+          <p matListItemLine>Okresy kde chcem hrať</p>
+        </mat-list-item>
+        <mat-list-item role="listitem">
+          <h4 matListItemTitle>{{ playerNeed.availability }}</h4>
+          <p matListItemLine>Kedy chcem hrať</p>
+        </mat-list-item>
+        <mat-list-item role="listitem">
+          <h4 matListItemTitle>{{ playerNeed.email }}</h4>
+          <p matListItemLine>Email</p>
+        </mat-list-item>
+        <mat-list-item role="listitem">
+          <h4 matListItemTitle>{{ playerNeed.phone }}</h4>
+          <p matListItemLine>Telefón</p>
+        </mat-list-item>
+        <mat-list-item role="listitem">
+          <h4 matListItemTitle>{{ playerNeed.about }}</h4>
+          <p matListItemLine>O mne</p>
+        </mat-list-item>
+        <mat-list-item role="listitem">
+          <h4 matListItemTitle>{{ playerNeed.dateAdded | date : "d. L. yyyy o h:mm" }}</h4>
+          <p matListItemLine>Pridané</p>
+        </mat-list-item>
+        <mat-list-item role="listitem">
+          <h4 matListItemTitle>{{ playerNeed.consentIds }}</h4>
+          <p matListItemLine>Súhlasy</p>
+        </mat-list-item>
+      </mat-list>
+    </mat-card-content>
+  </mat-card>
+</main>
