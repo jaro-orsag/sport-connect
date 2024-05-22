@@ -58,7 +58,7 @@ export class PlayerNeedAdditionComponent {
     constructor(
         private formBuilder: FormBuilder, 
         private api: ApiService, 
-        private formInvalidSnackBar: MatSnackBar, 
+        private snackBar: MatSnackBar, 
         private router: Router
     ) {
         this.districtNames = getDistrictNames();
@@ -107,7 +107,7 @@ export class PlayerNeedAdditionComponent {
 
     onSubmit(): void {
         if (this.playerNeedForm.invalid) {
-            this.formInvalidSnackBar.open("Formulár nebol odoslaný. Najskôr vyplň všetky povinné polia.", "OK");
+            this.snackBar.open("Formulár nebol odoslaný. Najskôr vyplň všetky povinné polia.", "OK");
 
             return;
         }

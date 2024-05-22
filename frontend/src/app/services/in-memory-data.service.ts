@@ -9,6 +9,12 @@ export class InMemoryDataService implements InMemoryDbService {
 
     SHOW_COMPLETE_ENTITIES = true;
 
+    SHOULD_RESPOND_404_ON_GET = false;
+    SHOULD_RESPOND_500_ON_GET = false;
+
+    SHOULD_RESPOND_404_ON_POST = false;
+    SHOULD_RESPOND_500_ON_POST = true;
+
     completePlayerNeed = { 
         "id": 1, 
         "uuid": "5f444def-1529-4705-9a9e-a59f66c1cc1e", 
@@ -39,19 +45,51 @@ export class InMemoryDataService implements InMemoryDbService {
         return { "player-needs": playerNeeds, "team-needs": playerNeeds };
     }
 
-    get(requestInfo: RequestInfo): Observable<Response> { return this.respond(requestInfo); }
+    get(requestInfo: RequestInfo): Observable<Response> { 
+        if (this.SHOULD_RESPOND_404_ON_GET) {
+            return this.respond404(requestInfo);
+        }
 
-    post(requestInfo: RequestInfo): Observable<Response> { return this.respond(requestInfo); }
+        if (this.SHOULD_RESPOND_500_ON_GET) {
+            return this.respond500(requestInfo);
+        }
 
-    private respond(requestInfo: RequestInfo): Observable<Response> {
+        return this.respond200(requestInfo); 
+    }
+
+    post(requestInfo: RequestInfo): Observable<Response> { 
+        if (this.SHOULD_RESPOND_404_ON_POST) {
+            return this.respond404(requestInfo);
+        }
+
+        if (this.SHOULD_RESPOND_500_ON_POST) {
+            return this.respond500(requestInfo);
+        }
+
+        return this.respond200(requestInfo); 
+    }
+
+    private respond200(requestInfo: RequestInfo): Observable<Response> {
+        return this.respond(requestInfo, STATUS.OK, 'OK');
+    }
+
+    private respond404(requestInfo: RequestInfo): Observable<Response> {
+        return this.respond(requestInfo, STATUS.NOT_FOUND, 'NOT FOUND');
+    }
+
+    private respond500(requestInfo: RequestInfo): Observable<Response> {
+        return this.respond(requestInfo, STATUS.INTERNAL_SERVER_ERROR, 'INTERNAL_SERVER_ERROR');
+    }
+
+    private respond(requestInfo: RequestInfo, status: number, statusText: string): Observable<Response> {
 
         return requestInfo.utils.createResponse$(() => {
             const {headers, url} = requestInfo;
 
             const options: ResponseOptions = {
                 body: this.SHOW_COMPLETE_ENTITIES ? this.completePlayerNeed : this.incompletePlayerNeed, 
-                status: STATUS.OK, 
-                statusText: 'OK', 
+                status, 
+                statusText, 
                 headers, 
                 url 
             };
