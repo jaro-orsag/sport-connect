@@ -17,9 +17,8 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 def get_current_datetime_in_utc():
-    local_datetime = pytz.timezone("Europe/Bratislava").localize(datetime.now())
-    utc_datetime = local_datetime.astimezone(pytz.utc)
-    return utc_datetime
+
+    return datetime.now(pytz.utc)
 
 def get_db_connection():
     try:
