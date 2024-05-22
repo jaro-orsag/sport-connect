@@ -42,10 +42,10 @@ import { TeamNeed } from '../../services/team-need';
         CommonModule
     ],
     providers: [ApiService],
-    templateUrl: './team-need.component.html',
-    styleUrl: './team-need.component.sass'
+    templateUrl: './team-need-addition.component.html',
+    styleUrl: './team-need-addition.component.sass'
 })
-export class TeamNeedComponent {
+export class TeamNeedAdditionComponent {
     @ViewChild('districtsInput') districtsInput!: ElementRef<HTMLInputElement>;
 
     teamNeedForm: FormGroup;
