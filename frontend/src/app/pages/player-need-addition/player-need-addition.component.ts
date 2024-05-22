@@ -22,7 +22,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Consent } from '../../services/consent';
 
 @Component({
-    selector: 'player-need',
+    selector: 'player-need-addition',
     standalone: true,
     imports: [
         FormsModule,
@@ -44,10 +44,10 @@ import { Consent } from '../../services/consent';
         CommonModule
     ],
     providers: [ApiService],
-    templateUrl: './player-need.component.html',
-    styleUrl: './player-need.component.sass'
+    templateUrl: './player-need-addition.component.html',
+    styleUrl: './player-need-addition.component.sass'
 })
-export class PlayerNeedComponent {
+export class PlayerNeedAdditionComponent {
     districtNames: string[];
     districtsCtrl: FormControl;
     filteredDistricts: Observable<string[]>;
