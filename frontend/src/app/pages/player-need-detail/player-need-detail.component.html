@@ -1,8 +1,16 @@
 <main class="mat-typography">
+  <button
+    class="deactivate-player-need"
+    mat-flat-button
+    color="primary"
+    (click)="openDialog()"
+  >
+    Zrušiť Hľadanie
+  </button>
   <mat-card *ngIf="navigatedFromPlayerNeedAddition" class="congratulations">
     <mat-card-content>
       <p>Gratulujem, v tomto momente sme pre Teba začali hľadať tím.</p>
-      
+
       <p>
         Hľadanie môžeš kedykoľvek odvolať na tejto stránke. Link na ňu sa
         nachádza aj v potvrddzovacom e-maili, ktorý by mal práve pristávať v
@@ -16,9 +24,11 @@
       </p>
     </mat-card-content>
   </mat-card>
-  <mat-card [ngClass]="{ 'summary--inactive': isSummaryInactive() }">
-    <mat-card-header
-      ><mat-card-title>{{getSummaryTitle()}}</mat-card-title>
+  <mat-card
+    class="summary"
+    [ngClass]="{ 'summary--inactive': isSummaryInactive() }"
+  >
+    <mat-card-header><mat-card-title>{{ getSummaryTitle() }}</mat-card-title>
     </mat-card-header>
     <mat-card-content *ngIf="playerNeed">
       <mat-list role="list">

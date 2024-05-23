@@ -1,0 +1,9 @@
+<h2 mat-dialog-title>Určite chceš zrušiť toto hľadanie?</h2>
+<mat-dialog-content>
+  <p>Nebudeš už dostávať informácie o tímoch, ktoré hľadajú hráča.</p>
+  <p>Táto akcia sa nedá vrátiť naspäť. Budeš si ale môcť vytvoriť nové hladanie.</p>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Neruš hľadanie</button>
+  <button mat-button mat-dialog-close="do-deactivate" cdkFocusInitial>Zruš hľadanie</button>
+</mat-dialog-actions>

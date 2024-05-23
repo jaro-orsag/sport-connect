@@ -7,11 +7,14 @@ import { PlayerNeed } from '../../services/player-need';
 import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
 import { getDistrictName } from '../../services/district';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmationDialogComponent } from '../../components/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
     selector: 'app-player-need-detail',
     standalone: true,
-    imports: [CommonModule, MatCardModule, MatListModule],
+    imports: [CommonModule, MatCardModule, MatListModule, MatButtonModule],
     templateUrl: './player-need-detail.component.html',
     styleUrl: './player-need-detail.component.sass'
 })
@@ -20,11 +23,23 @@ export class PlayerNeedDetailComponent implements OnInit {
     navigatedFromPlayerNeedAddition = false;
     loadingFinished = false;
 
-    constructor(private route: ActivatedRoute, private api: ApiService) { }
+    constructor(private route: ActivatedRoute, private api: ApiService, public dialog: MatDialog) { }
 
     ngOnInit() {
         this.getPlayerNeed();
     }
+
+    openDialog(): void {
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+          data: {name: "Jaro", animal: "Zirafa"},
+        });
+    
+        dialogRef.afterClosed().subscribe(result => {
+            if (result === "do-deactivate") {
+                console.log("Going to deactivate player-need");
+            }
+        });
+      }
 
     getPlayerNeed(): void {
         const uuid = this.route.snapshot.paramMap.get('uuid')!;
@@ -55,7 +70,7 @@ export class PlayerNeedDetailComponent implements OnInit {
     getSummaryTitle(): string {
         if (this.playerNeed && this.playerNeed.isActive) {
             return "Hľadám tím - zhrnutie";
-        } 
+        }
 
         if (this.playerNeed && !this.playerNeed.isActive) {
             return "Požiadavka na hľadanie tímu bola zrušená";
