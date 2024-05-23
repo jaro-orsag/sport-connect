@@ -127,6 +127,7 @@ export class PlayerNeedAdditionComponent {
         //      - we were strugglign with autocomplete if districts were complex values rather than strings
         //      - we are mapping coarse-grained checkboxes to fine-grained consents
         return {
+            isActive: true,
             playerName: formModel.playerName,
             availability: formModel.availability,
             email: formModel.email,

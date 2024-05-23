@@ -5,6 +5,7 @@ USE StagingFootballBuddy;
 CREATE TABLE PlayerNeed (
 	id int NOT NULL AUTO_INCREMENT,
     uuid varchar(36) NOT NULL,
+    isActive boolean default true,
     playerName varchar(255) NOT NULL,
     availability varchar(512) NOT NULL,
     email varchar(255) NOT NULL,
@@ -139,7 +140,7 @@ INSERT INTO Consent(id, consentTarget, wording) VALUE (104, "TEAM", "Súhlasím 
 CREATE TABLE PlayerNeedConsent (
     playerNeedId int NOT NULL,
     consentId int NOT NULL,
-    isValid boolean default true,
+    isActive boolean default true,
     dateGranted datetime NOT NULL,
     dateRevoked datetime,
 
@@ -151,6 +152,7 @@ CREATE TABLE PlayerNeedConsent (
 CREATE TABLE TeamNeed (
 	id int NOT NULL AUTO_INCREMENT,
     uuid varchar(36) NOT NULL,
+    isActive boolean default true,
     districtCode int NOT NULL,
     address varchar(512),
     time varchar(512) NOT NULL,
@@ -170,7 +172,7 @@ ADD UNIQUE (uuid);
 CREATE TABLE TeamNeedConsent (
     teamNeedId int NOT NULL,
     consentId int NOT NULL,
-    isValid boolean default true,
+    isActive boolean default true,
     dateGranted datetime NOT NULL,
     dateRevoked datetime,
 

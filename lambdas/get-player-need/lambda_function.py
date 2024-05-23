@@ -16,7 +16,7 @@ logger.setLevel(logging.INFO)
 
 def get_db_connection():
     try:
-        conn = pymysql.connect(host=host, user=user_name, passwd=password, db=db_name, connect_timeout=5)
+        conn = pymysql.connect(host=host, user=user_name, passwd=password, db=db_name, connect_timeout=5, cursorclass=pymysql.cursors.DictCursor)
     except pymysql.MySQLError as e:
         logger.error("ERROR: Unexpected error: Could not connect to MySQL instance.")
         logger.error(e)
@@ -36,6 +36,12 @@ def get_utc_datetime_in_local_zone(dt):
         return local_dt.isoformat()
     return None
 
+def int_to_bool(value):
+    if value == 1:
+        return True
+    else:
+        return False
+    
 def lambda_handler(event, _): 
     path_parameters = event.get('pathParameters')
         
@@ -50,7 +56,7 @@ def lambda_handler(event, _):
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
-            sql = "SELECT id, uuid, playerName, availability, email, phone, about, dateAdded FROM PlayerNeed WHERE uuid=%s"
+            sql = "SELECT id, uuid, isActive, playerName, availability, email, phone, about, dateAdded FROM PlayerNeed WHERE uuid=%s"
             cursor.execute(sql, (uuid))
             result = cursor.fetchone()
             if result is None:
@@ -59,27 +65,28 @@ def lambda_handler(event, _):
                     'body': json.dumps('Record not found')
                 }
             
-            player_need_id = result[0]
+            player_need_id = result['id']
             
             districts_sql = "SELECT districtCode FROM PlayerNeedDistrict WHERE playerNeedId = %s"
             cursor.execute(districts_sql, (player_need_id))
             districts_result = cursor.fetchall()
-            district_codes = [item[0] for item in districts_result]
+            district_codes = [item['districtCode'] for item in districts_result]
             
-            consents_sql = "SELECT consentId FROM PlayerNeedConsent WHERE playerNeedId = %s"
+            consents_sql = "SELECT consentId FROM PlayerNeedConsent WHERE playerNeedId = %s and isActive"
             cursor.execute(consents_sql, (player_need_id))
             consents_result = cursor.fetchall()
-            consent_ids = [item[0] for item in consents_result]
+            consent_ids = [item['consentId'] for item in consents_result]
             
             response = {
                 'id': player_need_id,
-                'uuid': result[1],
-                'playerName': result[2],
-                'availability': result[3],
-                'email': result[4],
-                'phone': result[5],
-                'about': result[6],
-                'dateAdded': get_utc_datetime_in_local_zone(result[7]),
+                'uuid': result['uuid'],
+                'isActive': int_to_bool(result['isActive']),
+                'playerName': result['playerName'],
+                'availability': result['availability'],
+                'email': result['email'],
+                'phone': result['phone'],
+                'about': result['about'],
+                'dateAdded': get_utc_datetime_in_local_zone(result['dateAdded']),
                 'districtCodes': district_codes,
                 'consentIds': consent_ids
             }
@@ -88,12 +95,6 @@ def lambda_handler(event, _):
                 'statusCode': 200,
                 'body': json.dumps(response)
             }
-            
-    except Exception as e:
-        return {
-            'statusCode': 500,
-            'body': json.dumps(f"Error: {str(e)}")
-        }
     finally:
         if conn:
             conn.close()

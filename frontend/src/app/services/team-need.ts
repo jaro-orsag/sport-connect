@@ -1,6 +1,7 @@
 export interface TeamNeed {
     readonly id?: number;
     readonly uuid?: string
+    readonly isActive: boolean;
     readonly districtCode: number;
     readonly address?: string;
     readonly time: string;

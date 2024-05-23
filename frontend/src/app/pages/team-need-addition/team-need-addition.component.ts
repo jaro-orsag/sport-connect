@@ -98,6 +98,7 @@ export class TeamNeedAdditionComponent {
         //      - we were strugglign with autocomplete if districts were complex values rather than strings
         //      - we are mapping coarse-grained checkboxes to fine-grained consents
         return {
+            isActive: true,
             districtCode: getDistrictCode(formModel.districtName),
             address: formModel.address,
             time: formModel.time,

@@ -60,3 +60,22 @@ Deploy lambda by running `lambda_deploy_staging.sh` shell script parameterized b
 ./lambda_deploy_staging.sh add-team-need
 ./lambda_deploy_staging.sh get-player-need
 ```
+
+## FAQ
+### ModuleNotFoundError: No module named 'pymysql'
+Despite everything is set up normally, I'm getting this error when running locally or in aws (any dependency, not just pymysql):
+```sh
+./run_locally.sh add-team-need 
+Going to execute ./add-team-need/local_runner.py
+Traceback (most recent call last):
+  File "/Users/jorsag/src/sport-connect/lambdas/./add-team-need/local_runner.py", line 1, in <module>
+    import lambda_function
+  File "/Users/jorsag/src/sport-connect/lambdas/add-team-need/lambda_function.py", line 3, in <module>
+    import pymysql
+ModuleNotFoundError: No module named 'pymysql'
+```
+
+This helps:
+```sh
+pip cache purge
+```

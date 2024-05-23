@@ -18,6 +18,7 @@ export class InMemoryDataService implements InMemoryDbService {
     completePlayerNeed = { 
         "id": 1, 
         "uuid": "5f444def-1529-4705-9a9e-a59f66c1cc1e", 
+        "isActive": true,
         "playerName": "Jaroslav Ors\u00e1g", 
         "availability": "Môžem keždý druhý utorok o 16:00. Alebo každú stredu na obed.", 
         "email": "jorsag@gmail.com", 
@@ -31,6 +32,7 @@ export class InMemoryDataService implements InMemoryDbService {
     incompletePlayerNeed = {
         "id": 2,
         "uuid": "72c63f2c-6b02-4854-affd-7a41c3bae6de",
+        "isActive": false,
         "playerName": "Jaroslav Ors\u00e1g", 
         "availability": "Môžem keždý druhý utorok o 16:00. Alebo každú stredu na obed.", 
         "email": "jorsag@gmail.com", 

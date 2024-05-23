@@ -3,6 +3,7 @@ import lambda_function
 if __name__ == "__main__":
     mock_body = """
     {
+        "isActive": true,
         "districtCode": 301,
         "address":"ZS Komenskeho 7, Banska Bystrica",
         "time":"kazdy utorok o 18:00",

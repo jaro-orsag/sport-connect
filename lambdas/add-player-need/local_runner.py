@@ -3,6 +3,7 @@ import lambda_function
 if __name__ == "__main__":
     mock_body = """
     {
+        "isActive": true,
         "playerName":"Jaroslav Orság",
         "districtCodes":[
             301,
