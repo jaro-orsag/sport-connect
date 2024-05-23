@@ -1,6 +1,14 @@
 <main class="mat-typography">
+    <mat-card *ngIf="navigatedFromPlayerNeedAddition" class="congratulations">
+        <mat-card-content>
+        <p>Gratulujem, v tomto momente sme pre Teba začali hľadať tím.</p>
+
+        <p>Hľadanie môžeš kedykoľvek odvolať na tejto stránke. Link na ňu sa nachádza aj v potvrddzovacom e-maili, ktorý by mal práve pristávať v Tvojom inboxe.</p>
+
+        <p>Akonáhle pre Teba nájdeme vhodný tím, pošleme Ti ďaľší e-mail. V ňom nájdeš aj kontakt. Na ďaľších detailoch sa už dohodneš s Tvojim novým tímom.</p>
+    </mat-card-content></mat-card>
   <mat-card>
-    <mat-card-header><h2>Hľadám tím - zhrnutie</h2></mat-card-header>
+    <mat-card-header><mat-card-title>Hľadám tím - zhrnutie</mat-card-title></mat-card-header>
     <mat-card-content *ngIf="playerNeed">
       <mat-list role="list">
         <mat-list-item role="listitem">

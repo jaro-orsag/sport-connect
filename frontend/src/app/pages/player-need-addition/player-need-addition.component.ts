@@ -114,7 +114,7 @@ export class PlayerNeedAdditionComponent {
 
         const playerNeed = this._mapFormToPlayerNeed(this.playerNeedForm.value);
         this.api.addPlayerNeed(playerNeed).subscribe(pn => {
-            this.router.navigate(["/player-need", pn.uuid]);
+            this.router.navigate(["/player-need", pn.uuid], { state: { navigatedFromPlayerNeedAddition: true }});
         });
     }
 

@@ -7,13 +7,13 @@ import { Observable } from 'rxjs';
 })
 export class InMemoryDataService implements InMemoryDbService {
 
-    SHOW_COMPLETE_ENTITIES = true;
+    SERVE_COMPLETE_ENTITIES = true;
 
     SHOULD_RESPOND_404_ON_GET = false;
     SHOULD_RESPOND_500_ON_GET = false;
 
     SHOULD_RESPOND_404_ON_POST = false;
-    SHOULD_RESPOND_500_ON_POST = true;
+    SHOULD_RESPOND_500_ON_POST = false;
 
     completePlayerNeed = { 
         "id": 1, 
@@ -87,7 +87,7 @@ export class InMemoryDataService implements InMemoryDbService {
             const {headers, url} = requestInfo;
 
             const options: ResponseOptions = {
-                body: this.SHOW_COMPLETE_ENTITIES ? this.completePlayerNeed : this.incompletePlayerNeed, 
+                body: this.SERVE_COMPLETE_ENTITIES ? this.completePlayerNeed : this.incompletePlayerNeed, 
                 status, 
                 statusText, 
                 headers, 
