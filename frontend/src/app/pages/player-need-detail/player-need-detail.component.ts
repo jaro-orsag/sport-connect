@@ -18,6 +18,7 @@ import { getDistrictName } from '../../services/district';
 export class PlayerNeedDetailComponent implements OnInit {
     playerNeed?: PlayerNeed;
     navigatedFromPlayerNeedAddition = false;
+    loadingFinished = false;
 
     constructor(private route: ActivatedRoute, private api: ApiService) { }
 
@@ -29,8 +30,11 @@ export class PlayerNeedDetailComponent implements OnInit {
         const uuid = this.route.snapshot.paramMap.get('uuid')!;
         this.api.getPlayerNeed(uuid).subscribe(pn => {
             this.playerNeed = pn;
+
             this.navigatedFromPlayerNeedAddition = history.state.navigatedFromPlayerNeedAddition;
             this.cleanUpFlagInHistoryState();
+
+            this.loadingFinished = true;
         });
     }
 
@@ -42,5 +46,25 @@ export class PlayerNeedDetailComponent implements OnInit {
         const newState = { ...history.state };
         delete newState.navigatedFromPlayerNeedAddition;
         history.replaceState(newState, '');
-      }
+    }
+
+    isSummaryInactive() {
+        return this.playerNeed && !this.playerNeed.isActive;
+    }
+
+    getSummaryTitle(): string {
+        if (this.playerNeed && this.playerNeed.isActive) {
+            return "Hľadám tím - zhrnutie";
+        } 
+
+        if (this.playerNeed && !this.playerNeed.isActive) {
+            return "Požiadavka na hľadanie tímu bola zrušená";
+        }
+
+        if (this.loadingFinished && !this.playerNeed) {
+            return "Požiadavka na hľadanie tímu neexistuje, pravdepodobne máš chybný link";
+        }
+
+        return "Načítavam...";
+    }
 }

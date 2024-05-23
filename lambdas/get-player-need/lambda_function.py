@@ -62,7 +62,7 @@ def lambda_handler(event, _):
             if result is None:
                 return {
                     'statusCode': 404,
-                    'body': json.dumps('Record not found')
+                    'body': 'Record not found'
                 }
             
             player_need_id = result['id']

@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { TeamNeed } from './team-need';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { catchError, throwError } from 'rxjs';
+import { of } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
@@ -24,11 +25,11 @@ export class ApiService {
             .pipe(catchError(this.handleError.bind(this)));
     }
 
-    getPlayerNeed(uuid: string): Observable<PlayerNeed> {
+    getPlayerNeed(uuid: string): Observable<PlayerNeed | undefined> {
 
         return this.http
-            .get<PlayerNeed>(`${environment.apiRoot}/player-needs/${uuid}`, this.httpOptions)
-            .pipe(catchError(this.handleError.bind(this)));
+            .get<PlayerNeed | undefined>(`${environment.apiRoot}/player-needs/${uuid}`, this.httpOptions)
+            .pipe(catchError(this.handleErrorForGet.bind(this)));
     }
 
     addTeamNeed(teamNeed: TeamNeed): Observable<TeamNeed> {
@@ -57,5 +58,13 @@ export class ApiService {
         // Return an observable with a user-facing error message.
         return throwError(() => new Error(userFriendlyErrorMessage));
     }
+
+    handleErrorForGet(error: HttpErrorResponse) {
+        if (error.status === 404) {
+
+            return of(undefined);;
+        }
+
+        return this.handleError(error);
+    }
 }
-  
