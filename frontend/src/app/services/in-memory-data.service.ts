@@ -9,6 +9,9 @@ export class InMemoryDataService implements InMemoryDbService {
 
     SERVE_COMPLETE_ENTITIES = true;
 
+    SHOULD_RESPOND_404_ON_PATCH = false;
+    SHOULD_RESPOND_500_ON_PATCH = false;
+
     SHOULD_RESPOND_404_ON_GET = false;
     SHOULD_RESPOND_500_ON_GET = false;
 
@@ -71,8 +74,35 @@ export class InMemoryDataService implements InMemoryDbService {
         return this.respond200(requestInfo); 
     }
 
+    patch(requestInfo: RequestInfo): Observable<null> { 
+        if (this.SHOULD_RESPOND_404_ON_PATCH) {
+            return this.respondWithError(requestInfo, STATUS.NOT_FOUND);
+        }
+
+        if (this.SHOULD_RESPOND_500_ON_PATCH) {
+            return this.respondWithError(requestInfo, STATUS.INTERNAL_SERVER_ERROR);
+        }
+
+        return this.respond204(requestInfo);
+    }
+
     private respond200(requestInfo: RequestInfo): Observable<Response> {
         return this.respond(requestInfo, STATUS.OK, 'OK');
+    }
+
+    private respond204(requestInfo: RequestInfo): Observable<null> {
+        return requestInfo.utils.createResponse$(() => {
+            const {headers, url} = requestInfo;
+
+            const options: ResponseOptions = {
+                status: STATUS.NO_CONTENT, 
+                statusText: 'OK', 
+                headers, 
+                url 
+            };
+
+            return options;
+          });
     }
 
     private respond404(requestInfo: RequestInfo): Observable<Response> {
@@ -92,6 +122,21 @@ export class InMemoryDataService implements InMemoryDbService {
                 body: this.SERVE_COMPLETE_ENTITIES ? this.completePlayerNeed : this.incompletePlayerNeed, 
                 status, 
                 statusText, 
+                headers, 
+                url 
+            };
+
+            return options;
+          });
+    }
+
+    private respondWithError(requestInfo: RequestInfo, status: number): Observable<null> {
+
+        return requestInfo.utils.createResponse$(() => {
+            const {headers, url} = requestInfo;
+
+            const options: ResponseOptions = {
+                status,  
                 headers, 
                 url 
             };

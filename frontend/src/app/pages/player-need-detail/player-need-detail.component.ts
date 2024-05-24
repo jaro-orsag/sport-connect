@@ -37,6 +37,7 @@ export class PlayerNeedDetailComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result === "do-deactivate") {
                 console.log("Going to deactivate player-need");
+                this.deactivatePlayerNeed();
             }
         });
       }
@@ -51,6 +52,11 @@ export class PlayerNeedDetailComponent implements OnInit {
 
             this.loadingFinished = true;
         });
+    }
+
+    deactivatePlayerNeed(): void {
+        console.log("uuid", this.playerNeed!.uuid!);
+        this.api.deactivatePlayerNeed(this.playerNeed!.uuid!).subscribe(response => console.log("response", response));
     }
 
     getDistrictNames(): string {

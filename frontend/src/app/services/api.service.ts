@@ -32,6 +32,13 @@ export class ApiService {
             .pipe(catchError(this.handleErrorForGet.bind(this)));
     }
 
+    deactivatePlayerNeed(uuid: string): Observable<null> {
+
+        return this.http
+            .patch<null>(`${environment.apiRoot}/player-needs/${uuid}/deactivate`, this.httpOptions)
+            .pipe(catchError(this.handleError.bind(this)));
+    }
+
     addTeamNeed(teamNeed: TeamNeed): Observable<TeamNeed> {
 
         return this.http
