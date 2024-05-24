@@ -11,6 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../../components/confirmation-dialog/confirmation-dialog.component';
 import { DetailPageState } from '../../services/detail-page-state';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
     selector: 'app-player-need-detail',
@@ -25,7 +26,7 @@ export class PlayerNeedDetailComponent implements OnInit {
     playerNeed?: PlayerNeed;
     navigatedFromPlayerNeedAddition = false;
 
-    constructor(private route: ActivatedRoute, private api: ApiService, public dialog: MatDialog) { }
+    constructor(private route: ActivatedRoute, private api: ApiService, public dialog: MatDialog, private snackBar: MatSnackBar) { }
 
     ngOnInit() {
         this.loadPlayerNeed();
@@ -88,5 +89,17 @@ export class PlayerNeedDetailComponent implements OnInit {
         }
 
         return "Načítavam...";
+    }
+
+    revokeMarketingConsent() {
+        this.snackBar.open("Odber zrušený", "OK");
+    }
+
+    grantMarketingConsent() {
+        this.snackBar.open("Odber aktivovaný", "OK");
+    }
+
+    isMarketingConsentGranted() {
+        return this.playerNeed && this.playerNeed.consentIds.includes(4);
     }
 }

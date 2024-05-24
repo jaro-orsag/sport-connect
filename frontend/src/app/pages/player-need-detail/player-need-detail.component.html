@@ -1,5 +1,6 @@
 <main class="mat-typography">
-  <button *ngIf="this.pageState == DetailPageState.EXISTS_ACTIVE"
+  <button
+    *ngIf="this.pageState == DetailPageState.EXISTS_ACTIVE"
     class="deactivate-need-button"
     mat-flat-button
     color="primary"
@@ -26,17 +27,24 @@
   </mat-card>
   <mat-card
     class="summary"
-    [ngClass]="{ 
-        'summary--inactive': this.pageState == DetailPageState.EXISTS_NOT_ACTIVE,
-        'summary--error': this.pageState == DetailPageState.DOES_NOT_EXIST 
+    [ngClass]="{
+      'summary--inactive': this.pageState == DetailPageState.EXISTS_NOT_ACTIVE,
+      'summary--error': this.pageState == DetailPageState.DOES_NOT_EXIST
     }"
   >
-    <mat-card-header><mat-card-title>{{ getSummaryTitle() }}</mat-card-title>
+    <mat-card-header
+      ><mat-card-title>{{ getSummaryTitle() }}</mat-card-title>
     </mat-card-header>
     <mat-card-content *ngIf="this.pageState == DetailPageState.DOES_NOT_EXIST">
-        <p>Takéto hľadanie neexistuje, pravdepodobne máš chybný link</p>
-      </mat-card-content>
-    <mat-card-content *ngIf="(this.pageState == DetailPageState.EXISTS_NOT_ACTIVE || this.pageState == DetailPageState.EXISTS_ACTIVE) && playerNeed">
+      <p>Takéto hľadanie neexistuje, pravdepodobne máš chybný link</p>
+    </mat-card-content>
+    <mat-card-content
+      *ngIf="
+        (this.pageState == DetailPageState.EXISTS_NOT_ACTIVE ||
+          this.pageState == DetailPageState.EXISTS_ACTIVE) &&
+        playerNeed
+      "
+    >
       <mat-list role="list">
         <mat-list-item role="listitem">
           <h4 matListItemTitle>{{ playerNeed.playerName }}</h4>
@@ -63,18 +71,44 @@
           <p matListItemLine>O mne</p>
         </mat-list-item>
         <mat-list-item role="listitem">
-            <h4 matListItemTitle>{{ playerNeed.dateAdded | date : "d. L. yyyy o h:mm" }}</h4>
+          <h4 matListItemTitle>{{ playerNeed.dateAdded | date : "d. L. yyyy o h:mm" }}
+          </h4>
           <p matListItemLine>Vytvorené</p>
         </mat-list-item>
-        <mat-list-item role="listitem" *ngIf="this.pageState == DetailPageState.EXISTS_NOT_ACTIVE">
-            <h4 matListItemTitle>{{ playerNeed.dateDeactivated | date : "d. L. yyyy o h:mm" }}</h4>
-            <p matListItemLine>Ukončené</p>
-          </mat-list-item>
-        <mat-list-item role="listitem">
-          <h4 matListItemTitle>{{ playerNeed.consentIds }}</h4>
-          <p matListItemLine>Súhlasy</p>
+        <mat-list-item
+          role="listitem"
+          *ngIf="this.pageState == DetailPageState.EXISTS_NOT_ACTIVE"
+        >
+          <h4 matListItemTitle>{{ playerNeed.dateDeactivated | date : "d. L. yyyy o h:mm" }}
+          </h4>
+          <p matListItemLine>Ukončené</p>
         </mat-list-item>
       </mat-list>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card
+    class="marketing"
+    *ngIf="
+      (this.pageState == DetailPageState.EXISTS_NOT_ACTIVE ||
+        this.pageState == DetailPageState.EXISTS_ACTIVE) &&
+      playerNeed
+    "
+  >
+    <mat-card-header
+      ><mat-card-title>Marketing</mat-card-title>
+    </mat-card-header>
+    <mat-card-content *ngIf="isMarketingConsentGranted()">
+      <p>
+        Máš aktivovaný odber marketingových emailov.
+        <button mat-button color="primary" (click)="revokeMarketingConsent()">Zrušiť.</button>
+      </p>
+    </mat-card-content>
+    <mat-card-content *ngIf="!isMarketingConsentGranted()">
+      <p>
+        Nemáš aktivovaný odber marketingových emailov.
+        <button mat-button color="primary" (click)="grantMarketingConsent()">Aktivovať.</button>
+      </p>
     </mat-card-content>
   </mat-card>
 </main>
