@@ -41,26 +41,20 @@ def lambda_handler(event, _):
     
     uuid = path_parameters['uuid']
     
+    conn = None
     try:
         utc_now = get_current_datetime_in_utc()
         conn = get_db_connection()
         with conn.cursor() as cursor:
-            sql = "UPDATE PlayerNeed SET isActive=false, dateDeactivated=(%s) WHERE uuid=(%s)"
+            sql = "UPDATE PlayerNeed SET isActive=false, dateDeactivated=%s WHERE uuid=%s"
             user_data = (utc_now, uuid)
             cursor.execute(sql, user_data)
             conn.commit()
             cursor.close()
-            
-        with conn.cursor() as cursor:
-            sql = "UPDATE PlayerNeedConsent SET isActive=false, dateRevoked=(%s) WHERE playerNeedId=(SELECT id FROM PlayerNeed where uuid=(%s)) AND consentId in (1,2,3)"
-            user_data = (utc_now, uuid)
-            cursor.execute(sql, user_data)
-            conn.commit()
-            cursor.close()
-            
-            return {
-                'statusCode': 204
-            }
+
+        return {
+            'statusCode': 204
+        }
     finally:
         if conn:
             conn.close()

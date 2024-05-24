@@ -45,12 +45,6 @@ def lambda_handler(event, _):
         'body': '\'districtCodes\' array must be defined and not empty.'
     }
 
-    if 'consentIds' not in body_dict.keys() or not body_dict['consentIds']: 
-        return {
-        'statusCode': 400,
-        'body': '\'consentIds\' array must be defined and not empty.'
-    }
-
     if ('playerName' not in body_dict.keys() or not body_dict['playerName']
         or 'availability' not in body_dict.keys() or not body_dict['availability']
         or 'email' not in body_dict.keys() or not body_dict['email']): 
@@ -62,11 +56,12 @@ def lambda_handler(event, _):
         
     utc_now = get_current_datetime_in_utc()
     
+    conn = None
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
-            sql = "INSERT INTO PlayerNeed (uuid, isActive, playerName, availability, email, phone, about, dateAdded) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-            user_data = (body_dict['uuid'], body_dict['isActive'], body_dict['playerName'], body_dict['availability'], body_dict['email'], body_dict['phone'], body_dict['about'], utc_now)
+            sql = "INSERT INTO PlayerNeed (uuid, isActive, playerName, availability, email, phone, about, isMarketingConsentGranted, dateMarketingConsentChanged, dateAdded) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            user_data = (body_dict['uuid'], body_dict['isActive'], body_dict['playerName'], body_dict['availability'], body_dict['email'], body_dict['phone'], body_dict['about'], body_dict['isMarketingConsentGranted'], utc_now, utc_now)
             cursor.execute(sql, user_data)
             playerNeedId = int(cursor.lastrowid)
             conn.commit()
@@ -81,17 +76,11 @@ def lambda_handler(event, _):
             conn.commit()
             cursor.close()
 
-        playerNeedConsents = [(playerNeedId, consentId, utc_now) for consentId in body_dict['consentIds']]
-        with conn.cursor() as cursor:
-            sql = "INSERT INTO PlayerNeedConsent (playerNeedId, consentId, dateGranted) VALUES (%s, %s, %s)"
-            cursor.executemany(sql, playerNeedConsents)
-            conn.commit()
-            cursor.close()
-
         return {
             'statusCode': 200,
             'body': json.dumps(body_dict)
         }
+        
     finally:
         if conn:
             conn.close()

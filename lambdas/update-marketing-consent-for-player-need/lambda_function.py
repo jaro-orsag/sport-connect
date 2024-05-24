@@ -57,40 +57,22 @@ def lambda_handler(event, _):
             'body': f'\'action\' must be either \'{GRANT_ACTION}\' or \'{REVOKE_ACTION}\'.'
         }
     
+    conn = None
     try:
         utc_now = get_current_datetime_in_utc()
         conn = get_db_connection()
             
         with conn.cursor() as cursor:
-            dateColumn = 'dateGranted' if action==GRANT_ACTION else 'dateRevoked'
-            sql = f"UPDATE PlayerNeedConsent SET isActive=(%s), {dateColumn}=(%s) WHERE playerNeedId=(SELECT id FROM PlayerNeed where uuid=(%s)) AND consentId=4"
-            isActive = True if action==GRANT_ACTION else False            
-            user_data = (isActive, utc_now, uuid)
+            sql = "UPDATE PlayerNeed SET isMarketingConsentGranted=%s, dateMarketingConsentChanged=%s WHERE uuid=%s"
+            isGranted = True if action==GRANT_ACTION else False            
+            user_data = (isGranted, utc_now, uuid)
             cursor.execute(sql, user_data)
             conn.commit()
-            rowcount = cursor.rowcount
             cursor.close()
             
-            if rowcount > 1:
-                msg = 'more than 1 consent found'
-                logger.warn(msg)
-                return {
-                    'statusCode': 500,
-                    'body': msg
-                }
-           
-            if rowcount == 0:
-                msg = 'consent not found'
-                logger.warn(msg)
-                return {
-                    'statusCode': 404,
-                    'body': msg
-                }
-
             return {
                 'statusCode': 204
             }
-
 
     finally:
         if conn:

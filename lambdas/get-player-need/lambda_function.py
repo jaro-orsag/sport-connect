@@ -53,10 +53,11 @@ def lambda_handler(event, _):
     
     uuid = path_parameters['uuid']
     
+    conn = None
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
-            sql = "SELECT id, uuid, isActive, dateDeactivated, playerName, availability, email, phone, about, dateAdded FROM PlayerNeed WHERE uuid=%s"
+            sql = "SELECT id, uuid, isActive, dateDeactivated, playerName, availability, email, phone, about, isMarketingConsentGranted, dateMarketingConsentChanged, dateAdded FROM PlayerNeed WHERE uuid=%s"
             cursor.execute(sql, (uuid))
             result = cursor.fetchone()
             if result is None:
@@ -72,11 +73,6 @@ def lambda_handler(event, _):
             districts_result = cursor.fetchall()
             district_codes = [item['districtCode'] for item in districts_result]
             
-            consents_sql = "SELECT consentId FROM PlayerNeedConsent WHERE playerNeedId = %s and isActive"
-            cursor.execute(consents_sql, (player_need_id))
-            consents_result = cursor.fetchall()
-            consent_ids = [item['consentId'] for item in consents_result]
-            
             response = {
                 'id': player_need_id,
                 'uuid': result['uuid'],
@@ -87,9 +83,11 @@ def lambda_handler(event, _):
                 'email': result['email'],
                 'phone': result['phone'],
                 'about': result['about'],
+                'isMarketingConsentGranted': result['isMarketingConsentGranted'],
+                'dateMarketingConsentChanged': get_utc_datetime_in_local_zone(result['dateMarketingConsentChanged']),
                 'dateAdded': get_utc_datetime_in_local_zone(result['dateAdded']),
                 'districtCodes': district_codes,
-                'consentIds': consent_ids
+                
             }
             
             return {
