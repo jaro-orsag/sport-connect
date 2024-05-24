@@ -56,7 +56,7 @@ def lambda_handler(event, _):
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
-            sql = "SELECT id, uuid, isActive, playerName, availability, email, phone, about, dateAdded FROM PlayerNeed WHERE uuid=%s"
+            sql = "SELECT id, uuid, isActive, dateDeactivated, playerName, availability, email, phone, about, dateAdded FROM PlayerNeed WHERE uuid=%s"
             cursor.execute(sql, (uuid))
             result = cursor.fetchone()
             if result is None:
@@ -81,6 +81,7 @@ def lambda_handler(event, _):
                 'id': player_need_id,
                 'uuid': result['uuid'],
                 'isActive': int_to_bool(result['isActive']),
+                'dateDeactivated': get_utc_datetime_in_local_zone(result['dateDeactivated']),
                 'playerName': result['playerName'],
                 'availability': result['availability'],
                 'email': result['email'],
