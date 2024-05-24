@@ -54,7 +54,7 @@ export class PlayerNeedDetailComponent implements OnInit {
     }
 
     deactivatePlayerNeed(): void {
-        this.api.deactivatePlayerNeed(this.playerNeed!.uuid!).subscribe(response => console.log("response", response));
+        this.api.deactivatePlayerNeed(this.playerNeed!.uuid!).subscribe(_ => this.getPlayerNeed());
     }
 
     getDistrictNames(): string {
