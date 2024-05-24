@@ -30,7 +30,7 @@ export class InMemoryDataService implements InMemoryDbService {
         "about": "Mám 20 rokov a futbal hrávam od ôsmych rokov. Hral som aj profesionálne za Slovan BA. Určite si budeme rozumieť.", 
         "dateAdded": "2024-05-22T11:00:37+02:00", 
         "districtCodes": [301, 302, 303],
-        "isMarketingConsentGranted": false,
+        "isMarketingConsentGranted": true,
         "dateMarketingConsentChanged": "2024-05-22T11:00:37+02:00",
     };
 

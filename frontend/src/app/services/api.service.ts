@@ -39,6 +39,16 @@ export class ApiService {
             .pipe(catchError(this.handleError.bind(this)));
     }
 
+    updatePlayerNeedConsent(uuid: string, grant: boolean): Observable<null> {
+        const updateConsentAction = {
+            "action": grant ? "grant" : "revoke"
+        };
+
+        return this.http
+            .patch<null>(`${environment.apiRoot}/player-needs/${uuid}/marketing-consent`, updateConsentAction, this.httpOptions)
+            .pipe(catchError(this.handleError.bind(this)));
+    }
+
     addTeamNeed(teamNeed: TeamNeed): Observable<TeamNeed> {
 
         return this.http

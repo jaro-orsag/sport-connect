@@ -92,10 +92,16 @@ export class PlayerNeedDetailComponent implements OnInit {
     }
 
     revokeMarketingConsent() {
-        this.snackBar.open("Odber zrušený", "OK");
+        this.api.updatePlayerNeedConsent(this.playerNeed!.uuid!, false).subscribe(_ => {
+            this.snackBar.open("Odber bol zrušený", "OK");
+            this.loadPlayerNeed()
+        });
     }
 
     grantMarketingConsent() {
-        this.snackBar.open("Odber aktivovaný", "OK");
+        this.api.updatePlayerNeedConsent(this.playerNeed!.uuid!, true).subscribe(_ => {
+            this.snackBar.open("Odber bol aktivovaný", "OK");
+            this.loadPlayerNeed()
+        });
     }
 }
