@@ -98,8 +98,4 @@ export class PlayerNeedDetailComponent implements OnInit {
     grantMarketingConsent() {
         this.snackBar.open("Odber aktivovaný", "OK");
     }
-
-    isMarketingConsentGranted() {
-        return this.playerNeed && this.playerNeed.consentIds.includes(4);
-    }
 }

@@ -15,7 +15,6 @@ import { MatListModule } from '@angular/material/list';
 import { ApiService } from '../../services/api.service';
 import { CommonModule } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Consent } from '../../services/consent';
 import { getDistrictCode, getDistrictNames } from '../../services/district';
 import { TeamNeed } from '../../services/team-need';
 
@@ -54,8 +53,6 @@ export class TeamNeedAdditionComponent {
     @ViewChild('districtInput') districtInput!: ElementRef<HTMLInputElement>;
     options: string[] = getDistrictNames();
     filteredDistricts: string[];
-
-
 
     constructor(private formBuilder: FormBuilder, private api: ApiService, private formInvalidSnackBar: MatSnackBar) {
         this.filteredDistricts = this.options.slice();
@@ -106,16 +103,7 @@ export class TeamNeedAdditionComponent {
             email: formModel.email,
             phone: formModel.phone,
             about: formModel.about,
-            consentIds: this._mapCheckboxesToConsents(formModel.generalConditions, formModel.thirdPartyMarketing)
+            isMarketingConsentGranted: formModel.thirdPartyMarketing
         }
-    }
-
-    private _mapCheckboxesToConsents(generalConditions: boolean, thirdPartyMarketing: boolean): number[] {
-        const generalConditionsConsents = generalConditions
-            ? [Consent.TEAM_STORE_DATA, Consent.TEAM_PROVIDE_DATA_TO_TEAMS, Consent.TEAM_AGE]
-            : [];
-        const thirdPartyMarketingConsents = thirdPartyMarketing ? [Consent.TEAM_PROVIDE_DATA_TO_THIRD_PARTIES] : [];
-
-        return generalConditionsConsents.concat(thirdPartyMarketingConsents);
     }
 }

@@ -12,7 +12,7 @@ export class InMemoryDataService implements InMemoryDbService {
     SHOULD_RESPOND_404_ON_PATCH = false;
     SHOULD_RESPOND_500_ON_PATCH = false;
 
-    SHOULD_RESPOND_404_ON_GET = true;
+    SHOULD_RESPOND_404_ON_GET = false;
     SHOULD_RESPOND_500_ON_GET = false;
 
     SHOULD_RESPOND_404_ON_POST = false;
@@ -21,7 +21,7 @@ export class InMemoryDataService implements InMemoryDbService {
     completePlayerNeed = { 
         "id": 1, 
         "uuid": "5f444def-1529-4705-9a9e-a59f66c1cc1e", 
-        "isActive": true,
+        "isActive": false,
         "dateDeactivated": "2024-05-25T11:05:40+02:00", 
         "playerName": "Jaroslav Ors\u00e1g", 
         "availability": "Môžem každý druhý utorok o 16:00. Alebo každú stredu na obed.", 
@@ -29,8 +29,9 @@ export class InMemoryDataService implements InMemoryDbService {
         "phone": "+421917777614", 
         "about": "Mám 20 rokov a futbal hrávam od ôsmych rokov. Hral som aj profesionálne za Slovan BA. Určite si budeme rozumieť.", 
         "dateAdded": "2024-05-22T11:00:37+02:00", 
-        "districtCodes": [301, 302, 303], 
-        "consentIds": [1, 2, 3, 4] 
+        "districtCodes": [301, 302, 303],
+        "isMarketingConsentGranted": false,
+        "dateMarketingConsentChanged": "2024-05-22T11:00:37+02:00",
     };
 
     incompletePlayerNeed = {
@@ -43,7 +44,8 @@ export class InMemoryDataService implements InMemoryDbService {
         "about": "", 
         "dateAdded": "2024-05-22T11:00:37+02:00", 
         "districtCodes": [301, 302, 303], 
-        "consentIds": [1, 2, 3, 4] 
+        "isMarketingConsentGranted": true,
+        "dateMarketingConsentChanged": "2024-05-22T11:00:37+02:00",
     };
 
     createDb() {

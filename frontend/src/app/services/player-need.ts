@@ -9,6 +9,7 @@ export interface PlayerNeed {
     readonly email: string;
     readonly phone?: string;
     readonly about?: string;
+    readonly isMarketingConsentGranted: boolean;
+    readonly dateMarketingConsentChanged?: Date;
     readonly dateAdded?: Date;
-    readonly consentIds: Array<number>;
 };

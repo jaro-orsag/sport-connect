@@ -19,7 +19,6 @@ import { PlayerNeed } from '../../services/player-need';
 import { getDistrictCode, getDistrictNames } from '../../services/district';
 import { CommonModule } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Consent } from '../../services/consent';
 
 @Component({
     selector: 'player-need-addition',
@@ -134,21 +133,12 @@ export class PlayerNeedAdditionComponent {
             phone: formModel.phone,
             about: formModel.about,
             districtCodes: this._mapDistrictNamesToDistrictCodes(formModel.districtNames),
-            consentIds: this._mapCheckboxesToConsents(formModel.generalConditions, formModel.thirdPartyMarketing)
+            isMarketingConsentGranted: formModel.thirdPartyMarketing
         }
     }
 
     private _mapDistrictNamesToDistrictCodes(districtNames: string[]): number[] {
         return districtNames.map(getDistrictCode);
-    }
-
-    private _mapCheckboxesToConsents(generalConditions: boolean, thirdPartyMarketing: boolean): number[] {
-        const generalConditionsConsents = generalConditions
-            ? [Consent.PLAYER_STORE_DATA, Consent.PLAYER_PROVIDE_DATA_TO_TEAMS, Consent.PLAYER_AGE]
-            : [];
-        const thirdPartyMarketingConsents = thirdPartyMarketing ? [Consent.PLAYER_PROVIDE_DATA_TO_THIRD_PARTIES] : [];
-
-        return generalConditionsConsents.concat(thirdPartyMarketingConsents);
     }
 
     private _filter(value: string): string[] {
