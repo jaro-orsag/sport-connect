@@ -67,8 +67,8 @@ export class PlayerNeedDetailComponent implements OnInit {
         history.replaceState(newState, '');
     }
 
-    isSummaryInactive() {
-        return this.playerNeed && !this.playerNeed.isActive;
+    isPlayerNeedActive() {
+        return this.playerNeed && this.playerNeed.isActive;
     }
 
     getSummaryTitle(): string {
@@ -81,7 +81,7 @@ export class PlayerNeedDetailComponent implements OnInit {
         }
 
         if (this.loadingFinished && !this.playerNeed) {
-            return "Hľadanie tímu neexistuje, pravdepodobne máš chybný link";
+            return "Takéto hľadanie neexistuje, pravdepodobne máš chybný link";
         }
 
         return "Načítavam...";

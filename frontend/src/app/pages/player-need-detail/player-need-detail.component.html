@@ -1,5 +1,5 @@
 <main class="mat-typography">
-  <button
+  <button *ngIf="isPlayerNeedActive()"
     class="deactivate-player-need"
     mat-flat-button
     color="primary"
@@ -26,7 +26,7 @@
   </mat-card>
   <mat-card
     class="summary"
-    [ngClass]="{ 'summary--inactive': isSummaryInactive() }"
+    [ngClass]="{ 'summary--inactive': !isPlayerNeedActive() }"
   >
     <mat-card-header><mat-card-title>{{ getSummaryTitle() }}</mat-card-title>
     </mat-card-header>
