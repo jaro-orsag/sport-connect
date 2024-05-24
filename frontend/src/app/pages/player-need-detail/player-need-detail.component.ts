@@ -31,12 +31,11 @@ export class PlayerNeedDetailComponent implements OnInit {
 
     openDialog(): void {
         const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-          data: {name: "Jaro", animal: "Zirafa"},
+          data: {scenarioSpecificText: "Už nebudeš dostávať informácie o tímoch, ktoré hľadajú hráča."},
         });
     
         dialogRef.afterClosed().subscribe(result => {
             if (result === "do-deactivate") {
-                console.log("Going to deactivate player-need");
                 this.deactivatePlayerNeed();
             }
         });
@@ -55,7 +54,6 @@ export class PlayerNeedDetailComponent implements OnInit {
     }
 
     deactivatePlayerNeed(): void {
-        console.log("uuid", this.playerNeed!.uuid!);
         this.api.deactivatePlayerNeed(this.playerNeed!.uuid!).subscribe(response => console.log("response", response));
     }
 
@@ -75,15 +73,15 @@ export class PlayerNeedDetailComponent implements OnInit {
 
     getSummaryTitle(): string {
         if (this.playerNeed && this.playerNeed.isActive) {
-            return "Hľadám tím - zhrnutie";
+            return "Hľadanie tímu";
         }
 
         if (this.playerNeed && !this.playerNeed.isActive) {
-            return "Požiadavka na hľadanie tímu bola zrušená";
+            return "Hľadanie tímu bolo ukončené";
         }
 
         if (this.loadingFinished && !this.playerNeed) {
-            return "Požiadavka na hľadanie tímu neexistuje, pravdepodobne máš chybný link";
+            return "Hľadanie tímu neexistuje, pravdepodobne máš chybný link";
         }
 
         return "Načítavam...";
