@@ -1,5 +1,5 @@
 <main class="mat-typography">
-  <button *ngIf="isPlayerNeedActive()"
+  <button *ngIf="this.pageState == DetailPageState.EXISTS_ACTIVE"
     class="deactivate-player-need"
     mat-flat-button
     color="primary"
@@ -26,11 +26,11 @@
   </mat-card>
   <mat-card
     class="summary"
-    [ngClass]="{ 'summary--inactive': !isPlayerNeedActive() }"
+    [ngClass]="{ 'summary--inactive': this.pageState == DetailPageState.EXISTS_NOT_ACTIVE }"
   >
     <mat-card-header><mat-card-title>{{ getSummaryTitle() }}</mat-card-title>
     </mat-card-header>
-    <mat-card-content *ngIf="playerNeed">
+    <mat-card-content *ngIf="(this.pageState == DetailPageState.EXISTS_NOT_ACTIVE || this.pageState == DetailPageState.EXISTS_ACTIVE) && playerNeed">
       <mat-list role="list">
         <mat-list-item role="listitem">
           <h4 matListItemTitle>{{ playerNeed.playerName }}</h4>
@@ -57,11 +57,13 @@
           <p matListItemLine>O mne</p>
         </mat-list-item>
         <mat-list-item role="listitem">
-          <h4 matListItemTitle>
-            {{ playerNeed.dateAdded | date : "d. L. yyyy o h:mm" }}
-          </h4>
-          <p matListItemLine>Pridané</p>
+            <h4 matListItemTitle>{{ playerNeed.dateAdded | date : "d. L. yyyy o h:mm" }}</h4>
+          <p matListItemLine>Vytvorené</p>
         </mat-list-item>
+        <mat-list-item role="listitem" *ngIf="this.pageState == DetailPageState.EXISTS_NOT_ACTIVE">
+            <h4 matListItemTitle>{{ playerNeed.dateDeactivated | date : "d. L. yyyy o h:mm" }}</h4>
+            <p matListItemLine>Ukončené</p>
+          </mat-list-item>
         <mat-list-item role="listitem">
           <h4 matListItemTitle>{{ playerNeed.consentIds }}</h4>
           <p matListItemLine>Súhlasy</p>

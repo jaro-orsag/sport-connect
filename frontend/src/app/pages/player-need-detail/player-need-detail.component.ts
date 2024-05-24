@@ -10,6 +10,7 @@ import { getDistrictName } from '../../services/district';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../../components/confirmation-dialog/confirmation-dialog.component';
+import { DetailPageState } from '../../services/detail-page-state';
 
 @Component({
     selector: 'app-player-need-detail',
@@ -19,29 +20,31 @@ import { ConfirmationDialogComponent } from '../../components/confirmation-dialo
     styleUrl: './player-need-detail.component.sass'
 })
 export class PlayerNeedDetailComponent implements OnInit {
+    DetailPageState = DetailPageState;
+    pageState: DetailPageState = DetailPageState.LOADING;
     playerNeed?: PlayerNeed;
     navigatedFromPlayerNeedAddition = false;
-    loadingFinished = false;
 
     constructor(private route: ActivatedRoute, private api: ApiService, public dialog: MatDialog) { }
 
     ngOnInit() {
-        this.getPlayerNeed();
+        this.loadPlayerNeed();
     }
 
     openDialog(): void {
         const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-          data: {scenarioSpecificText: "Už nebudeš dostávať informácie o tímoch, ktoré hľadajú hráča."},
+            data: { scenarioSpecificText: "Už nebudeš dostávať informácie o tímoch, ktoré hľadajú hráča." },
         });
-    
+
         dialogRef.afterClosed().subscribe(result => {
             if (result === "do-deactivate") {
                 this.deactivatePlayerNeed();
             }
         });
-      }
+    }
 
-    getPlayerNeed(): void {
+    loadPlayerNeed(): void {
+        this.pageState = DetailPageState.LOADING;
         const uuid = this.route.snapshot.paramMap.get('uuid')!;
         this.api.getPlayerNeed(uuid).subscribe(pn => {
             this.playerNeed = pn;
@@ -49,12 +52,12 @@ export class PlayerNeedDetailComponent implements OnInit {
             this.navigatedFromPlayerNeedAddition = history.state.navigatedFromPlayerNeedAddition;
             this.cleanUpFlagInHistoryState();
 
-            this.loadingFinished = true;
+            this.pageState = this.playerNeed!.isActive ? DetailPageState.EXISTS_ACTIVE : DetailPageState.EXISTS_NOT_ACTIVE;
         });
     }
 
     deactivatePlayerNeed(): void {
-        this.api.deactivatePlayerNeed(this.playerNeed!.uuid!).subscribe(_ => this.getPlayerNeed());
+        this.api.deactivatePlayerNeed(this.playerNeed!.uuid!).subscribe(_ => this.loadPlayerNeed());
     }
 
     getDistrictNames(): string {
@@ -67,20 +70,16 @@ export class PlayerNeedDetailComponent implements OnInit {
         history.replaceState(newState, '');
     }
 
-    isPlayerNeedActive() {
-        return this.playerNeed && this.playerNeed.isActive;
-    }
-
     getSummaryTitle(): string {
-        if (this.playerNeed && this.playerNeed.isActive) {
+        if (this.pageState == DetailPageState.EXISTS_ACTIVE) {
             return "Hľadanie tímu";
         }
 
-        if (this.playerNeed && !this.playerNeed.isActive) {
+        if (this.pageState == DetailPageState.EXISTS_NOT_ACTIVE) {
             return "Hľadanie tímu bolo ukončené";
         }
 
-        if (this.loadingFinished && !this.playerNeed) {
+        if (this.pageState == DetailPageState.DOES_NOT_EXIST) {
             return "Takéto hľadanie neexistuje, pravdepodobne máš chybný link";
         }
 

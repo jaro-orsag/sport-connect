@@ -2,6 +2,7 @@ export interface PlayerNeed {
     readonly id?: number;
     readonly uuid?: string;
     readonly isActive: boolean;
+    readonly dateDeactivated?: Date;
     readonly playerName: string;
     readonly districtCodes: Array<number>;
     readonly availability: string;
