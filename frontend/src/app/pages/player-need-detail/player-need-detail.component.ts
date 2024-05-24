@@ -84,7 +84,7 @@ export class PlayerNeedDetailComponent implements OnInit {
         }
 
         if (this.pageState == DetailPageState.DOES_NOT_EXIST) {
-            return "Takéto hľadanie neexistuje, pravdepodobne máš chybný link";
+            return "Chyba";
         }
 
         return "Načítavam...";

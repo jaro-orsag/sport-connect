@@ -12,7 +12,7 @@ export class InMemoryDataService implements InMemoryDbService {
     SHOULD_RESPOND_404_ON_PATCH = false;
     SHOULD_RESPOND_500_ON_PATCH = false;
 
-    SHOULD_RESPOND_404_ON_GET = false;
+    SHOULD_RESPOND_404_ON_GET = true;
     SHOULD_RESPOND_500_ON_GET = false;
 
     SHOULD_RESPOND_404_ON_POST = false;
