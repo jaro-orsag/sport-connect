@@ -50,7 +50,9 @@ Also see then next section "Running Locally".
     ```sh
     ./run_locally.sh add-player-need
     ./run_locally.sh add-team-need
+    ./run_locally.sh deactivate-player-need
     ./run_locally.sh get-player-need
+    ./run_locally.sh update-marketing-consent-for-player-need
     ```
 
 ## Deploying to AWS staging
@@ -58,7 +60,9 @@ Deploy lambda by running `lambda_deploy_staging.sh` shell script parameterized b
 ```sh
 ./lambda_deploy_staging.sh add-player-need
 ./lambda_deploy_staging.sh add-team-need
+./lambda_deploy_staging.sh deactivate-player-need
 ./lambda_deploy_staging.sh get-player-need
+./lambda_deploy_staging.sh update-marketing-consent-for-player-need
 ```
 
 ## FAQ
