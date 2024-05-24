@@ -52,7 +52,11 @@ export class PlayerNeedDetailComponent implements OnInit {
             this.navigatedFromPlayerNeedAddition = history.state.navigatedFromPlayerNeedAddition;
             this.cleanUpFlagInHistoryState();
 
-            this.pageState = this.playerNeed!.isActive ? DetailPageState.EXISTS_ACTIVE : DetailPageState.EXISTS_NOT_ACTIVE;
+            if (this.playerNeed) {
+                this.pageState = this.playerNeed.isActive ? DetailPageState.EXISTS_ACTIVE : DetailPageState.EXISTS_NOT_ACTIVE;
+            } else {
+                this.pageState = DetailPageState.DOES_NOT_EXIST;
+            }
         });
     }
 
