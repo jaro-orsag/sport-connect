@@ -12,11 +12,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../../components/confirmation-dialog/confirmation-dialog.component';
 import { DetailPageState } from '../../services/detail-page-state';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { NeedSummaryListItemComponent } from '../../components/need-summary-list-item/need-summary-list-item.component';
 
 @Component({
     selector: 'app-player-need-detail',
     standalone: true,
-    imports: [CommonModule, MatCardModule, MatListModule, MatButtonModule],
+    imports: [CommonModule, MatCardModule, MatListModule, MatButtonModule, NeedSummaryListItemComponent],
     templateUrl: './player-need-detail.component.html',
     styleUrl: './player-need-detail.component.sass'
 })
