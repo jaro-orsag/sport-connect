@@ -82,7 +82,7 @@ export class PlayerNeedDetailComponent implements OnInit {
         }
 
         if (this.pageState == DetailPageState.EXISTS_NOT_ACTIVE) {
-            return "Hľadanie tímu bolo ukončené";
+            return "Hľadanie tímu bolo zrušené";
         }
 
         if (this.pageState == DetailPageState.DOES_NOT_EXIST) {

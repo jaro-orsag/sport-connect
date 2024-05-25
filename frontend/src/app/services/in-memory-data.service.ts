@@ -21,7 +21,7 @@ export class InMemoryDataService implements InMemoryDbService {
     completePlayerNeed = { 
         "id": 1, 
         "uuid": "5f444def-1529-4705-9a9e-a59f66c1cc1e", 
-        "isActive": false,
+        "isActive": true,
         "dateDeactivated": "2024-05-25T11:05:40+02:00", 
         "playerName": "Jaroslav Ors\u00e1g", 
         "availability": "Môžem každý druhý utorok o 16:00. Alebo každú stredu na obed.", 
