@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { OnInit } from '@angular/core';
 import { DeactivateNeedComponent } from '../../components/need-detail/deactivate-need/deactivate-need.component';
 import { DetailPageState } from '../../services/detail-page-state';
 import { TeamNeed } from '../../services/team-need';
@@ -14,12 +15,17 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-team-need-detail',
   standalone: true,
-  imports: [DeactivateNeedComponent, CongratulationsComponent, NeedSummaryComponent, MarketingConsentComponent],
+  imports: [
+    DeactivateNeedComponent, 
+    CongratulationsComponent, 
+    NeedSummaryComponent, 
+    MarketingConsentComponent
+],
   providers: [DatePipe],
   templateUrl: './team-need-detail.component.html',
   styleUrl: './team-need-detail.component.sass'
 })
-export class TeamNeedDetailComponent {
+export class TeamNeedDetailComponent implements OnInit {
     DetailPageState = DetailPageState;
     pageState: DetailPageState = DetailPageState.LOADING;
     teamNeed?: TeamNeed;

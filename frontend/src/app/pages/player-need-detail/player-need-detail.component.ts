@@ -4,10 +4,8 @@ import { ApiService } from '../../services/api.service';
 import { OnInit } from '@angular/core';
 import { PlayerNeed } from '../../services/player-need';
 import { getDistrictName } from '../../services/district';
-import { MatDialog } from '@angular/material/dialog';
 import { DetailPageState } from '../../services/detail-page-state';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { NeedSummaryListItemComponent } from '../../components/need-summary-list-item/need-summary-list-item.component';
 import { DeactivateNeedComponent } from '../../components/need-detail/deactivate-need/deactivate-need.component';
 import { CongratulationsComponent } from '../../components/need-detail/congratulations/congratulations.component';
 import { NeedSummaryComponent } from '../../components/need-detail/need-summary/need-summary.component';
@@ -17,8 +15,7 @@ import { MarketingConsentComponent } from '../../components/need-detail/marketin
 @Component({
     selector: 'app-player-need-detail',
     standalone: true,
-    imports: [
-        NeedSummaryListItemComponent, 
+    imports: [ 
         DeactivateNeedComponent, 
         CongratulationsComponent, 
         NeedSummaryComponent, 
@@ -37,7 +34,6 @@ export class PlayerNeedDetailComponent implements OnInit {
     constructor(
         private route: ActivatedRoute, 
         private api: ApiService, 
-        public dialog: MatDialog, 
         private snackBar: MatSnackBar, 
         private datePipe: DatePipe
     ) { }
