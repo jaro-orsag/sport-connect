@@ -9,15 +9,15 @@ import { MatListModule } from '@angular/material/list';
 import { getDistrictName } from '../../services/district';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
-import { ConfirmationDialogComponent } from '../../components/confirmation-dialog/confirmation-dialog.component';
 import { DetailPageState } from '../../services/detail-page-state';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { NeedSummaryListItemComponent } from '../../components/need-summary-list-item/need-summary-list-item.component';
+import { DeactivateNeedComponent } from '../../components/need-detail/deactivate-need/deactivate-need.component';
 
 @Component({
     selector: 'app-player-need-detail',
     standalone: true,
-    imports: [CommonModule, MatCardModule, MatListModule, MatButtonModule, NeedSummaryListItemComponent],
+    imports: [CommonModule, MatCardModule, MatListModule, MatButtonModule, NeedSummaryListItemComponent, DeactivateNeedComponent],
     templateUrl: './player-need-detail.component.html',
     styleUrl: './player-need-detail.component.sass'
 })
@@ -31,18 +31,6 @@ export class PlayerNeedDetailComponent implements OnInit {
 
     ngOnInit() {
         this.loadPlayerNeed();
-    }
-
-    openDialog(): void {
-        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-            data: { scenarioSpecificText: "Už nebudeš dostávať informácie o tímoch, ktoré hľadajú hráča." },
-        });
-
-        dialogRef.afterClosed().subscribe(result => {
-            if (result === "do-deactivate") {
-                this.deactivatePlayerNeed();
-            }
-        });
     }
 
     loadPlayerNeed(): void {

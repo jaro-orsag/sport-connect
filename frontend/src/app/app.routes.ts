@@ -6,6 +6,7 @@ import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.com
 import { TermsAndConditionsComponent } from './pages/terms-and-conditions/terms-and-conditions.component';
 import { AboutUsComponent } from './pages/about-us/about-us.component';
 import { LandingComponent } from './pages/landing/landing.component';
+import { TeamNeedDetailComponent } from './pages/team-need-detail/team-need-detail.component';
 
 export const menuRoutes: Routes = [
     { path: 'player-need', component: PlayerNeedAdditionComponent, data: [{'title': 'Hľadám tím'}] },
@@ -17,6 +18,7 @@ export const menuRoutes: Routes = [
 export const routes: Routes = [
     ...menuRoutes,
     { path: 'player-need/:uuid', component: PlayerNeedDetailComponent },
+    { path: 'team-need/:uuid', component: TeamNeedDetailComponent },
     { path: '', component: LandingComponent },
     { path: '**', component: PageNotFoundComponent },
 ];

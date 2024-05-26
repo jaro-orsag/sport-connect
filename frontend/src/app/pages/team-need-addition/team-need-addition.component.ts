@@ -17,6 +17,7 @@ import { CommonModule } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { getDistrictCode, getDistrictNames } from '../../services/district';
 import { TeamNeed } from '../../services/team-need';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'team-need',
@@ -54,7 +55,12 @@ export class TeamNeedAdditionComponent {
     options: string[] = getDistrictNames();
     filteredDistricts: string[];
 
-    constructor(private formBuilder: FormBuilder, private api: ApiService, private formInvalidSnackBar: MatSnackBar) {
+    constructor(
+        private formBuilder: FormBuilder, 
+        private api: ApiService, 
+        private snackBar: MatSnackBar,
+        private router: Router
+    ) {
         this.filteredDistricts = this.options.slice();
 
         this.teamNeedForm = this.formBuilder.group({
@@ -78,15 +84,14 @@ export class TeamNeedAdditionComponent {
 
     onSubmit(): void {
         if (this.teamNeedForm.invalid) {
-            this.formInvalidSnackBar.open("Formulár nebol odoslaný. Najskôr vyplň všetky povinné polia.", "OK");
+            this.snackBar.open("Formulár nebol odoslaný. Najskôr vyplň všetky povinné polia.", "OK");
+
+            return;
         }
 
         const teamNeed = this._mapFormToPlayerNeed(this.teamNeedForm.value);
-
-        console.log(teamNeed);
-
         this.api.addTeamNeed(teamNeed).subscribe(tn => {
-            console.log("API call result", tn);
+            this.router.navigate(["/team-need", tn.uuid], { state: { navigatedFromTeamNeedAddition: true }});
         });
     }
 

@@ -1,9 +1,9 @@
 <h2 mat-dialog-title>Určite?</h2>
 <mat-dialog-content>
-  <p>{{data.scenarioSpecificText}}</p>
-  <p>Táto akcia sa nedá vrátiť naspäť. Budeš ale môcť začať nové hladanie.</p>
+  <p>{{data.text1}}</p>
+  <p>{{data.text2}}</p>
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button mat-button (click)="onNoClick()">Neruš hľadanie</button>
-  <button mat-button mat-dialog-close="do-deactivate" cdkFocusInitial>Zruš hľadanie</button>
+  <button mat-button (click)="onNoClick()">{{data.buttonNoText}}</button>
+  <button mat-button mat-dialog-close="do-it" cdkFocusInitial>{{data.buttonYesText}}</button>
 </mat-dialog-actions>

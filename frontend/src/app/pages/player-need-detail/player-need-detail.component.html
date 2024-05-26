@@ -1,13 +1,9 @@
 <main class="mat-typography">
-  <button
-    *ngIf="this.pageState == DetailPageState.EXISTS_ACTIVE"
-    class="deactivate-need-button"
-    mat-flat-button
-    color="primary"
-    (click)="openDialog()"
-  >
-    Zruš Hľadanie
-  </button>
+  <app-deactivate-need
+    [detailPageState]="this.pageState"
+    [handleConfirmedDeactivation]="this.deactivatePlayerNeed.bind(this)"
+    dialogText="Už nebudeš dostávať informácie o tímoch, ktoré hľadajú hráča."
+  ></app-deactivate-need>
   <mat-card *ngIf="navigatedFromPlayerNeedAddition" class="congratulations">
     <mat-card-content>
       <p>Gratulujem, v tomto momente sme pre Teba začali hľadať tím.</p>
@@ -45,18 +41,40 @@
         playerNeed
       "
     >
-        <app-need-summary-list-item title="Meno" [value]="playerNeed.playerName"></app-need-summary-list-item>
-        <app-need-summary-list-item title="Okresy kde chcem hrať" [value]="getDistrictNames()"></app-need-summary-list-item>
-        <app-need-summary-list-item title="Kedy chcem hrať" [value]="playerNeed.availability"></app-need-summary-list-item>
-        <app-need-summary-list-item title="Email" [value]="playerNeed.email"></app-need-summary-list-item>
-        <app-need-summary-list-item title="Telefón" [value]="playerNeed.phone || '-'"></app-need-summary-list-item>
-        <app-need-summary-list-item title="O mne" [value]="playerNeed.about || '-'"></app-need-summary-list-item>
-        <app-need-summary-list-item title="Vytvorené" [value]="playerNeed.dateAdded | date : 'd. L. yyyy o h:mm'"></app-need-summary-list-item>
-        <app-need-summary-list-item 
-            *ngIf="this.pageState == DetailPageState.EXISTS_NOT_ACTIVE" 
-            title="Ukončené" 
-            [value]="playerNeed.dateDeactivated | date : 'd. L. yyyy o h:mm'">
-        </app-need-summary-list-item>
+      <app-need-summary-list-item
+        title="Meno"
+        [value]="playerNeed.playerName"
+      ></app-need-summary-list-item>
+      <app-need-summary-list-item
+        title="Okresy kde chcem hrať"
+        [value]="getDistrictNames()"
+      ></app-need-summary-list-item>
+      <app-need-summary-list-item
+        title="Kedy chcem hrať"
+        [value]="playerNeed.availability"
+      ></app-need-summary-list-item>
+      <app-need-summary-list-item
+        title="Email"
+        [value]="playerNeed.email"
+      ></app-need-summary-list-item>
+      <app-need-summary-list-item
+        title="Telefón"
+        [value]="playerNeed.phone || '-'"
+      ></app-need-summary-list-item>
+      <app-need-summary-list-item
+        title="O mne"
+        [value]="playerNeed.about || '-'"
+      ></app-need-summary-list-item>
+      <app-need-summary-list-item
+        title="Vytvorené"
+        [value]="playerNeed.dateAdded | date : 'd. L. yyyy o h:mm'"
+      ></app-need-summary-list-item>
+      <app-need-summary-list-item
+        *ngIf="this.pageState == DetailPageState.EXISTS_NOT_ACTIVE"
+        title="Ukončené"
+        [value]="playerNeed.dateDeactivated | date : 'd. L. yyyy o h:mm'"
+      >
+      </app-need-summary-list-item>
     </mat-card-content>
   </mat-card>
 
@@ -74,13 +92,17 @@
     <mat-card-content *ngIf="playerNeed.isMarketingConsentGranted">
       <p>
         Máš aktivovaný odber marketingových emailov.
-        <button mat-button color="primary" (click)="revokeMarketingConsent()">Zrušiť.</button>
+        <button mat-button color="primary" (click)="revokeMarketingConsent()">
+          Zrušiť.
+        </button>
       </p>
     </mat-card-content>
     <mat-card-content *ngIf="!playerNeed.isMarketingConsentGranted">
       <p>
         Nemáš aktivovaný odber marketingových emailov.
-        <button mat-button color="primary" (click)="grantMarketingConsent()">Aktivovať.</button>
+        <button mat-button color="primary" (click)="grantMarketingConsent()">
+          Aktivovať.
+        </button>
       </p>
     </mat-card-content>
   </mat-card>

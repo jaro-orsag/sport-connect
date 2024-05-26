@@ -56,6 +56,13 @@ export class ApiService {
             .pipe(catchError(this.handleError.bind(this)));
     }
 
+    getTeamNeed(uuid: string): Observable<TeamNeed | undefined> {
+
+        return this.http
+            .get<TeamNeed | undefined>(`${environment.apiRoot}/team-needs/${uuid}`, this.httpOptions)
+            .pipe(catchError(this.handleErrorForGet.bind(this)));
+    }
+
     handleError(error: HttpErrorResponse) {
         let errorDesc;
         if (error.status === 0) {

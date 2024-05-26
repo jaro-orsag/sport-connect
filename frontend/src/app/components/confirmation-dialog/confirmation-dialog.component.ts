@@ -13,7 +13,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 
 export interface DialogData {
-    scenarioSpecificText: string;
+    text1: string;
+    text2?: string;
+    buttonNoText: string;
+    buttonYesText: string;
 }
 
 @Component({
