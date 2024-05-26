@@ -91,7 +91,7 @@ export class TeamNeedAdditionComponent {
 
         const teamNeed = this._mapFormToPlayerNeed(this.teamNeedForm.value);
         this.api.addTeamNeed(teamNeed).subscribe(tn => {
-            this.router.navigate(["/team-need", tn.uuid], { state: { navigatedFromTeamNeedAddition: true }});
+            this.router.navigate(["/team-need", tn.uuid], { state: { navigatedFromAddition: true }});
         });
     }
 

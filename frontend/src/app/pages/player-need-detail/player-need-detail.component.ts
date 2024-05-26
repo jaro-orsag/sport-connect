@@ -13,11 +13,12 @@ import { DetailPageState } from '../../services/detail-page-state';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { NeedSummaryListItemComponent } from '../../components/need-summary-list-item/need-summary-list-item.component';
 import { DeactivateNeedComponent } from '../../components/need-detail/deactivate-need/deactivate-need.component';
+import { CongratulationsComponent } from '../../components/need-detail/congratulations/congratulations.component';
 
 @Component({
     selector: 'app-player-need-detail',
     standalone: true,
-    imports: [CommonModule, MatCardModule, MatListModule, MatButtonModule, NeedSummaryListItemComponent, DeactivateNeedComponent],
+    imports: [CommonModule, MatCardModule, MatListModule, MatButtonModule, NeedSummaryListItemComponent, DeactivateNeedComponent, CongratulationsComponent],
     templateUrl: './player-need-detail.component.html',
     styleUrl: './player-need-detail.component.sass'
 })
@@ -25,7 +26,7 @@ export class PlayerNeedDetailComponent implements OnInit {
     DetailPageState = DetailPageState;
     pageState: DetailPageState = DetailPageState.LOADING;
     playerNeed?: PlayerNeed;
-    navigatedFromPlayerNeedAddition = false;
+    navigatedFromAddition = false;
 
     constructor(private route: ActivatedRoute, private api: ApiService, public dialog: MatDialog, private snackBar: MatSnackBar) { }
 
@@ -39,7 +40,7 @@ export class PlayerNeedDetailComponent implements OnInit {
         this.api.getPlayerNeed(uuid).subscribe(pn => {
             this.playerNeed = pn;
 
-            this.navigatedFromPlayerNeedAddition = history.state.navigatedFromPlayerNeedAddition;
+            this.navigatedFromAddition = history.state.navigatedFromAddition;
             this.cleanUpFlagInHistoryState();
 
             if (this.playerNeed) {
@@ -60,7 +61,7 @@ export class PlayerNeedDetailComponent implements OnInit {
 
     cleanUpFlagInHistoryState() {
         const newState = { ...history.state };
-        delete newState.navigatedFromPlayerNeedAddition;
+        delete newState.navigatedFromAddition;
         history.replaceState(newState, '');
     }
 

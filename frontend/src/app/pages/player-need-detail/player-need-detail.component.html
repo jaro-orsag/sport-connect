@@ -4,23 +4,7 @@
     [handleConfirmedDeactivation]="this.deactivatePlayerNeed.bind(this)"
     dialogText="Už nebudeš dostávať informácie o tímoch, ktoré hľadajú hráča."
   ></app-deactivate-need>
-  <mat-card *ngIf="navigatedFromPlayerNeedAddition" class="congratulations">
-    <mat-card-content>
-      <p>Gratulujem, v tomto momente sme pre Teba začali hľadať tím.</p>
-
-      <p>
-        Hľadanie môžeš kedykoľvek zrušiť na tejto stránke. Link na ňu sa
-        nachádza aj v potvrddzovacom e-maili, ktorý by mal práve pristávať v
-        Tvojom inboxe.
-      </p>
-
-      <p>
-        Akonáhle pre Teba nájdeme vhodný tím, pošleme Ti ďaľší e-mail. V ňom
-        nájdeš aj kontakt. Na ďaľších detailoch sa už dohodneš s Tvojim novým
-        tímom.
-      </p>
-    </mat-card-content>
-  </mat-card>
+  <app-congratulations [navigatedFromAddition]="navigatedFromAddition" text="Gratulujem, v tomto momente sme pre Teba začali hľadať tím."></app-congratulations>
   <mat-card
     class="summary"
     [ngClass]="{

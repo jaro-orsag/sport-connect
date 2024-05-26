@@ -4,11 +4,12 @@ import { DetailPageState } from '../../services/detail-page-state';
 import { TeamNeed } from '../../services/team-need';
 import { ApiService } from '../../services/api.service';
 import { ActivatedRoute } from '@angular/router';
+import { CongratulationsComponent } from '../../components/need-detail/congratulations/congratulations.component';
 
 @Component({
   selector: 'app-team-need-detail',
   standalone: true,
-  imports: [DeactivateNeedComponent],
+  imports: [DeactivateNeedComponent, CongratulationsComponent],
   templateUrl: './team-need-detail.component.html',
   styleUrl: './team-need-detail.component.sass'
 })
@@ -16,7 +17,7 @@ export class TeamNeedDetailComponent {
     DetailPageState = DetailPageState;
     pageState: DetailPageState = DetailPageState.LOADING;
     teamNeed?: TeamNeed;
-    navigatedFromTeamNeedAddition = false;
+    navigatedFromAddition = false;
 
     constructor(private route: ActivatedRoute, private api: ApiService) { }
 
@@ -30,7 +31,7 @@ export class TeamNeedDetailComponent {
         this.api.getTeamNeed(uuid).subscribe(tn => {
             this.teamNeed = tn;
 
-            this.navigatedFromTeamNeedAddition = history.state.navigatedFromTeamNeedAddition;
+            this.navigatedFromAddition = history.state.navigatedFromAddition;
             this.cleanUpFlagInHistoryState();
 
             if (this.teamNeed) {
@@ -48,7 +49,7 @@ export class TeamNeedDetailComponent {
 
     cleanUpFlagInHistoryState() {
         const newState = { ...history.state };
-        delete newState.navigatedFromPlayerNeedAddition;
+        delete newState.navigatedFromAddition;
         history.replaceState(newState, '');
     }
 }
