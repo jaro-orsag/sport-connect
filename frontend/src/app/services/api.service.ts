@@ -40,12 +40,9 @@ export class ApiService {
     }
 
     updatePlayerNeedConsent(uuid: string, grant: boolean): Observable<null> {
-        const updateConsentAction = {
-            "action": grant ? "grant" : "revoke"
-        };
 
         return this.http
-            .patch<null>(`${environment.apiRoot}/player-needs/${uuid}/marketing-consent`, updateConsentAction, this.httpOptions)
+            .patch<null>(`${environment.apiRoot}/player-needs/${uuid}/marketing-consent`, this.getConsentAction(grant), this.httpOptions)
             .pipe(catchError(this.handleError.bind(this)));
     }
 
@@ -68,6 +65,19 @@ export class ApiService {
         return this.http
             .patch<null>(`${environment.apiRoot}/team-needs/${uuid}/deactivate`, this.httpOptions)
             .pipe(catchError(this.handleError.bind(this)));
+    }
+
+    updateTeamNeedConsent(uuid: string, grant: boolean): Observable<null> {
+
+        return this.http
+            .patch<null>(`${environment.apiRoot}/team-needs/${uuid}/marketing-consent`, this.getConsentAction(grant), this.httpOptions)
+            .pipe(catchError(this.handleError.bind(this)));
+    }
+
+    private getConsentAction(grant: boolean) {
+        return {
+            "action": grant ? "grant" : "revoke"
+        };
     }
 
     handleError(error: HttpErrorResponse) {

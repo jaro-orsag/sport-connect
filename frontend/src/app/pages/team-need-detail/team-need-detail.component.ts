@@ -8,11 +8,13 @@ import { CongratulationsComponent } from '../../components/need-detail/congratul
 import { NeedSummaryComponent } from '../../components/need-detail/need-summary/need-summary.component';
 import { DatePipe } from '@angular/common';
 import { getDistrictName } from '../../services/district';
+import { MarketingConsentComponent } from '../../components/need-detail/marketing-consent/marketing-consent.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-team-need-detail',
   standalone: true,
-  imports: [DeactivateNeedComponent, CongratulationsComponent, NeedSummaryComponent],
+  imports: [DeactivateNeedComponent, CongratulationsComponent, NeedSummaryComponent, MarketingConsentComponent],
   providers: [DatePipe],
   templateUrl: './team-need-detail.component.html',
   styleUrl: './team-need-detail.component.sass'
@@ -23,7 +25,12 @@ export class TeamNeedDetailComponent {
     teamNeed?: TeamNeed;
     navigatedFromAddition = false;
 
-    constructor(private route: ActivatedRoute, private api: ApiService, private datePipe: DatePipe) { }
+    constructor(
+        private route: ActivatedRoute, 
+        private api: ApiService, 
+        private datePipe: DatePipe, 
+        private snackBar: MatSnackBar
+    ) { }
 
     ngOnInit() {
         this.loadTeamNeed();
@@ -73,5 +80,19 @@ export class TeamNeedDetailComponent {
             ["Vytvorené", this.datePipe.transform(this.teamNeed!.dateAdded, 'd. L. yyyy o h:mm')!],
             ...dateDeactivated
         ];
+    }
+
+    revokeMarketingConsent() {
+        this.api.updateTeamNeedConsent(this.teamNeed!.uuid!, false).subscribe(_ => {
+            this.snackBar.open("Odber bol zrušený", "OK");
+            this.loadTeamNeed()
+        });
+    }
+
+    grantMarketingConsent() {
+        this.api.updateTeamNeedConsent(this.teamNeed!.uuid!, true).subscribe(_ => {
+            this.snackBar.open("Odber bol aktivovaný", "OK");
+            this.loadTeamNeed()
+        });
     }
 }

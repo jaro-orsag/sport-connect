@@ -1,13 +1,9 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { CommonModule } from '@angular/common';
 import { ApiService } from '../../services/api.service';
 import { OnInit } from '@angular/core';
 import { PlayerNeed } from '../../services/player-need';
-import { MatCardModule } from '@angular/material/card';
-import { MatListModule } from '@angular/material/list';
 import { getDistrictName } from '../../services/district';
-import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { DetailPageState } from '../../services/detail-page-state';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -16,11 +12,18 @@ import { DeactivateNeedComponent } from '../../components/need-detail/deactivate
 import { CongratulationsComponent } from '../../components/need-detail/congratulations/congratulations.component';
 import { NeedSummaryComponent } from '../../components/need-detail/need-summary/need-summary.component';
 import { DatePipe } from '@angular/common';
+import { MarketingConsentComponent } from '../../components/need-detail/marketing-consent/marketing-consent.component';
 
 @Component({
     selector: 'app-player-need-detail',
     standalone: true,
-    imports: [CommonModule, MatCardModule, MatListModule, MatButtonModule, NeedSummaryListItemComponent, DeactivateNeedComponent, CongratulationsComponent, NeedSummaryComponent],
+    imports: [
+        NeedSummaryListItemComponent, 
+        DeactivateNeedComponent, 
+        CongratulationsComponent, 
+        NeedSummaryComponent, 
+        MarketingConsentComponent
+    ],
     providers: [DatePipe],
     templateUrl: './player-need-detail.component.html',
     styleUrl: './player-need-detail.component.sass'

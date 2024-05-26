@@ -1,0 +1,23 @@
+<mat-card
+  class="marketing"
+  *ngIf="
+    (this.pageState == DetailPageState.EXISTS_NOT_ACTIVE ||
+      this.pageState == DetailPageState.EXISTS_ACTIVE)">
+  <mat-card-header><mat-card-title>Marketing</mat-card-title> </mat-card-header>
+  <mat-card-content *ngIf="isGranted">
+    <p>
+      Máš aktivovaný odber marketingových emailov.
+      <button mat-button color="primary" (click)="revoke()">
+        Zrušiť.
+      </button>
+    </p>
+  </mat-card-content>
+  <mat-card-content *ngIf="!isGranted">
+    <p>
+      Nemáš aktivovaný odber marketingových emailov.
+      <button mat-button color="primary" (click)="grant()">
+        Aktivovať.
+      </button>
+    </p>
+  </mat-card-content>
+</mat-card>

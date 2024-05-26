@@ -4,11 +4,19 @@
     [handleConfirmedDeactivation]="this.deactivateTeamNeed.bind(this)"
     dialogText="Už nebudeš dostávať informácie o hráčoch, ktorí hľadajú tím."
   ></app-deactivate-need>
-  <app-congratulations 
-    [navigatedFromAddition]="navigatedFromAddition" 
-    text="Gratulujem, v tomto momente sme začali hľadať hráča pre Tvoj tím."></app-congratulations>
-  <app-need-summary 
-    [pageState]="this.pageState" 
-    [getItems]="getSummaryItems.bind(this)" 
-    title="Hľadanie hráča"></app-need-summary>
+  <app-congratulations
+    [navigatedFromAddition]="navigatedFromAddition"
+    text="Gratulujem, v tomto momente sme začali hľadať hráča pre Tvoj tím."
+  ></app-congratulations>
+  <app-need-summary
+    [pageState]="this.pageState"
+    [getItems]="getSummaryItems.bind(this)"
+    title="Hľadanie hráča"
+  ></app-need-summary>
+  <app-marketing-consent
+    [pageState]="this.pageState"
+    [grant]="grantMarketingConsent.bind(this)"
+    [revoke]="revokeMarketingConsent.bind(this)"
+    [isGranted]="this.teamNeed?.isMarketingConsentGranted || false"
+  ></app-marketing-consent>
 </main>
