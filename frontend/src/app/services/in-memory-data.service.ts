@@ -7,8 +7,6 @@ import { Observable } from 'rxjs';
 })
 export class InMemoryDataService implements InMemoryDbService {
 
-    SERVE_COMPLETE_ENTITIES = true;
-
     SHOULD_RESPOND_404_ON_PATCH = false;
     SHOULD_RESPOND_500_ON_PATCH = false;
 
@@ -18,7 +16,7 @@ export class InMemoryDataService implements InMemoryDbService {
     SHOULD_RESPOND_404_ON_POST = false;
     SHOULD_RESPOND_500_ON_POST = false;
 
-    completePlayerNeed = { 
+    PLAYER_NEED = { 
         "id": 1, 
         "uuid": "5f444def-1529-4705-9a9e-a59f66c1cc1e", 
         "isActive": true,
@@ -34,97 +32,104 @@ export class InMemoryDataService implements InMemoryDbService {
         "dateMarketingConsentChanged": "2024-05-22T11:00:37+02:00",
     };
 
-    incompletePlayerNeed = {
+    TEAM_NEED = {
         "id": 2,
         "uuid": "72c63f2c-6b02-4854-affd-7a41c3bae6de",
-        "isActive": false,
+        "isActive": true,
+        "dateDeactivated": "2024-05-26T11:10:40+02:00", 
+        "districtCode": 301,
+        "address": "Svatoplukova 47, Bratislava",
+        "time": "Hráme každú stredu utorok o 16:00. Alebo každú stredu na obed.", 
         "playerName": "Jaroslav Ors\u00e1g", 
-        "availability": "Môžem každý druhý utorok o 16:00. Alebo každú stredu na obed.", 
         "email": "jorsag@gmail.com", 
-        "about": "", 
-        "dateAdded": "2024-05-22T11:00:37+02:00", 
-        "districtCodes": [301, 302, 303], 
+        "phone": "+421917777614", 
+        "about": "Vsetci sme profici, vacsinou veterani z FC Barcelona a Real Madrid.", 
         "isMarketingConsentGranted": true,
         "dateMarketingConsentChanged": "2024-05-22T11:00:37+02:00",
+        "dateAdded": "2024-05-22T11:00:37+02:00"
     };
 
     createDb() {
-        const playerNeeds = [this.completePlayerNeed, this.incompletePlayerNeed];
-        return { "player-needs": playerNeeds, "team-needs": playerNeeds };
+        return { "player-needs": [this.PLAYER_NEED], "team-needs": [this.TEAM_NEED] };
     }
 
-    get(requestInfo: RequestInfo): Observable<Response> { 
-        if (this.SHOULD_RESPOND_404_ON_GET) {
+    get(requestInfo: RequestInfo): Observable<Response | null> { 
+        return this.handleAllMethods(requestInfo);
+    }
+
+    post(requestInfo: RequestInfo): Observable<Response | null> { 
+        return this.handleAllMethods(requestInfo);
+    }
+
+    patch(requestInfo: RequestInfo): Observable<Response | null> { 
+        return this.handleAllMethods(requestInfo);
+    }
+
+    private handleAllMethods(requestInfo: RequestInfo): Observable<Response | null> {
+        const method = requestInfo.method;
+
+        if (method == "get" && this.SHOULD_RESPOND_404_ON_GET) {
             return this.respond404(requestInfo);
         }
 
-        if (this.SHOULD_RESPOND_500_ON_GET) {
+        if (method == "get" && this.SHOULD_RESPOND_500_ON_GET) {
+            return this.respond500(requestInfo);
+        }
+
+        if (method == "post" && this.SHOULD_RESPOND_404_ON_POST) {
+            return this.respond404(requestInfo);
+        }
+
+        if (method == "post" && this.SHOULD_RESPOND_500_ON_POST) {
+            return this.respond500(requestInfo);
+        }
+
+        if (method == "patch" && this.SHOULD_RESPOND_404_ON_PATCH) {
+            return this.respond404(requestInfo);
+        }
+
+        if (method == "patch" && this.SHOULD_RESPOND_500_ON_PATCH) {
             return this.respond500(requestInfo);
         }
 
         return this.respond200(requestInfo); 
     }
 
-    post(requestInfo: RequestInfo): Observable<Response> { 
-        if (this.SHOULD_RESPOND_404_ON_POST) {
-            return this.respond404(requestInfo);
-        }
-
-        if (this.SHOULD_RESPOND_500_ON_POST) {
-            return this.respond500(requestInfo);
-        }
-
-        return this.respond200(requestInfo); 
-    }
-
-    patch(requestInfo: RequestInfo): Observable<null> { 
-        if (this.SHOULD_RESPOND_404_ON_PATCH) {
-            return this.respondWithError(requestInfo, STATUS.NOT_FOUND);
-        }
-
-        if (this.SHOULD_RESPOND_500_ON_PATCH) {
-            return this.respondWithError(requestInfo, STATUS.INTERNAL_SERVER_ERROR);
-        }
-
-        return this.respond204(requestInfo);
-    }
-
-    private respond200(requestInfo: RequestInfo): Observable<Response> {
-        return this.respond(requestInfo, STATUS.OK, 'OK');
+    private respond200(requestInfo: RequestInfo): Observable<Response | null> {
+        return this.respond(requestInfo, STATUS.OK);
     }
 
     private respond204(requestInfo: RequestInfo): Observable<null> {
-        return requestInfo.utils.createResponse$(() => {
-            const {headers, url} = requestInfo;
-
-            const options: ResponseOptions = {
-                status: STATUS.NO_CONTENT, 
-                statusText: 'OK', 
-                headers, 
-                url 
-            };
-
-            return options;
-          });
+        return this.respond(requestInfo, STATUS.NO_CONTENT) as Observable<null>;
     }
 
-    private respond404(requestInfo: RequestInfo): Observable<Response> {
-        return this.respond(requestInfo, STATUS.NOT_FOUND, 'NOT FOUND');
+    private respond404(requestInfo: RequestInfo): Observable<Response | null> {
+        return this.respond(requestInfo, STATUS.NOT_FOUND);
     }
 
-    private respond500(requestInfo: RequestInfo): Observable<Response> {
-        return this.respond(requestInfo, STATUS.INTERNAL_SERVER_ERROR, 'INTERNAL_SERVER_ERROR');
+    private respond500(requestInfo: RequestInfo): Observable<Response | null> {
+        return this.respond(requestInfo, STATUS.INTERNAL_SERVER_ERROR);
     }
 
-    private respond(requestInfo: RequestInfo, status: number, statusText: string): Observable<Response> {
+    private respond(requestInfo: RequestInfo, status: number): Observable<Response | null> {
 
         return requestInfo.utils.createResponse$(() => {
             const {headers, url} = requestInfo;
 
+            let body;
+            if (status !== 200) {
+                body = {};
+            } else if (requestInfo.collectionName == "player-needs") {
+                body = { body: this.PLAYER_NEED };
+            } else if (requestInfo.collectionName == "team-needs") {
+                body = { body: this.TEAM_NEED };
+            } else {
+                throw new Error("unsupported collection " + requestInfo.collectionName);
+            }
+
             const options: ResponseOptions = {
-                body: this.SERVE_COMPLETE_ENTITIES ? this.completePlayerNeed : this.incompletePlayerNeed, 
+                ...body,
                 status, 
-                statusText, 
                 headers, 
                 url 
             };
@@ -132,20 +137,4 @@ export class InMemoryDataService implements InMemoryDbService {
             return options;
           });
     }
-
-    private respondWithError(requestInfo: RequestInfo, status: number): Observable<null> {
-
-        return requestInfo.utils.createResponse$(() => {
-            const {headers, url} = requestInfo;
-
-            const options: ResponseOptions = {
-                status,  
-                headers, 
-                url 
-            };
-
-            return options;
-          });
-    }
-
 }

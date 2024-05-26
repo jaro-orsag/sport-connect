@@ -15,7 +15,7 @@ import { DetailPageState } from '../../../services/detail-page-state';
 export class DeactivateNeedComponent {
     DetailPageState = DetailPageState;
 
-    @Input() detailPageState!: DetailPageState;
+    @Input() pageState!: DetailPageState;
 
     @Input() handleConfirmedDeactivation!: () => void;
 

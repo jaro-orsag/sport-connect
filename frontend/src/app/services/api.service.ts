@@ -63,6 +63,13 @@ export class ApiService {
             .pipe(catchError(this.handleErrorForGet.bind(this)));
     }
 
+    deactivateTeamNeed(uuid: string): Observable<null> {
+
+        return this.http
+            .patch<null>(`${environment.apiRoot}/team-needs/${uuid}/deactivate`, this.httpOptions)
+            .pipe(catchError(this.handleError.bind(this)));
+    }
+
     handleError(error: HttpErrorResponse) {
         let errorDesc;
         if (error.status === 0) {

@@ -5,11 +5,15 @@ import { TeamNeed } from '../../services/team-need';
 import { ApiService } from '../../services/api.service';
 import { ActivatedRoute } from '@angular/router';
 import { CongratulationsComponent } from '../../components/need-detail/congratulations/congratulations.component';
+import { NeedSummaryComponent } from '../../components/need-detail/need-summary/need-summary.component';
+import { DatePipe } from '@angular/common';
+import { getDistrictName } from '../../services/district';
 
 @Component({
   selector: 'app-team-need-detail',
   standalone: true,
-  imports: [DeactivateNeedComponent, CongratulationsComponent],
+  imports: [DeactivateNeedComponent, CongratulationsComponent, NeedSummaryComponent],
+  providers: [DatePipe],
   templateUrl: './team-need-detail.component.html',
   styleUrl: './team-need-detail.component.sass'
 })
@@ -19,7 +23,7 @@ export class TeamNeedDetailComponent {
     teamNeed?: TeamNeed;
     navigatedFromAddition = false;
 
-    constructor(private route: ActivatedRoute, private api: ApiService) { }
+    constructor(private route: ActivatedRoute, private api: ApiService, private datePipe: DatePipe) { }
 
     ngOnInit() {
         this.loadTeamNeed();
@@ -39,17 +43,35 @@ export class TeamNeedDetailComponent {
             } else {
                 this.pageState = DetailPageState.DOES_NOT_EXIST;
             }
-            console.log("teamNeed", this.teamNeed);
         });
     }
 
-    deactivatePlayerNeed(): void {
-        this.api.deactivatePlayerNeed(this.teamNeed!.uuid!).subscribe(_ => this.loadTeamNeed());
+    deactivateTeamNeed(): void {
+        this.api.deactivateTeamNeed(this.teamNeed!.uuid!).subscribe(_ => this.loadTeamNeed());
     }
 
     cleanUpFlagInHistoryState() {
         const newState = { ...history.state };
         delete newState.navigatedFromAddition;
         history.replaceState(newState, '');
+    }
+
+    getSummaryItems(): Array<[string, string]> {
+        const dateDeactivated: Array<[string, string]> = 
+            this.pageState == DetailPageState.EXISTS_NOT_ACTIVE 
+                ? [["Ukončené", this.datePipe.transform(this.teamNeed!.dateDeactivated, 'd. L. yyyy o h:mm')!]] 
+                : [];
+
+        return [
+            ["Okres v ktorom hráme", getDistrictName(this.teamNeed!.districtCode)],
+            ["Presná adresa", this.teamNeed!.address || '-'],
+            ["Kedy hráme", this.teamNeed!.time],
+            ["Meno", this.teamNeed!.playerName],
+            ["Email", this.teamNeed!.email],
+            ["Telefón", this.teamNeed!.phone || '-'],
+            ["O našom tíme", this.teamNeed!.about || '-'],
+            ["Vytvorené", this.datePipe.transform(this.teamNeed!.dateAdded, 'd. L. yyyy o h:mm')!],
+            ...dateDeactivated
+        ];
     }
 }
