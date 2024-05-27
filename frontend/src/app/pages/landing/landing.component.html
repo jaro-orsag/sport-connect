@@ -1,10 +1,183 @@
-<p>landing works!</p>
-<p>landing works!</p>
-<p>landing works!</p>
-<p>landing works!</p>
-<p>landing works!</p>
-<p>landing works!</p>
-<p>landing works!</p>
-<p>landing works!</p>
-<p>landing works!</p>
-<p>landing works!</p>
+<mat-icon
+  style="font-size: 148px"
+  aria-hidden="false"
+  class="material-icons custom-icon"
+  color="primary"
+  >person_add_alt_1</mat-icon
+>
+<main class="mat-typography">
+  <mat-card class="first">
+    <mat-card-header>
+      <mat-card-title>
+        Pomáhame tímom nájsť hráčov a hráčom nájsť tímy.
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <p>
+        Našim poslaním je uľahčiť hľadanie spoluhráčov pre tímy, ktoré potrebujú
+        záskok. A vytvoriť komunitu, kde každý hráč môže nájsť tím, ktorý ho
+        potrebuje.
+      </p>
+
+      <p>
+        Snažíme sa zabezpečiť, aby nikto nemusel zrušiť hru kvôli nedostatku
+        hráčov. A aby každý, kto chce hrať, mohol hrať.
+      </p>
+
+      Snazime sa pomoct v dvoch situaciach: 
+        - tim hlada hraca
+        - hrac hlada tim
+    </mat-card-content>
+  </mat-card>
+  <mat-card class="scenario">
+    <mat-card-header>
+      <mat-card-title class="scenario__title"> Hľadáme hráča </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="scenario__steps-wrapper"
+        [ngClass]="{
+          'scenario__steps-wrapper--xsmall': breakpoint === Breakpoints.XSmall,
+          'scenario__steps-wrapper--small': breakpoint === Breakpoints.Small,
+          'scenario__steps-wrapper--medium': breakpoint === Breakpoints.Medium,
+          'scenario__steps-wrapper--large': breakpoint === Breakpoints.Large
+        }"
+      >
+        <mat-card class="scenario-step" [ngClass]="{
+            'scenario-step--xsmall': breakpoint === Breakpoints.XSmall,
+            'scenario-step--small': breakpoint === Breakpoints.Small,
+            'scenario-step--medium': breakpoint === Breakpoints.Medium,
+            'scenario-step--large': breakpoint === Breakpoints.Large
+          }">
+          <mat-card-content>
+            <div class="scenario-step__contents-wrapper">
+              <span class="material-icons scenario-step__icon"
+                >psychology_alt</span
+              >
+              <span class="scenario-step__title" [ngClass]="{
+                'scenario-step__title--xsmall': breakpoint === Breakpoints.XSmall,
+                'scenario-step__title--small': breakpoint === Breakpoints.Small,
+                'scenario-step__title--medium': breakpoint === Breakpoints.Medium,
+                'scenario-step__title--large': breakpoint === Breakpoints.Large
+              }">1. Zasa nám chýba hráč</span>
+              <span class="scenario-step__description" [ngClass]="{
+                'scenario-step__description--xsmall': breakpoint === Breakpoints.XSmall,
+                'scenario-step__description--small': breakpoint === Breakpoints.Small,
+                'scenario-step__description--medium': breakpoint === Breakpoints.Medium,
+                'scenario-step__description--large': breakpoint === Breakpoints.Large
+              }">
+                Kamarát nemôže prísť. Nemáme kompletný tím na futbal.
+              </span>
+            </div>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class="scenario-step" [ngClass]="{
+            'scenario-step--xsmall': breakpoint === Breakpoints.XSmall,
+            'scenario-step--small': breakpoint === Breakpoints.Small,
+            'scenario-step--medium': breakpoint === Breakpoints.Medium,
+            'scenario-step--large': breakpoint === Breakpoints.Large
+          }">
+          <mat-card-content>
+            <div class="scenario-step__contents-wrapper">
+              <span class="material-icons scenario-step__icon">search</span>
+              <span class="scenario-step__title" [ngClass]="{
+                'scenario-step__title--xsmall': breakpoint === Breakpoints.XSmall,
+                'scenario-step__title--small': breakpoint === Breakpoints.Small,
+                'scenario-step__title--medium': breakpoint === Breakpoints.Medium,
+                'scenario-step__title--large': breakpoint === Breakpoints.Large
+              }">2. Vyplním formulár</span>
+              <span class="scenario-step__description" [ngClass]="{
+                'scenario-step__description--xsmall': breakpoint === Breakpoints.XSmall,
+                'scenario-step__description--small': breakpoint === Breakpoints.Small,
+                'scenario-step__description--medium': breakpoint === Breakpoints.Medium,
+                'scenario-step__description--large': breakpoint === Breakpoints.Large
+              }">
+                Potrebujeme základné informácie, ako je dátum, čas a miesto hry.
+                Nájdeme vhodného hráča, ktorý je k dispozícii.
+              </span>
+            </div>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class="scenario-step" [ngClass]="{
+            'scenario-step--xsmall': breakpoint === Breakpoints.XSmall,
+            'scenario-step--small': breakpoint === Breakpoints.Small,
+            'scenario-step--medium': breakpoint === Breakpoints.Medium,
+            'scenario-step--large': breakpoint === Breakpoints.Large
+          }">
+          <mat-card-content>
+            <div class="scenario-step__contents-wrapper">
+              <span class="material-icons scenario-step__icon"
+                >sports_soccer</span
+              >
+              <span class="scenario-step__title" [ngClass]="{
+                'scenario-step__title--xsmall': breakpoint === Breakpoints.XSmall,
+                'scenario-step__title--small': breakpoint === Breakpoints.Small,
+                'scenario-step__title--medium': breakpoint === Breakpoints.Medium,
+                'scenario-step__title--large': breakpoint === Breakpoints.Large
+              }">3. Hráme v plnej zostave</span>
+              <span class="scenario-step__description" [ngClass]="{
+                'scenario-step__description--xsmall': breakpoint === Breakpoints.XSmall,
+                'scenario-step__description--small': breakpoint === Breakpoints.Small,
+                'scenario-step__description--medium': breakpoint === Breakpoints.Medium,
+                'scenario-step__description--large': breakpoint === Breakpoints.Large
+              }">
+                Prepojíme Ťa so spoluhráčom a môžete hrať.
+              </span>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-card-content>
+    <mat-card-footer class="scenario-actions"
+      ><mat-card-actions  fxLayout="row" fxLayoutAlign="center center"
+        ><button mat-flat-button color="primary" class="scenario-action">
+          Hľadaj hráča
+        </button></mat-card-actions
+      ></mat-card-footer
+    >
+  </mat-card>
+
+  <mat-card class="first">
+    <mat-card-header>
+      <mat-card-title> Hľadám team </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-card class="first">
+        <mat-card-header>
+          <span class="material-icons custom-icon" color="primary"
+            >psychology_alt</span
+          >
+          1. Rád by som si zahral futbal s niekym novým
+        </mat-card-header>
+        <mat-card-content
+          >Chceš si zahrať futbal, ale nemáš futbalovú partiu. Alebo to chceš
+          skúsiť niekym novým.</mat-card-content
+        >
+      </mat-card>
+      <mat-card class="first">
+        <mat-card-header>
+          <span class="material-icons custom-icon" color="primary">search</span
+          >2. Vyplním formulár
+        </mat-card-header>
+        <mat-card-content
+          >Potrebujeme vedieť, ktoré časy a miesta Ti vyhovujú. Nájdeme pre Teba
+          tím, ktorý hľadá hráča.</mat-card-content
+        >
+      </mat-card>
+      <mat-card class="first">
+        <mat-card-header>
+          <span class="material-icons custom-icon" color="primary"
+            >sports_soccer</span
+          >3. Hráme v plnej zostave
+        </mat-card-header>
+        <mat-card-content>Prepojíme Ťa s tímom a môžete hrať.</mat-card-content>
+      </mat-card>
+    </mat-card-content>
+    <mat-card-footer
+      ><mat-card-actions
+        ><button mat-flat-button color="primary">
+          Hľadaj tím
+        </button></mat-card-actions
+      ></mat-card-footer
+    >
+  </mat-card>
+</main>
