@@ -1,1 +1,18 @@
-<p>scenario-step works!</p>
+<mat-card class="step" [ngClass]="{
+    'step--xsmall': breakpoint === Breakpoints.XSmall,
+    'step--small': breakpoint === Breakpoints.Small,
+    'step--medium': breakpoint === Breakpoints.Medium,
+    'step--large': breakpoint === Breakpoints.Large
+  }">
+  <mat-card-content>
+    <div class="step__contents-wrapper">
+      <span class="material-icons step__icon"
+        >{{icon}}</span
+      >
+      <span class="step__title">{{title}}</span>
+      <span class="step__description">
+        {{description}}
+      </span>
+    </div>
+  </mat-card-content>
+</mat-card>

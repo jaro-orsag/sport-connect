@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-about-us',
   standalone: true,
-  imports: [],
+  imports: [MatCardModule],
   templateUrl: './about-us.component.html',
   styleUrl: './about-us.component.sass'
 })
