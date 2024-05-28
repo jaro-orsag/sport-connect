@@ -1,116 +1,117 @@
-<main class="mat-typography">
-  <h2 class="form__title">Chcem hrať futbal, hľadám tím</h2>
-  <form
-    class="top-container"
-    [formGroup]="playerNeedForm"
-    novalidate
-    (ngSubmit)="onSubmit()"
+<h2 class="form__title">Chcem hrať futbal, hľadám tím</h2>
+<form
+  class="top-container"
+  [formGroup]="playerNeedForm"
+  novalidate
+  (ngSubmit)="onSubmit()"
+>
+  <mat-form-field class="form__item" appearance="outline">
+    <mat-label>Meno</mat-label>
+    <input
+      formControlName="playerName"
+      autocomplete="name"
+      type="text"
+      matInput
+    />
+  </mat-form-field>
+  <mat-form-field class="form__item" appearance="outline">
+    <mat-label>Okresy kde chcem hrať</mat-label>
+    <mat-chip-grid
+      formControlName="districtNames"
+      #chipGrid
+      aria-label="District selection"
+    >
+      @for (district of getSelectedDistrictNames(); track district) {
+      <mat-chip-row (removed)="removeDistrict(district)">
+        {{ district }}
+        <button matChipRemove [attr.aria-label]="'Remove ' + district">
+          <mat-icon>cancel</mat-icon>
+        </button>
+      </mat-chip-row>
+      }
+    </mat-chip-grid>
+    <input
+      placeholder="Začni písať meno okresu"
+      #districtsInput
+      [formControl]="districtsCtrl"
+      [matChipInputFor]="chipGrid"
+      [matAutocomplete]="auto"
+    />
+    <mat-autocomplete
+      #auto="matAutocomplete"
+      (optionSelected)="onSelected($event)"
+    >
+      @for (district of filteredDistricts | async; track district) {
+      <mat-option [value]="district">{{ district }}</mat-option>
+      }
+    </mat-autocomplete>
+  </mat-form-field>
+  <mat-form-field class="form__item" appearance="outline">
+    <mat-label>Kedy chcem hrať</mat-label>
+    <textarea
+      formControlName="availability"
+      placeholder="Napr.: Každý deň po 16:00 okrem utorka"
+      matInput
+      rows="2"
+    ></textarea>
+  </mat-form-field>
+  <mat-form-field class="form__item" appearance="outline">
+    <mat-label>Email</mat-label>
+    <input
+      formControlName="email"
+      type="email"
+      autocomplete="email"
+      email
+      matInput
+    />
+  </mat-form-field>
+  <mat-form-field class="form__item" appearance="outline">
+    <mat-label>Telefón</mat-label>
+    <input formControlName="phone" type="text" autocomplete="tel" matInput />
+  </mat-form-field>
+  <mat-form-field class="form__item" appearance="outline">
+    <mat-label>O mne</mat-label>
+    <textarea
+      formControlName="about"
+      placeholder="Vek, úroveň, skúsenosti. Čokoľvek, čo môže zaujímať ľudí v Tvojom novom tíme."
+      matInput
+      rows="3"
+    ></textarea>
+  </mat-form-field>
+
+  <mat-checkbox
+    #generalConditions
+    formControlName="generalConditions"
+    color="primary"
+    class="form__item form__checkbox"
   >
-    <mat-form-field class="form__item" appearance="outline">
-      <mat-label>Meno</mat-label>
-      <input formControlName="playerName" autocomplete="name" type="text" matInput />
-    </mat-form-field>
-    <mat-form-field class="form__item" appearance="outline">
-      <mat-label>Okresy kde chcem hrať</mat-label>
-      <mat-chip-grid
-        formControlName="districtNames"
-        #chipGrid
-        aria-label="District selection"
-      >
-        @for (district of getSelectedDistrictNames(); track district) {
-        <mat-chip-row (removed)="removeDistrict(district)">
-          {{ district }}
-          <button matChipRemove [attr.aria-label]="'Remove ' + district">
-            <mat-icon>cancel</mat-icon>
-          </button>
-        </mat-chip-row>
-        }
-      </mat-chip-grid>
-      <input
-        placeholder="Začni písať meno okresu"
-        #districtsInput
-        [formControl]="districtsCtrl"
-        [matChipInputFor]="chipGrid"
-        [matAutocomplete]="auto"
-      />
-      <mat-autocomplete
-        #auto="matAutocomplete"
-        (optionSelected)="onSelected($event)"
-      >
-        @for (district of filteredDistricts | async; track district) {
-        <mat-option [value]="district">{{ district }}</mat-option>
-        }
-      </mat-autocomplete>
-    </mat-form-field>
-    <mat-form-field class="form__item" appearance="outline">
-      <mat-label>Kedy chcem hrať</mat-label>
-      <textarea
-        formControlName="availability"
-        placeholder="Napr.: Každý deň po 16:00 okrem utorka"
-        matInput
-        rows="2"
-      ></textarea>
-    </mat-form-field>
-    <mat-form-field class="form__item" appearance="outline">
-      <mat-label>Email</mat-label>
-      <input
-        formControlName="email"
-        type="email"
-        autocomplete="email"
-        email
-        matInput
-      />
-    </mat-form-field>
-    <mat-form-field class="form__item" appearance="outline">
-      <mat-label>Telefón</mat-label>
-      <input formControlName="phone" type="text" autocomplete="tel" matInput />
-    </mat-form-field>
-    <mat-form-field class="form__item" appearance="outline">
-      <mat-label>O mne</mat-label>
-      <textarea
-        formControlName="about"
-        placeholder="Vek, úroveň, skúsenosti. Čokoľvek, čo môže zaujímať ľudí v Tvojom novom tíme."
-        matInput
-        rows="3"
-      ></textarea>
-    </mat-form-field>
+    Súhlasím so
+    <a xmat-button [routerLink]="['/terms-conditions']" target="_blank"
+      >Všeobecnými obchodnými podmienkami</a
+    >.
+  </mat-checkbox>
+  <mat-error
+    class="form__item form__checkbox"
+    *ngIf="!generalConditions.checked"
+  >
+    Súhlas s <a [routerLink]="['/terms-conditions']" target="_blank">VOP</a>
+    je povinný.
+  </mat-error>
 
-    <mat-checkbox
-      #generalConditions
-      formControlName="generalConditions"
-      color="primary"
-      class="form__item form__checkbox"
-    >
-      Súhlasím so
-      <a xmat-button [routerLink]="['/terms-conditions']" target="_blank"
-        >Všeobecnými obchodnými podmienkami</a
-      >.
-    </mat-checkbox>
-    <mat-error
-      class="form__item form__checkbox"
-      *ngIf="!generalConditions.checked"
-    >
-      Súhlas s <a [routerLink]="['/terms-conditions']" target="_blank"
-        >VOP</a
-      >
-      je povinný.
-    </mat-error>
-
-    <mat-checkbox
-      formControlName="thirdPartyMarketing"
-      color="primary"
-      class="form__item form__checkbox"
-    >
-      Súhlasím s poskytnutím svojich údajov tretím stranám za účelom
-      marketingovej komunikácie. Nepovinné.
-    </mat-checkbox>
-    <button
-      mat-flat-button
-      color="primary"
-      type="submit"
-      class="form__submit-button form__item"
-    >
-      Odoslať
-    </button>
-  </form>
-</main>
+  <mat-checkbox
+    formControlName="thirdPartyMarketing"
+    color="primary"
+    class="form__item form__checkbox"
+  >
+    Súhlasím s poskytnutím svojich údajov tretím stranám za účelom marketingovej
+    komunikácie. Nepovinné.
+  </mat-checkbox>
+  <button
+    mat-flat-button
+    color="primary"
+    type="submit"
+    class="form__submit-button form__item"
+  >
+    Odoslať
+  </button>
+</form>

@@ -7,6 +7,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatNavList, MatListItem } from '@angular/material/list';
 import { menuRoutes } from './app.routes';
 import { AppToolbarComponent } from './components/app-toolbar/app-toolbar.component';
+import { FooterComponent } from './components/footer/footer.component';
 
 @Component({
     selector: 'app-root',
@@ -23,7 +24,8 @@ import { AppToolbarComponent } from './components/app-toolbar/app-toolbar.compon
         MatIcon,
         MatNavList,
         MatListItem,
-        AppToolbarComponent
+        AppToolbarComponent,
+        FooterComponent
     ],
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.sass']

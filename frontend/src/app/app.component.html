@@ -14,6 +14,9 @@
   </mat-sidenav>
   <mat-sidenav-content>
     <app-toolbar [sideNav]="mysidenav" [insideSideNav]="false"></app-toolbar>
-    <router-outlet></router-outlet>
+    <main class="mat-typography">
+      <router-outlet></router-outlet>
+      <app-footer></app-footer>
+    </main>
   </mat-sidenav-content>
 </mat-sidenav-container>
