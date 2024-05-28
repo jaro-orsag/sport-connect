@@ -1,16 +1,16 @@
 <main class="mat-typography">
   <h2 class="form__title">Chcem hrať futbal, hľadám tím</h2>
   <form
-    class="form"
+    class="top-container"
     [formGroup]="playerNeedForm"
     novalidate
     (ngSubmit)="onSubmit()"
   >
-    <mat-form-field class="form__element" appearance="outline">
+    <mat-form-field class="form__item" appearance="outline">
       <mat-label>Meno</mat-label>
       <input formControlName="playerName" autocomplete="name" type="text" matInput />
     </mat-form-field>
-    <mat-form-field class="form__element" appearance="outline">
+    <mat-form-field class="form__item" appearance="outline">
       <mat-label>Okresy kde chcem hrať</mat-label>
       <mat-chip-grid
         formControlName="districtNames"
@@ -42,7 +42,7 @@
         }
       </mat-autocomplete>
     </mat-form-field>
-    <mat-form-field class="form__element" appearance="outline">
+    <mat-form-field class="form__item" appearance="outline">
       <mat-label>Kedy chcem hrať</mat-label>
       <textarea
         formControlName="availability"
@@ -51,7 +51,7 @@
         rows="2"
       ></textarea>
     </mat-form-field>
-    <mat-form-field class="form__element" appearance="outline">
+    <mat-form-field class="form__item" appearance="outline">
       <mat-label>Email</mat-label>
       <input
         formControlName="email"
@@ -61,11 +61,11 @@
         matInput
       />
     </mat-form-field>
-    <mat-form-field class="form__element" appearance="outline">
+    <mat-form-field class="form__item" appearance="outline">
       <mat-label>Telefón</mat-label>
       <input formControlName="phone" type="text" autocomplete="tel" matInput />
     </mat-form-field>
-    <mat-form-field class="form__element" appearance="outline">
+    <mat-form-field class="form__item" appearance="outline">
       <mat-label>O mne</mat-label>
       <textarea
         formControlName="about"
@@ -79,7 +79,7 @@
       #generalConditions
       formControlName="generalConditions"
       color="primary"
-      class="form__element form__checkbox"
+      class="form__item form__checkbox"
     >
       Súhlasím so
       <a xmat-button [routerLink]="['/terms-conditions']" target="_blank"
@@ -87,7 +87,7 @@
       >.
     </mat-checkbox>
     <mat-error
-      class="form__element form__checkbox"
+      class="form__item form__checkbox"
       *ngIf="!generalConditions.checked"
     >
       Súhlas s <a [routerLink]="['/terms-conditions']" target="_blank"
@@ -99,7 +99,7 @@
     <mat-checkbox
       formControlName="thirdPartyMarketing"
       color="primary"
-      class="form__element form__checkbox"
+      class="form__item form__checkbox"
     >
       Súhlasím s poskytnutím svojich údajov tretím stranám za účelom
       marketingovej komunikácie. Nepovinné.
@@ -108,7 +108,7 @@
       mat-flat-button
       color="primary"
       type="submit"
-      class="form__submit-button form__element"
+      class="form__submit-button form__item"
     >
       Odoslať
     </button>
