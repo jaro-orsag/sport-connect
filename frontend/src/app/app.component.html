@@ -12,11 +12,11 @@
       </a>
     </mat-nav-list>
   </mat-sidenav>
-  <mat-sidenav-content>
+  <mat-sidenav-content class="mat-typography">
     <app-toolbar [sideNav]="mysidenav" [insideSideNav]="false"></app-toolbar>
-    <main class="mat-typography">
+    <main>
       <router-outlet></router-outlet>
-      <app-footer></app-footer>
     </main>
+    <app-footer></app-footer>
   </mat-sidenav-content>
 </mat-sidenav-container>
