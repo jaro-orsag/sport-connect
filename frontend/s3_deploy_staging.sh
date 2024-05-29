@@ -1,4 +1,4 @@
-ng build --configuration staging
+ng build --configuration staging --aot --optimization
 aws s3 sync dist/frontend/browser s3://staging.futbal-spoluhrac.sk --delete
 
 # Replace these with your actual values
