@@ -32,7 +32,8 @@
             "styles": [
               "node_modules/normalize.css/normalize.css",
               "@angular/material/prebuilt-themes/indigo-pink.css",
-              "src/styles.sass"
+              "src/styles.sass",
+              "src/assets/fonts/material-icons.css"
             ],
             "scripts": []
           },
@@ -120,7 +121,8 @@
             "styles": [
               "node_modules/normalize.css/normalize.css",
               "@angular/material/prebuilt-themes/purple-green.css",
-              "src/styles.sass"
+              "src/styles.sass",
+              "src/assets/fonts/material-icons.css"
             ],
             "scripts": []
           }
