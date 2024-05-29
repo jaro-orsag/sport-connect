@@ -1,6 +1,9 @@
 ng build --configuration staging --aot --optimization
 aws s3 sync dist/frontend/browser s3://staging.futbal-spoluhrac.sk --delete
 
+# set up caching for static assets
+aws s3 cp s3://staging.futbal-spoluhrac.sk/assets/ s3://staging.futbal-spoluhrac.sk/assets/ --recursive --metadata-directive REPLACE --cache-control max-age=31536000
+
 # Replace these with your actual values
 DISTRIBUTION_ID="EB01IXTCXX6TB"
 PATHS="/*" # Paths to invalidate
