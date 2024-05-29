@@ -1,24 +1,44 @@
 import { Routes } from '@angular/router';
-import { TeamNeedAdditionComponent } from './pages/team-need-addition/team-need-addition.component';
-import { PlayerNeedAdditionComponent } from './pages/player-need-addition/player-need-addition.component';
-import { PlayerNeedDetailComponent } from './pages/player-need-detail/player-need-detail.component';
-import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
-import { TermsAndConditionsComponent } from './pages/terms-and-conditions/terms-and-conditions.component';
-import { AboutUsComponent } from './pages/about-us/about-us.component';
-import { LandingComponent } from './pages/landing/landing.component';
-import { TeamNeedDetailComponent } from './pages/team-need-detail/team-need-detail.component';
 
 export const menuRoutes: Routes = [
-    { path: 'player-need', component: PlayerNeedAdditionComponent, data: [{'title': 'Hľadám tím'}] },
-    { path: 'team-need', component: TeamNeedAdditionComponent, data: [{'title': 'Hľadáme hráča'}] },
-    { path: 'terms-conditions', component: TermsAndConditionsComponent, data: [{'title': 'Súhlasy'}] },
-    { path: 'about-us', component: AboutUsComponent, data: [{'title': 'O nás'}] }
+    { 
+        path: 'player-need', 
+        loadComponent: () => import('./pages/player-need-addition/player-need-addition.component').then(m => m.PlayerNeedAdditionComponent), 
+        data: [{'title': 'Hľadám tím'}] 
+    },
+    { 
+        path: 'team-need', 
+        loadComponent: () => import('./pages/team-need-addition/team-need-addition.component').then(m => m.TeamNeedAdditionComponent),
+        data: [{'title': 'Hľadáme hráča'}] 
+    },
+    { 
+        path: 'terms-conditions', 
+        loadComponent: () => import('./pages/terms-and-conditions/terms-and-conditions.component').then(m => m.TermsAndConditionsComponent),
+        data: [{'title': 'Súhlasy'}] 
+    },
+    { 
+        path: 'about-us', 
+        loadComponent: () => import('./pages/about-us/about-us.component').then(m => m.AboutUsComponent),
+        data: [{'title': 'O nás'}] 
+    }
 ];
 
 export const routes: Routes = [
     ...menuRoutes,
-    { path: 'player-need/:uuid', component: PlayerNeedDetailComponent },
-    { path: 'team-need/:uuid', component: TeamNeedDetailComponent },
-    { path: '', component: LandingComponent },
-    { path: '**', component: PageNotFoundComponent },
+    { 
+        path: 'player-need/:uuid', 
+        loadComponent: () => import('./pages/player-need-detail/player-need-detail.component').then(m => m.PlayerNeedDetailComponent)
+    },
+    { 
+        path: 'team-need/:uuid', 
+        loadComponent: () => import('./pages/team-need-detail/team-need-detail.component').then(m => m.TeamNeedDetailComponent)
+    },
+    { 
+        path: '', 
+        loadComponent: () => import('./pages/landing/landing.component').then(m => m.LandingComponent)
+    },
+    { 
+        path: '**', 
+        loadComponent: () => import('./pages/page-not-found/page-not-found.component').then(m => m.PageNotFoundComponent)
+    },
 ];
