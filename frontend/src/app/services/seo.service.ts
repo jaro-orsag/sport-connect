@@ -18,6 +18,12 @@ export class SeoService {
         });
     }
 
+    updateOpenGraphTags(metaTags: { property: string, content: string }[]) {
+        metaTags.forEach(tag => {
+            this.meta.updateTag({ property: tag.property, content: tag.content });
+        });
+    }
+
     setNoIndex() {
         this.meta.updateTag({ name: 'robots', content: 'noindex' });
     }
