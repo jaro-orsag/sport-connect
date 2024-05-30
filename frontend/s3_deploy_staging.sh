@@ -9,6 +9,9 @@ ng build --configuration staging --aot --optimization
 # 2. Add robots.txt to dist
 cp ./src/robots.txt $DIST_DIR 
 
+# 2.a Add google search console verification file to dist
+cp ./src/google3b9bed403026ef96.html $DIST_DIR 
+
 # 3. Compress text resources
 gzip -k $DIST_DIR/**/*.css
 brotli $DIST_DIR/**/*.css
