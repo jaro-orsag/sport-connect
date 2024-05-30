@@ -27,14 +27,6 @@ export class LandingComponent implements OnInit {
         this.seoService.updateMetaTags([
             { name: 'description', content: 'Zoznám sa s tým, ako funguje online služba na prepájanie hráčov a futbalových tímov.' }
         ]);
-        this.seoService.updateOpenGraphTags([
-            { property: 'og:title', content: "futbal-spoluhráč.sk | Ako to funguje?" },
-            { property: 'og:description', content: 'Zoznám sa s tým, ako funguje online služba na prepájanie hráčov a futbalových tímov.' },
-            { property: 'og:image', content: 'https://d9xhaik0o2ey6.cloudfront.net/assets/jaro-f-small.jpg' },
-            { property: 'og:url', content: 'https://d9xhaik0o2ey6.cloudfront.net' },
-            { property: 'og:type', content: 'website' },
-            { property: 'og:site_name', content: 'Your Site Name' }
-        ]);
 
         this.responsive.observe([Breakpoints.XSmall, Breakpoints.Small, Breakpoints.Medium, Breakpoints.Large])
             .subscribe(result => {
