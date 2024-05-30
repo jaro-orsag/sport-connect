@@ -4,12 +4,12 @@ export const menuRoutes: Routes = [
     { 
         path: 'player-need', 
         loadComponent: () => import('./pages/player-need-addition/player-need-addition.component').then(m => m.PlayerNeedAdditionComponent), 
-        data: [{'title': 'Hľadám tím'}] 
+        data: [{'title': 'Hľadaj tím na futbal'}] 
     },
     { 
         path: 'team-need', 
         loadComponent: () => import('./pages/team-need-addition/team-need-addition.component').then(m => m.TeamNeedAdditionComponent),
-        data: [{'title': 'Hľadáme hráča'}] 
+        data: [{'title': 'Hľadaj spoluhráča na futbal'}] 
     },
     { 
         path: 'terms-conditions', 

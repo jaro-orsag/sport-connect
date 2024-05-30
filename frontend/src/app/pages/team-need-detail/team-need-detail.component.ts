@@ -11,6 +11,7 @@ import { DatePipe } from '@angular/common';
 import { getDistrictName } from '../../services/district';
 import { MarketingConsentComponent } from '../../components/need-detail/marketing-consent/marketing-consent.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { SeoService } from '../../services/seo.service';
 
 @Component({
   selector: 'app-team-need-detail',
@@ -35,10 +36,14 @@ export class TeamNeedDetailComponent implements OnInit {
         private route: ActivatedRoute, 
         private api: ApiService, 
         private datePipe: DatePipe, 
-        private snackBar: MatSnackBar
+        private snackBar: MatSnackBar,
+        private seoService: SeoService
     ) { }
 
     ngOnInit() {
+        this.seoService.updateTitle("futbal-spoluhráč.sk | Zhrnutie hľadania hráča");
+        this.seoService.setNoIndex();
+
         this.loadTeamNeed();
     }
 

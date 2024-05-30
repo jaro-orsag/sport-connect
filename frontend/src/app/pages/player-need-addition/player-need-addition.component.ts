@@ -19,6 +19,8 @@ import { PlayerNeed } from '../../services/player-need';
 import { getDistrictCode, getDistrictNames } from '../../services/district';
 import { CommonModule } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { SeoService } from '../../services/seo.service';
+import { OnInit } from '@angular/core';
 
 @Component({
     selector: 'player-need-addition',
@@ -46,7 +48,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     templateUrl: './player-need-addition.component.html',
     styleUrl: './player-need-addition.component.sass'
 })
-export class PlayerNeedAdditionComponent {
+export class PlayerNeedAdditionComponent implements OnInit {
     districtNames: string[];
     districtsCtrl: FormControl;
     filteredDistricts: Observable<string[]>;
@@ -55,10 +57,11 @@ export class PlayerNeedAdditionComponent {
     playerNeedForm: FormGroup;
 
     constructor(
-        private formBuilder: FormBuilder, 
-        private api: ApiService, 
-        private snackBar: MatSnackBar, 
-        private router: Router
+        private formBuilder: FormBuilder,
+        private api: ApiService,
+        private snackBar: MatSnackBar,
+        private router: Router,
+        private seoService: SeoService
     ) {
         this.districtNames = getDistrictNames();
         this.districtsCtrl = new FormControl('');
@@ -77,6 +80,13 @@ export class PlayerNeedAdditionComponent {
             generalConditions: [true, Validators.requiredTrue],
             thirdPartyMarketing: [true]
         });
+    }
+
+    ngOnInit() {
+        this.seoService.updateTitle("futbal-spoluhráč.sk | Hľadaj tím na futbal");
+        this.seoService.updateMetaTags([
+            { name: 'description', content: 'Vyplň jednoduchý formulár a okamžite pre Teba začneme hľadať tím na futbal.' }
+        ]);
     }
 
     removeDistrict(district: string): void {
@@ -113,7 +123,7 @@ export class PlayerNeedAdditionComponent {
 
         const playerNeed = this._mapFormToPlayerNeed(this.playerNeedForm.value);
         this.api.addPlayerNeed(playerNeed).subscribe(pn => {
-            this.router.navigate(["/player-need", pn.uuid], { state: { navigatedFromAddition: true }});
+            this.router.navigate(["/player-need", pn.uuid], { state: { navigatedFromAddition: true } });
         });
     }
 

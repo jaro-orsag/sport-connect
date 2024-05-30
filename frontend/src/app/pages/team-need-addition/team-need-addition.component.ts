@@ -18,6 +18,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { getDistrictCode, getDistrictNames } from '../../services/district';
 import { TeamNeed } from '../../services/team-need';
 import { Router } from '@angular/router';
+import { SeoService } from '../../services/seo.service';
+import { OnInit } from '@angular/core';
 
 @Component({
     selector: 'team-need',
@@ -45,21 +47,21 @@ import { Router } from '@angular/router';
     templateUrl: './team-need-addition.component.html',
     styleUrl: './team-need-addition.component.sass'
 })
-export class TeamNeedAdditionComponent {
+export class TeamNeedAdditionComponent implements OnInit {
     @ViewChild('districtsInput') districtsInput!: ElementRef<HTMLInputElement>;
 
     teamNeedForm: FormGroup;
-
 
     @ViewChild('districtInput') districtInput!: ElementRef<HTMLInputElement>;
     options: string[] = getDistrictNames();
     filteredDistricts: string[];
 
     constructor(
-        private formBuilder: FormBuilder, 
-        private api: ApiService, 
+        private formBuilder: FormBuilder,
+        private api: ApiService,
         private snackBar: MatSnackBar,
-        private router: Router
+        private router: Router,
+        private seoService: SeoService
     ) {
         this.filteredDistricts = this.options.slice();
 
@@ -76,11 +78,17 @@ export class TeamNeedAdditionComponent {
         });
     }
 
+    ngOnInit() {
+        this.seoService.updateTitle("futbal-spoluhráč.sk | Hľadaj spoluhráča na futbal");
+        this.seoService.updateMetaTags([
+            { name: 'description', content: 'Vyplň jednoduchý formulár a okamžite pre Teba začneme hľadať spoluhráča na futbal.' }
+        ]);
+    }
 
     filterDistricts(): void {
         const filterValue = this.districtInput.nativeElement.value.toLowerCase();
         this.filteredDistricts = this.options.filter(o => o.toLowerCase().includes(filterValue));
-      }
+    }
 
     onSubmit(): void {
         if (this.teamNeedForm.invalid) {
@@ -91,7 +99,7 @@ export class TeamNeedAdditionComponent {
 
         const teamNeed = this._mapFormToPlayerNeed(this.teamNeedForm.value);
         this.api.addTeamNeed(teamNeed).subscribe(tn => {
-            this.router.navigate(["/team-need", tn.uuid], { state: { navigatedFromAddition: true }});
+            this.router.navigate(["/team-need", tn.uuid], { state: { navigatedFromAddition: true } });
         });
     }
 
@@ -104,7 +112,7 @@ export class TeamNeedAdditionComponent {
             districtCode: getDistrictCode(formModel.districtName),
             address: formModel.address,
             time: formModel.time,
-            playerName: formModel.playerName,            
+            playerName: formModel.playerName,
             email: formModel.email,
             phone: formModel.phone,
             about: formModel.about,
