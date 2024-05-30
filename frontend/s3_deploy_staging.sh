@@ -6,7 +6,10 @@ DIST_DIR=dist/frontend/browser
 # 1. Build angular application
 ng build --configuration staging --aot --optimization
 
-# 2. Compress text resources
+# 2. Add robots.txt to dist
+cp ./src/robots.txt $DIST_DIR 
+
+# 3. Compress text resources
 gzip -k $DIST_DIR/**/*.css
 brotli $DIST_DIR/**/*.css
 
@@ -16,7 +19,7 @@ brotli $DIST_DIR/**/*.js
 gzip -k $DIST_DIR/**/*.html
 brotli $DIST_DIR/**/*.html
 
-# 3. Upload all resources
+# 4. Upload all resources
 aws s3 sync $DIST_DIR s3://$BUCKET_NAME --delete
 
 # 5. Set up content-encoding http headers for compressed text resources
