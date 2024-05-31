@@ -1,0 +1,1 @@
+./lambda_deploy.sh $1 prod
