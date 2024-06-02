@@ -1,14 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { MatToolbar } from '@angular/material/toolbar';
-import { MatIcon } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { MatSidenav } from '@angular/material/sidenav';
 
 @Component({
     selector: 'app-toolbar',
     standalone: true,
-    imports: [MatToolbar, MatIcon, CommonModule],
+    imports: [MatToolbar, CommonModule],
     templateUrl: './app-toolbar.component.html',
     styleUrl: './app-toolbar.component.sass'
 })

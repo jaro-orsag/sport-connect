@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { ScenarioStepComponent } from '../../components/landing/scenario-step/scenario-step.component';
 import { RouterLink, Router } from '@angular/router';
@@ -12,7 +11,7 @@ import { OnInit } from '@angular/core';
 @Component({
     selector: 'app-landing',
     standalone: true,
-    imports: [MatCardModule, MatButtonModule, MatIconModule, CommonModule, ScenarioStepComponent, RouterLink],
+    imports: [MatCardModule, MatButtonModule, CommonModule, ScenarioStepComponent, RouterLink],
     templateUrl: './landing.component.html',
     styleUrl: './landing.component.sass'
 })

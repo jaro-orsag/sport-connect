@@ -5,7 +5,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { MatChipsModule } from '@angular/material/chips';
-import { MatIconModule } from '@angular/material/icon';
 import { AsyncPipe } from '@angular/common';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatCardModule } from '@angular/material/card';
@@ -33,7 +32,6 @@ import { OnInit } from '@angular/core';
         MatAutocompleteModule,
         ReactiveFormsModule,
         MatChipsModule,
-        MatIconModule,
         ReactiveFormsModule,
         AsyncPipe,
         MatCheckboxModule,

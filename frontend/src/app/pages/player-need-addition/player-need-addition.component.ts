@@ -5,7 +5,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteSelectedEvent, MatAutocompleteModule } from '@angular/material/autocomplete';
 import { FormControl, FormsModule, ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { MatChipsModule } from '@angular/material/chips';
-import { MatIconModule } from '@angular/material/icon';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { AsyncPipe } from '@angular/common';
@@ -34,7 +33,6 @@ import { OnInit } from '@angular/core';
         MatAutocompleteModule,
         ReactiveFormsModule,
         MatChipsModule,
-        MatIconModule,
         ReactiveFormsModule,
         AsyncPipe,
         MatCheckboxModule,
