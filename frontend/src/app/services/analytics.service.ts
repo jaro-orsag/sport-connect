@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { UtmService } from './utm.service';
+import { GdprConsentService } from './gdpr-consent.service';
 
 declare var gtag: Function;
 
@@ -10,9 +11,9 @@ type NeedType = "player_need" | "team_need";
   providedIn: 'root'
 })
 export class AnalyticsService {
-    utmParameters: any = {}
+  utmParameters: any = {}
 
-  constructor(private utmService: UtmService) {
+  constructor(private utmService: UtmService, private gdprConsentService: GdprConsentService) {
     this.injectTrackingId();
     this.utmParameters = this.utmService.getUTMParameters();
   }
@@ -84,8 +85,8 @@ export class AnalyticsService {
         client_id: 'not available in development mode'
     };
 
-    if (environment.isDevelopment) {
-        console.log(`would track ${event} if not development mode`, event_params);
+    if (environment.isDevelopment || !this.gdprConsentService.isGranted()) {
+        console.log(`would track ${event}; development mode: ${environment.isDevelopment}; GDPR consent granted: ${this.gdprConsentService.isGranted()}`, event_params);
 
         return;
     }
@@ -122,7 +123,7 @@ export class AnalyticsService {
    */
   private injectTrackingId() {
     if (environment.isDevelopment) {
-        console.log(`would inject google tracking ID if not development mode`);
+        console.log(`would inject google tracking ID; development mode: ${environment.isDevelopment}; GDPR consent granted: ${this.gdprConsentService.isGranted()}`);
 
         return;
     }

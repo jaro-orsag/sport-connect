@@ -11,6 +11,9 @@ import { filter } from 'rxjs';
 import { NavigationEnd } from '@angular/router';
 import { ViewportScroller } from '@angular/common';
 import { AnalyticsService } from './services/analytics.service';
+import { ConsentPopupComponent } from './components/consent-popup/consent-popup.component';
+import { MatDialog } from '@angular/material/dialog';
+import { GdprConsentService } from './services/gdpr-consent.service';
 
 @Component({
     selector: 'app-root',
@@ -39,14 +42,22 @@ export class AppComponent {
     routes = menuRoutes;
 
     constructor(
-        private router: Router, 
-        private viewportScroller: ViewportScroller, 
+        private router: Router,
+        private viewportScroller: ViewportScroller,
         // Ensuring the service is instantiated, so that tracking ID initialization script is added by calling 
         // service constructor
-        private analyticsService: AnalyticsService 
+        private analyticsService: AnalyticsService,
+        private dialog: MatDialog,
+        private gdprConsentService: GdprConsentService
     ) { }
 
     ngOnInit() {
+        if (!this.gdprConsentService.isGranted()) {
+            this.dialog.open(ConsentPopupComponent, {
+                disableClose: true
+            });
+        }
+
         this.router.events.pipe(
             filter(event => event instanceof NavigationEnd)
         ).subscribe((event) => {
