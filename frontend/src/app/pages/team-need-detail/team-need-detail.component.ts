@@ -12,6 +12,7 @@ import { getDistrictName } from '../../services/district';
 import { MarketingConsentComponent } from '../../components/need-detail/marketing-consent/marketing-consent.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SeoService } from '../../services/seo.service';
+import { AnalyticsService } from '../../services/analytics.service';
 
 @Component({
   selector: 'app-team-need-detail',
@@ -37,7 +38,8 @@ export class TeamNeedDetailComponent implements OnInit {
         private api: ApiService, 
         private datePipe: DatePipe, 
         private snackBar: MatSnackBar,
-        private seoService: SeoService
+        private seoService: SeoService,
+        private analyticsService: AnalyticsService
     ) { }
 
     ngOnInit() {
@@ -65,7 +67,10 @@ export class TeamNeedDetailComponent implements OnInit {
     }
 
     deactivateTeamNeed(): void {
-        this.api.deactivateTeamNeed(this.teamNeed!.uuid!).subscribe(_ => this.loadTeamNeed());
+        this.api.deactivateTeamNeed(this.teamNeed!.uuid!).subscribe(_ => {
+            this.analyticsService.trackTeamNeedDeactivation(this.teamNeed!.uuid!);
+            this.loadTeamNeed();
+        });
     }
 
     cleanUpFlagInHistoryState() {

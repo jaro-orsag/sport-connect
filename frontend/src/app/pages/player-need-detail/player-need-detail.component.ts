@@ -12,6 +12,7 @@ import { NeedSummaryComponent } from '../../components/need-detail/need-summary/
 import { DatePipe } from '@angular/common';
 import { MarketingConsentComponent } from '../../components/need-detail/marketing-consent/marketing-consent.component';
 import { SeoService } from '../../services/seo.service';
+import { AnalyticsService } from '../../services/analytics.service';
 
 @Component({
     selector: 'app-player-need-detail',
@@ -37,7 +38,8 @@ export class PlayerNeedDetailComponent implements OnInit {
         private api: ApiService, 
         private snackBar: MatSnackBar, 
         private datePipe: DatePipe,
-        private seoService: SeoService
+        private seoService: SeoService,
+        private analyticsService: AnalyticsService
     ) { }
 
     ngOnInit() {
@@ -65,7 +67,10 @@ export class PlayerNeedDetailComponent implements OnInit {
     }
 
     deactivatePlayerNeed(): void {
-        this.api.deactivatePlayerNeed(this.playerNeed!.uuid!).subscribe(_ => this.loadPlayerNeed());
+        this.api.deactivatePlayerNeed(this.playerNeed!.uuid!).subscribe(_ => {
+            this.analyticsService.trackPlayerNeedDeactivation(this.playerNeed!.uuid!);
+            this.loadPlayerNeed();
+        });
     }
 
     getDistrictNames(): string {

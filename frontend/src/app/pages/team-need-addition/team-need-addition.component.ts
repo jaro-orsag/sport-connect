@@ -99,7 +99,8 @@ export class TeamNeedAdditionComponent implements OnInit {
 
         const teamNeed = this._mapFormToPlayerNeed(this.teamNeedForm.value);
         this.api.addTeamNeed(teamNeed).subscribe(tn => {
-            this.analyticsService.trackNeedCreation(tn.uuid!, "team-need");
+            this.analyticsService.trackPurchase(tn.uuid!, "team_need");
+            this.analyticsService.trackTeamNeedAddition(tn.uuid!);
             this.router.navigate(["/team-need", tn.uuid], { state: { navigatedFromAddition: true } });
         });
     }

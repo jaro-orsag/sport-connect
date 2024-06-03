@@ -123,7 +123,8 @@ export class PlayerNeedAdditionComponent implements OnInit {
 
         const playerNeed = this._mapFormToPlayerNeed(this.playerNeedForm.value);
         this.api.addPlayerNeed(playerNeed).subscribe(pn => {
-            this.analyticsService.trackNeedCreation(pn.uuid!, "player-need");
+            this.analyticsService.trackPurchase(pn.uuid!, "player_need");
+            this.analyticsService.trackPlayerNeedAddition(pn.uuid!);
             this.router.navigate(["/player-need", pn.uuid], { state: { navigatedFromAddition: true } });
         });
     }

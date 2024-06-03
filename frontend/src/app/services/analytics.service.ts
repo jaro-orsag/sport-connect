@@ -3,7 +3,7 @@ import { environment } from '../../environments/environment';
 
 declare var gtag: Function;
 
-type NeedType = "player-need" | "team-need";
+type NeedType = "player_need" | "team_need";
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +24,13 @@ export class AnalyticsService {
     this.trackEvent('page_view', event_params);
   }
 
-  trackNeedCreation(needUuid: string, needType: NeedType) {
+  /**
+   * Track purchase is redundant with track*NeedAddition. The reason why it exists is, that we want to experiment 
+   * with recommended events (purchase) and custom events (track*NeedAddition).
+   * @param needUuid 
+   * @param needType 
+   */
+  trackPurchase(needUuid: string, needType: NeedType) {
     const event_params = {
         user_agent: navigator.userAgent,
         currency: "EUR",
@@ -37,6 +43,34 @@ export class AnalyticsService {
     };
 
     this.trackEvent('purchase', event_params);
+  }
+
+  trackTeamNeedDeactivation(needUuid: string) {
+    this.trackNeedEvent("team_need", "deactivation", needUuid);
+  }
+
+  trackTeamNeedAddition(needUuid: string) {
+    this.trackNeedEvent("team_need", "addition", needUuid);
+  }
+
+  trackPlayerNeedDeactivation(needUuid: string) {
+    this.trackNeedEvent("player_need", "deactivation", needUuid);
+  }
+
+  trackPlayerNeedAddition(needUuid: string) {
+    this.trackNeedEvent("player_need", "addition", needUuid);
+  }
+
+  private trackNeedEvent(needType: NeedType, event: string, needUuid: string) {
+    const fullEventName = `${needType}_${event}`;
+    const event_params = {
+        event: fullEventName,
+        user_agent: navigator.userAgent,
+        transaction_id: needUuid,
+        page_title: document.title
+    };
+
+    this.trackEvent(fullEventName, event_params);
   }
 
   private async trackEvent(event: string, event_params: any) {
