@@ -19,6 +19,7 @@ import { TeamNeed } from '../../services/team-need';
 import { Router } from '@angular/router';
 import { SeoService } from '../../services/seo.service';
 import { OnInit } from '@angular/core';
+import { AnalyticsService } from '../../services/analytics.service';
 
 @Component({
     selector: 'team-need',
@@ -59,7 +60,8 @@ export class TeamNeedAdditionComponent implements OnInit {
         private api: ApiService,
         private snackBar: MatSnackBar,
         private router: Router,
-        private seoService: SeoService
+        private seoService: SeoService,
+        private analyticsService: AnalyticsService
     ) {
         this.filteredDistricts = this.options.slice();
 
@@ -97,6 +99,7 @@ export class TeamNeedAdditionComponent implements OnInit {
 
         const teamNeed = this._mapFormToPlayerNeed(this.teamNeedForm.value);
         this.api.addTeamNeed(teamNeed).subscribe(tn => {
+            this.analyticsService.trackNeedCreation(tn.uuid!, "team-need");
             this.router.navigate(["/team-need", tn.uuid], { state: { navigatedFromAddition: true } });
         });
     }

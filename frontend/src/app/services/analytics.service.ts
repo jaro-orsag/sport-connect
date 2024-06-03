@@ -3,6 +3,8 @@ import { environment } from '../../environments/environment';
 
 declare var gtag: Function;
 
+type NeedType = "player-need" | "team-need";
+
 @Injectable({
   providedIn: 'root'
 })
@@ -12,19 +14,36 @@ export class AnalyticsService {
     this.injectTrackingId();
   }
 
-  async trackPageView(url: string) {
+  trackPageView(url: string) {
+    const event_params = {
+        page_location: this.sanitizeUrl(url),
+        page_title: document.title,
+        user_agent: navigator.userAgent
+    };
 
-    const event = 'page_view';
+    this.trackEvent('page_view', event_params);
+  }
 
-    const page_location = this.sanitizeUrl(url);
-    const page_title = document.title;
-    const user_agent = navigator.userAgent;
+  trackNeedCreation(needUuid: string, needType: NeedType) {
+    const event_params = {
+        user_agent: navigator.userAgent,
+        currency: "EUR",
+        value: 0.30,
+        transaction_id: needUuid,
+        items: [{
+            item_id: needType,
+            item_name: needType
+        }]
+    };
 
-    let event_params = {
-        client_id: 'not available in development mode',
-        page_location,
-        page_title,
-        user_agent
+    this.trackEvent('purchase', event_params);
+  }
+
+  private async trackEvent(event: string, event_params: any) {
+
+    event_params = {
+        ...event_params,
+        client_id: 'not available in development mode'
     };
 
     if (environment.isDevelopment) {

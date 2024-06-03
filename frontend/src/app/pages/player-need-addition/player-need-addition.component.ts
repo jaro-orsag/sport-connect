@@ -20,6 +20,7 @@ import { CommonModule } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SeoService } from '../../services/seo.service';
 import { OnInit } from '@angular/core';
+import { AnalyticsService } from '../../services/analytics.service';
 
 @Component({
     selector: 'player-need-addition',
@@ -59,7 +60,8 @@ export class PlayerNeedAdditionComponent implements OnInit {
         private api: ApiService,
         private snackBar: MatSnackBar,
         private router: Router,
-        private seoService: SeoService
+        private seoService: SeoService,
+        private analyticsService: AnalyticsService
     ) {
         this.districtNames = getDistrictNames();
         this.districtsCtrl = new FormControl('');
@@ -121,6 +123,7 @@ export class PlayerNeedAdditionComponent implements OnInit {
 
         const playerNeed = this._mapFormToPlayerNeed(this.playerNeedForm.value);
         this.api.addPlayerNeed(playerNeed).subscribe(pn => {
+            this.analyticsService.trackNeedCreation(pn.uuid!, "player-need");
             this.router.navigate(["/player-need", pn.uuid], { state: { navigatedFromAddition: true } });
         });
     }
