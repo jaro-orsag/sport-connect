@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
+import { UtmService } from './utm.service';
 
 declare var gtag: Function;
 
@@ -9,9 +10,11 @@ type NeedType = "player_need" | "team_need";
   providedIn: 'root'
 })
 export class AnalyticsService {
+    utmParameters: any = {}
 
-  constructor() {
+  constructor(private utmService: UtmService) {
     this.injectTrackingId();
+    this.utmParameters = this.utmService.getUTMParameters();
   }
 
   trackPageView(url: string) {
@@ -77,6 +80,7 @@ export class AnalyticsService {
 
     event_params = {
         ...event_params,
+        ...this.utmParameters,
         client_id: 'not available in development mode'
     };
 
