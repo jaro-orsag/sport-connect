@@ -1,4 +1,5 @@
 export const environment = {
     isDevelopment: true,
-    apiRoot: 'api'
+    apiRoot: 'PLACEHOLDER',
+    googleAnalyticsTrackingId: 'PLACEHOLDER'
 };

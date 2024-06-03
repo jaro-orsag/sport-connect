@@ -10,6 +10,7 @@ import { FooterComponent } from './components/footer/footer.component';
 import { filter } from 'rxjs';
 import { NavigationEnd } from '@angular/router';
 import { ViewportScroller } from '@angular/common';
+import { AnalyticsService } from './services/analytics.service';
 
 @Component({
     selector: 'app-root',
@@ -37,19 +38,33 @@ export class AppComponent {
     title = 'routing-app';
     routes = menuRoutes;
 
-    constructor(private router: Router, private viewportScroller: ViewportScroller) { }
+    constructor(
+        private router: Router, 
+        private viewportScroller: ViewportScroller, 
+        // Ensuring the service is instantiated, so that tracking ID initialization script is added by calling 
+        // service constructor
+        private analyticsService: AnalyticsService 
+    ) { }
 
     ngOnInit() {
         this.router.events.pipe(
             filter(event => event instanceof NavigationEnd)
-        ).subscribe(() => {
-            setTimeout(() => {
-                this.viewportScroller.scrollToPosition([0, 0]);
-            }, 0);
+        ).subscribe((event) => {
+            if (!(event instanceof NavigationEnd)) {
+                return
+            }
+            this.scrollToTop()
+            this.analyticsService.trackPageView(event.urlAfterRedirects);
         });
     }
 
     toggleSideNav() {
         this.sidenav.toggle();
+    }
+
+    scrollToTop() {
+        setTimeout(() => {
+            this.viewportScroller.scrollToPosition([0, 0]);
+        }, 0);
     }
 }
