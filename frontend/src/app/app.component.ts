@@ -52,12 +52,25 @@ export class AppComponent {
     ) { }
 
     ngOnInit() {
+        this.handleGdprConsent();
+        this.scrollAndTrackOnNavigate();
+    }
+
+    handleGdprConsent() {
         if (!this.gdprConsentService.isGranted()) {
             this.dialog.open(ConsentPopupComponent, {
                 disableClose: true
+            }).afterClosed().subscribe(_ => {
+                if (this.gdprConsentService.isGranted()) {
+                    // track page view of current page - it was not tracked by router subscribe mechanism 
+                    // because consent was not granted when the page was navigated
+                    this.analyticsService.trackPageView(this.router.url);
+                }
             });
         }
+    }
 
+    scrollAndTrackOnNavigate() {
         this.router.events.pipe(
             filter(event => event instanceof NavigationEnd)
         ).subscribe((event) => {
