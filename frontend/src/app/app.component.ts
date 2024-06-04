@@ -52,6 +52,7 @@ export class AppComponent {
     ) { }
 
     ngOnInit() {
+        this.analyticsService.injectGoogleServices();
         this.handleGdprConsent();
         this.scrollAndTrackOnNavigate();
     }
@@ -64,6 +65,7 @@ export class AppComponent {
                 if (this.gdprConsentService.isGranted()) {
                     // track page view of current page - it was not tracked by router subscribe mechanism 
                     // because consent was not granted when the page was navigated
+                    this.analyticsService.injectGoogleServices();
                     this.analyticsService.trackPageView(this.router.url);
                 }
             });

@@ -14,7 +14,6 @@ export class AnalyticsService {
   utmParameters: any = {}
 
   constructor(private utmService: UtmService, private gdprConsentService: GdprConsentService) {
-    this.injectTrackingId();
     this.utmParameters = this.utmService.getUTMParameters();
   }
 
@@ -63,6 +62,11 @@ export class AnalyticsService {
 
   trackPlayerNeedAddition(needUuid: string) {
     this.trackNeedEvent("player_need", "addition", needUuid);
+  }
+
+  injectGoogleServices() {
+    this.injectTrackingId();
+    this.injectAdsenseSnippet();
   }
 
   private trackNeedEvent(needType: NeedType, event: string, needUuid: string) {
@@ -122,7 +126,7 @@ export class AnalyticsService {
    * @returns We are injecting tracking ID dynamically to be able to use different ID for staging and prod
    */
   private injectTrackingId() {
-    if (environment.isDevelopment) {
+    if (environment.isDevelopment || !this.gdprConsentService.isGranted()) {
         console.log(`would inject google tracking ID; development mode: ${environment.isDevelopment}; GDPR consent granted: ${this.gdprConsentService.isGranted()}`);
 
         return;
@@ -146,5 +150,31 @@ export class AnalyticsService {
       `;
       document.head.appendChild(inlineScript);
     }
+  }
+
+  private injectAdsenseSnippet() {
+    if (environment.isDevelopment 
+        || !this.gdprConsentService.isGranted()
+        || !environment.googleAdSenseClientId
+    ) {
+        const consoleMessage = `would inject google adsense snippet; ` 
+            + `development mode: ${environment.isDevelopment}; `
+            + `GDPR consent granted: ${this.gdprConsentService.isGranted()}; `
+            + `googleAdSenseClientId defined: ${environment.googleAdSenseClientId !== undefined}`;
+        console.log(consoleMessage);
+
+        return;
+    }
+
+    const metaTag = document.createElement('meta');
+    metaTag.name = 'google-adsense-account';
+    metaTag.content = environment.googleAdSenseClientId;
+    document.head.appendChild(metaTag);
+
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${environment.googleAdSenseClientId}`;
+    script.crossOrigin = 'anonymous';
+    document.head.appendChild(script);
   }
 }
