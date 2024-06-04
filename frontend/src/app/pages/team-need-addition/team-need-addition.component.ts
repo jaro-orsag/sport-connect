@@ -83,6 +83,7 @@ export class TeamNeedAdditionComponent implements OnInit {
         this.seoService.updateMetaTags([
             { name: 'description', content: 'Vyplň jednoduchý formulár a okamžite pre Teba začneme hľadať spoluhráča na futbal.' }
         ]);
+        this.analyticsService.trackTeamNeedAdditionStart();
     }
 
     filterDistricts(): void {
@@ -100,7 +101,7 @@ export class TeamNeedAdditionComponent implements OnInit {
         const teamNeed = this._mapFormToPlayerNeed(this.teamNeedForm.value);
         this.api.addTeamNeed(teamNeed).subscribe(tn => {
             this.analyticsService.trackPurchase(tn.uuid!, "team_need");
-            this.analyticsService.trackTeamNeedAddition(tn.uuid!);
+            this.analyticsService.trackTeamNeedAdditionFinish(tn.uuid!);
             this.router.navigate(["/team-need", tn.uuid], { state: { navigatedFromAddition: true } });
         });
     }

@@ -46,12 +46,13 @@ export class PlayerNeedDetailComponent implements OnInit {
         this.seoService.updateTitle("futbal-spoluhráč.sk | Zhrnutie hľadania tímu");
         this.seoService.setNoIndex();
 
-        this.loadPlayerNeed();
+        const uuid = this.route.snapshot.paramMap.get('uuid')!;
+        this.analyticsService.trackPlayerNeedViewDetail(uuid);
+        this.loadPlayerNeed(uuid);
     }
 
-    loadPlayerNeed(): void {
-        this.pageState = DetailPageState.LOADING;
-        const uuid = this.route.snapshot.paramMap.get('uuid')!;
+    loadPlayerNeed(uuid: string): void {
+        this.pageState = DetailPageState.LOADING;        
         this.api.getPlayerNeed(uuid).subscribe(pn => {
             this.playerNeed = pn;
 
@@ -68,8 +69,8 @@ export class PlayerNeedDetailComponent implements OnInit {
 
     deactivatePlayerNeed(): void {
         this.api.deactivatePlayerNeed(this.playerNeed!.uuid!).subscribe(_ => {
-            this.analyticsService.trackPlayerNeedDeactivation(this.playerNeed!.uuid!);
-            this.loadPlayerNeed();
+            this.analyticsService.trackPlayerNeedDeactivationFinish(this.playerNeed!.uuid!);
+            this.loadPlayerNeed(this.playerNeed!.uuid!);
         });
     }
 
@@ -104,14 +105,14 @@ export class PlayerNeedDetailComponent implements OnInit {
     revokeMarketingConsent() {
         this.api.updatePlayerNeedConsent(this.playerNeed!.uuid!, false).subscribe(_ => {
             this.snackBar.open("Odber bol zrušený", "OK");
-            this.loadPlayerNeed()
+            this.loadPlayerNeed(this.playerNeed!.uuid!)
         });
     }
 
     grantMarketingConsent() {
         this.api.updatePlayerNeedConsent(this.playerNeed!.uuid!, true).subscribe(_ => {
             this.snackBar.open("Odber bol aktivovaný", "OK");
-            this.loadPlayerNeed()
+            this.loadPlayerNeed(this.playerNeed!.uuid!)
         });
     }
 }

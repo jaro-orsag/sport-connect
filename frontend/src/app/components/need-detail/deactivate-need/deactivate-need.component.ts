@@ -21,7 +21,7 @@ export class DeactivateNeedComponent {
 
     @Input() dialogText?: string;
 
-    constructor(public dialog: MatDialog) { }
+    constructor(private dialog: MatDialog) { }
 
     openDialog(): void {
         const dialogRef = this.dialog.open(ConfirmationDialogComponent, {

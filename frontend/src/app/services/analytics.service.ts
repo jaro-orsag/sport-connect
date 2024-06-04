@@ -48,20 +48,36 @@ export class AnalyticsService {
     this.trackEvent('purchase', event_params);
   }
 
-  trackTeamNeedDeactivation(needUuid: string) {
-    this.trackNeedEvent("team_need", "deactivation", needUuid);
+  trackTeamNeedViewDetail(needUuid: string) {
+    this.trackNeedEvent("team_need_view_detail", needUuid);
   }
 
-  trackTeamNeedAddition(needUuid: string) {
-    this.trackNeedEvent("team_need", "addition", needUuid);
+  trackTeamNeedAdditionStart() {
+    this.trackNeedEvent("team_need_addition_start");
   }
 
-  trackPlayerNeedDeactivation(needUuid: string) {
-    this.trackNeedEvent("player_need", "deactivation", needUuid);
+  trackTeamNeedAdditionFinish(needUuid: string) {
+    this.trackNeedEvent("team_need_addition_finish", needUuid);
+  }
+  
+  trackTeamNeedDeactivationFinish(needUuid: string) {
+    this.trackNeedEvent("team_need_deactivation_finish", needUuid);
   }
 
-  trackPlayerNeedAddition(needUuid: string) {
-    this.trackNeedEvent("player_need", "addition", needUuid);
+  trackPlayerNeedViewDetail(needUuid: string) {
+    this.trackNeedEvent("player_need_view_detail", needUuid);
+  }
+
+  trackPlayerNeedAdditionStart() {
+    this.trackNeedEvent("player_need_addition_start");
+  }
+
+  trackPlayerNeedAdditionFinish(needUuid: string) {
+    this.trackNeedEvent("player_need_addition_finish", needUuid);
+  }
+
+  trackPlayerNeedDeactivationFinish(needUuid: string) {
+    this.trackNeedEvent("player_need_deactivation_finish", needUuid);
   }
 
   injectGoogleServices() {
@@ -69,16 +85,15 @@ export class AnalyticsService {
     this.injectAdsenseSnippet();
   }
 
-  private trackNeedEvent(needType: NeedType, event: string, needUuid: string) {
-    const fullEventName = `${needType}_${event}`;
+  private trackNeedEvent(event: string, needUuid?: string) {
     const event_params = {
-        event: fullEventName,
+        event,
         user_agent: navigator.userAgent,
         transaction_id: needUuid,
         page_title: document.title
     };
 
-    this.trackEvent(fullEventName, event_params);
+    this.trackEvent(event, event_params);
   }
 
   private async trackEvent(event: string, event_params: any) {
@@ -104,9 +119,10 @@ export class AnalyticsService {
   }
 
   private sanitizeUrl(url: string): string {
-    // maybe we will have to replace identifier with some constant here
-
-    return url;
+    const guidPattern = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/;
+    const newUrl = url.replace(guidPattern, 'UUID');
+    
+    return newUrl;
   }
 
   private getClientId(): Promise<string> {
