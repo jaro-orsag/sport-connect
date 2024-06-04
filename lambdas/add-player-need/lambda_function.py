@@ -6,6 +6,7 @@ import sys
 import logging
 import pytz
 from datetime import datetime
+import boto3
 
 user_name = os.environ['USER_NAME']
 password = os.environ['PASSWORD']
@@ -27,8 +28,6 @@ def get_db_connection():
         logger.error("ERROR: Unexpected error: Could not connect to MySQL instance.")
         logger.error(e)
         sys.exit(1)
-        
-    logger.info("SUCCESS: Connection to RDS for MySQL instance succeeded")        
     
     return conn
 
@@ -63,18 +62,59 @@ def lambda_handler(event, _):
             sql = "INSERT INTO PlayerNeed (uuid, isActive, playerName, availability, email, phone, about, isMarketingConsentGranted, dateMarketingConsentChanged, dateAdded) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
             user_data = (body_dict['uuid'], body_dict['isActive'], body_dict['playerName'], body_dict['availability'], body_dict['email'], body_dict['phone'], body_dict['about'], body_dict['isMarketingConsentGranted'], utc_now, utc_now)
             cursor.execute(sql, user_data)
-            playerNeedId = int(cursor.lastrowid)
+            player_need_id = int(cursor.lastrowid)
             conn.commit()
             cursor.close()
-            
-        body_dict['id'] = playerNeedId
-
-        playerNeedDistrictCodePairs = [(playerNeedId, districtCode) for districtCode in body_dict['districtCodes']]
+        
+        body_dict['id'] = player_need_id
+        
+        player_need_district_code_pairs = [(player_need_id, district_code) for district_code in body_dict['districtCodes']]
         with conn.cursor() as cursor:
             sql = "INSERT INTO PlayerNeedDistrict (playerNeedId, districtCode) VALUES (%s, %s)"
-            cursor.executemany(sql, playerNeedDistrictCodePairs)
+            cursor.executemany(sql, player_need_district_code_pairs)
             conn.commit()
             cursor.close()
+
+
+        logger.info("added player_need %s", body_dict['uuid'])
+        
+        with conn.cursor() as cursor:
+            matched_team_needs_sql = """
+                SELECT 
+                    tn.uuid AS uuid
+                FROM 
+                    TeamNeed tn
+                    INNER JOIN PlayerNeedDistrict pnd
+                        ON tn.districtCode = pnd.districtCode
+                    INNER JOIN PlayerNeed pn
+                        ON pn.id = pnd.playerNeedId
+                WHERE
+                    tn.isActive 
+                    AND pn.isActive
+                    AND pn.uuid=%s
+            """
+            cursor.execute(matched_team_needs_sql, (body_dict['uuid']))
+            matched_team_needs_result = cursor.fetchall()
+            matched_team_needs = [item['uuid'] for item in matched_team_needs_result]
+        
+            sns_client = boto3.client('sns', region_name='us-east-1')
+            matched_team_need_topic_arn = os.environ['MATCHED_TEAM_NEED_TOPIC_ARN']
+            matched_player_need_topic_arn = os.environ['MATCHED_PLAYER_NEED_TOPIC_ARN']
+            
+            for team_need_uuid in matched_team_needs:
+                sns_client.publish(
+                    TopicArn=matched_team_need_topic_arn,
+                    Message=json.dumps({"uuid": team_need_uuid})
+                )
+                logger.info("player_need %s matches team_need %s", body_dict['uuid'], team_need_uuid)
+
+            if (len(matched_team_needs) > 0):
+                sns_client.publish(
+                    TopicArn=matched_player_need_topic_arn,
+                    Message=json.dumps({"uuid": body_dict['uuid']})
+                )
+            else:
+                logger.info("player_need %s does not match any team_need", body_dict['uuid'])
 
         return {
             'statusCode': 200,
