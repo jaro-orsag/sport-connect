@@ -28,13 +28,13 @@ def lambda_handler(event, _):
     notification_topic_arn = os.environ['NOTIFICATION_TOPIC_ARN']
     
     for record in event.get('Records', []):
-        team_need_uuid = None 
-        team_need_email = None 
+        player_need_uuid = None 
+        player_need_email = None 
         try:
             message = json.loads(record['Sns']['Message'])
-            team_need_uuid = message['uuid']
-            team_need_email = message['email']
-            logger.info("creating notification for team-need %s", team_need_uuid)
+            player_need_uuid = message['uuid']
+            player_need_email = message['email']
+            logger.info("creating notification for player-need %s", player_need_uuid)
         except KeyError as e:
             logger.error(f"Key error: {e} - Record: {record}")
             return
@@ -45,52 +45,56 @@ def lambda_handler(event, _):
             logger.error(f"Unexpected error: {e} - Record: {record}")
             return
         
-        if team_need_uuid != None and team_need_email != None:
-            matches = get_matches(team_need_uuid)
+        if player_need_uuid != None and player_need_email != None:
+            matches = get_matches(player_need_uuid)
             if len(matches) == 0:
-                logger.warning("no matches found for team_need %s, not going to publish to sns topic", team_need_uuid)
+                logger.warning("no matches found for player_need %s, not going to publish to sns topic", player_need_uuid)
                 return
-            notification = create_notification(team_need_uuid, team_need_email, matches)            
+            notification = create_notification(player_need_uuid, player_need_email, matches)
             publish_to_sns(notification, sns_client, notification_topic_arn)
         else:
             logger.error(f"Either uuid or email is missing in record: {record}")
 
-def create_notification(team_need_uuid, email, matches):
+def create_notification(player_need_uuid, email, matches):
     return {
-        'subject': "Futbalový spoluhráč sa našiel",
+        'subject': "Futbalový tím sa našiel",
         'targetEmail': email,
-        'need-type': 'team-need',
-        'uuid': team_need_uuid,
+        'need-type': 'player-need',
+        'uuid': player_need_uuid,
         'matches': matches
     }
 
-def get_matches(team_need_uuid):
+def get_matches(player_need_uuid):
     conn = get_db_connection()
     try:
         with conn.cursor() as cursor:
             matches_sql = """
-                SELECT
-                    pn.playerName AS 'Meno',
-                    pn.availability AS 'Vyhovujúce časy',
-                    pn.email AS 'Email',
-                    pn.phone AS 'Telefón',
-                    pn.about AS 'Ďaľšie info',
-                    DATE_FORMAT(CONVERT_TZ(pn.dateAdded, '+00:00', 'Europe/Bratislava'), '%%e. %%c. %%Y o %%k:%%i') AS 'Pridané'
+                SELECT 
+                    d.districtName AS 'Okres',
+                    tn.address AS 'Adresa',
+                    tn.time AS 'Čas hry',
+                    tn.playerName AS 'Meno',
+                    tn.email AS 'Email',
+                    tn.phone AS 'Telefón',
+                    tn.about AS 'Ďaľšie info',
+                    DATE_FORMAT(CONVERT_TZ(tn.dateAdded, '+00:00', 'Europe/Bratislava'), '%%e. %%c. %%Y o %%k:%%i') AS 'Pridané'
                 FROM 
-                    TeamNeed tn
+                    PlayerNeed pn
                     INNER JOIN PlayerNeedDistrict pnd
-                        ON tn.districtCode = pnd.districtCode
-                    INNER JOIN PlayerNeed pn
                         ON pn.id = pnd.playerNeedId
+                    INNER JOIN TeamNeed tn
+                        ON tn.districtcode = pnd.districtcode
+                    LEFT OUTER JOIN District d
+                        on tn.districtCode = d.code
                 WHERE
                     tn.isActive 
                     AND pn.isActive
-                    AND tn.uuid=%s
+                    AND pn.uuid=%s
                 ORDER BY 
-                    pn.dateAdded DESC
+                    tn.dateAdded DESC
             """
 
-            cursor.execute(matches_sql, (team_need_uuid))
+            cursor.execute(matches_sql, (player_need_uuid))
             matches_result = cursor.fetchall()
 
             return matches_result
@@ -99,7 +103,7 @@ def get_matches(team_need_uuid):
             conn.close()
         
 def publish_to_sns(notification_data, sns_client, notification_topic_arn):
-    logger.info("publishing notification for team-need %s to sns topic", notification_data['uuid'])
+    logger.info("publishing notification for player-need %s to sns topic", notification_data['uuid'])
     sns_client.publish(
         TopicArn=notification_topic_arn,
         Message=json.dumps(notification_data)
