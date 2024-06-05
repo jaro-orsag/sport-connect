@@ -81,7 +81,8 @@ def lambda_handler(event, _):
         with conn.cursor() as cursor:
             matched_team_needs_sql = """
                 SELECT 
-                    tn.uuid AS uuid
+                    tn.uuid AS teamNeedUuid,
+                    tn.email AS teamNeedEmail
                 FROM 
                     TeamNeed tn
                     INNER JOIN PlayerNeedDistrict pnd
@@ -95,23 +96,29 @@ def lambda_handler(event, _):
             """
             cursor.execute(matched_team_needs_sql, (body_dict['uuid']))
             matched_team_needs_result = cursor.fetchall()
-            matched_team_needs = [item['uuid'] for item in matched_team_needs_result]
+            # matched_team_needs = [item['uuid'] for item in matched_team_needs_result]
         
             sns_client = boto3.client('sns', region_name='us-east-1')
             matched_team_need_topic_arn = os.environ['MATCHED_TEAM_NEED_TOPIC_ARN']
             matched_player_need_topic_arn = os.environ['MATCHED_PLAYER_NEED_TOPIC_ARN']
             
-            for team_need_uuid in matched_team_needs:
+            for matched_team_need in matched_team_needs_result:
                 sns_client.publish(
                     TopicArn=matched_team_need_topic_arn,
-                    Message=json.dumps({"uuid": team_need_uuid})
+                    Message=json.dumps({
+                        "uuid": matched_team_need['teamNeedUuid'],
+                        "email": matched_team_need['teamNeedEmail'],
+                    })
                 )
-                logger.info("player_need %s matches team_need %s", body_dict['uuid'], team_need_uuid)
+                logger.info("player_need %s matches team_need %s", body_dict['uuid'], matched_team_need['teamNeedUuid'])
 
-            if (len(matched_team_needs) > 0):
+            if (len(matched_team_needs_result) > 0):
                 sns_client.publish(
                     TopicArn=matched_player_need_topic_arn,
-                    Message=json.dumps({"uuid": body_dict['uuid']})
+                    Message=json.dumps({
+                        "uuid": body_dict['uuid'],
+                        "email": body_dict['email']
+                    })
                 )
             else:
                 logger.info("player_need %s does not match any team_need", body_dict['uuid'])

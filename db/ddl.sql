@@ -148,3 +148,4 @@ CREATE USER 'application' IDENTIFIED BY 'XXXXXXX';
 GRANT SELECT, INSERT, UPDATE ON StagingFootballBuddy.PlayerNeed TO 'application';
 GRANT SELECT, INSERT, UPDATE ON StagingFootballBuddy.PlayerNeedDistrict TO 'application';
 GRANT SELECT, INSERT, UPDATE ON StagingFootballBuddy.TeamNeed TO 'application';
+GRANT SELECT ON StagingFootballBuddy.District TO 'application';
