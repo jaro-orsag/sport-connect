@@ -16,12 +16,12 @@ logger.setLevel(logging.INFO)
 def get_db_connection():
     try:
         conn = pymysql.connect(host=host, user=user_name, passwd=password, db=db_name, connect_timeout=5, cursorclass=pymysql.cursors.DictCursor)
+        return conn
     except pymysql.MySQLError as e:
-        logger.error("ERROR: Unexpected error: Could not connect to MySQL instance.")
+        message = "ERROR: Unexpected error: Could not connect to MySQL instance."
+        logger.error(message)
         logger.error(e)
-        sys.exit(1)
-    
-    return conn
+        raise Exception(message)
 
 def lambda_handler(event, _): 
     sns_client = boto3.client('sns', region_name='us-east-1')
@@ -37,25 +37,35 @@ def lambda_handler(event, _):
             logger.info("creating notification for team-need %s", team_need_uuid)
         except KeyError as e:
             logger.error(f"Key error: {e} - Record: {record}")
-            return
+            continue
         except json.JSONDecodeError as e:
             logger.error(f"JSON decode error: {e} - Record: {record}")
-            return
+            continue
         except Exception as e:
             logger.error(f"Unexpected error: {e} - Record: {record}")
-            return
+            continue
         
         if team_need_uuid == None or team_need_email == None:
             logger.error(f"Either uuid or email is missing in record: {record}")
-            return 
+            continue
 
-        matches = get_matches(team_need_uuid)
+        try:
+            matches = get_matches(team_need_uuid)
+        except Exception as e:
+            logger.error("an error occurred during getting matches for team-need uuid: %s", team_need_uuid)
+            logger.error(e)
+            continue
         if len(matches) == 0:
             logger.warning("no matches found for team_need %s, not going to publish to sns topic", team_need_uuid)
-            return
+            continue
 
         notification = create_notification(team_need_uuid, team_need_email, matches)            
         publish_to_sns(notification, sns_client, notification_topic_arn)
+        
+    return {
+        'statusCode': 200,
+        'body': json.dumps('Messages processed successfully')
+    }
 
 def create_notification(team_need_uuid, email, matches):
     return {

@@ -164,5 +164,5 @@ def lambda_handler(event, _):
             
     return {
         'statusCode': 200,
-        'body': json.dumps('Message processed successfully')
+        'body': json.dumps('Messages processed successfully')
     }

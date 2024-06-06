@@ -17,14 +17,12 @@ logger.setLevel(logging.INFO)
 def get_db_connection():
     try:
         conn = pymysql.connect(host=host, user=user_name, passwd=password, db=db_name, connect_timeout=5, cursorclass=pymysql.cursors.DictCursor)
+        return conn
     except pymysql.MySQLError as e:
-        logger.error("ERROR: Unexpected error: Could not connect to MySQL instance.")
+        message = "ERROR: Unexpected error: Could not connect to MySQL instance."
+        logger.error(message)
         logger.error(e)
-        sys.exit(1)
-        
-    logger.info("SUCCESS: Connection to RDS for MySQL instance succeeded")        
-    
-    return conn
+        raise Exception(message)
 
 def get_current_datetime_in_utc():
 
