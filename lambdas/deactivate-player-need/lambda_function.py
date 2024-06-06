@@ -50,6 +50,7 @@ def lambda_handler(event, _):
             conn.commit()
             cursor.close()
 
+        logger.info("deactivated player-need %s", uuid)
         return {
             'statusCode': 204
         }

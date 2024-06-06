@@ -68,6 +68,8 @@ def lambda_handler(event, _):
             conn.commit()
             cursor.close()
             
+            logger.info("%s marketing consent for team-need %s", action, uuid)
+            
             return {
                 'statusCode': 204
             }
