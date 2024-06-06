@@ -45,23 +45,25 @@ def lambda_handler(event, _):
             logger.error(f"Unexpected error: {e} - Record: {record}")
             return
         
-        if team_need_uuid != None and team_need_email != None:
-            matches = get_matches(team_need_uuid)
-            if len(matches) == 0:
-                logger.warning("no matches found for team_need %s, not going to publish to sns topic", team_need_uuid)
-                return
-            notification = create_notification(team_need_uuid, team_need_email, matches)            
-            publish_to_sns(notification, sns_client, notification_topic_arn)
-        else:
+        if team_need_uuid == None or team_need_email == None:
             logger.error(f"Either uuid or email is missing in record: {record}")
+            return 
+
+        matches = get_matches(team_need_uuid)
+        if len(matches) == 0:
+            logger.warning("no matches found for team_need %s, not going to publish to sns topic", team_need_uuid)
+            return
+
+        notification = create_notification(team_need_uuid, team_need_email, matches)            
+        publish_to_sns(notification, sns_client, notification_topic_arn)
 
 def create_notification(team_need_uuid, email, matches):
     return {
-        'subject': "Futbalový spoluhráč sa našiel",
-        'targetEmail': email,
-        'need-type': 'team-need',
-        'uuid': team_need_uuid,
-        'matches': matches
+        "subject": "Našiel sa spoluhráč",
+        "targetEmail": email,
+        "needType": 'team-need',
+        "uuid": team_need_uuid,
+        "matches": matches
     }
 
 def get_matches(team_need_uuid):
@@ -98,10 +100,10 @@ def get_matches(team_need_uuid):
         if conn:
             conn.close()
         
-def publish_to_sns(notification_data, sns_client, notification_topic_arn):
-    logger.info("publishing notification for team-need %s to sns topic", notification_data['uuid'])
+def publish_to_sns(notification, sns_client, notification_topic_arn):
+    logger.info("publishing notification for team-need %s to sns topic", notification['uuid'])
     sns_client.publish(
         TopicArn=notification_topic_arn,
-        Message=json.dumps(notification_data)
+        Message=json.dumps(notification)
     )
     

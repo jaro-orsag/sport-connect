@@ -45,23 +45,25 @@ def lambda_handler(event, _):
             logger.error(f"Unexpected error: {e} - Record: {record}")
             return
         
-        if player_need_uuid != None and player_need_email != None:
-            matches = get_matches(player_need_uuid)
-            if len(matches) == 0:
-                logger.warning("no matches found for player_need %s, not going to publish to sns topic", player_need_uuid)
-                return
-            notification = create_notification(player_need_uuid, player_need_email, matches)
-            publish_to_sns(notification, sns_client, notification_topic_arn)
-        else:
+        if player_need_uuid == None or player_need_email == None:
             logger.error(f"Either uuid or email is missing in record: {record}")
+            return
+
+        matches = get_matches(player_need_uuid)
+        if len(matches) == 0:
+            logger.warning("no matches found for player_need %s, not going to publish to sns topic", player_need_uuid)
+            return
+
+        notification = create_notification(player_need_uuid, player_need_email, matches)
+        publish_to_sns(notification, sns_client, notification_topic_arn)
 
 def create_notification(player_need_uuid, email, matches):
     return {
-        'subject': "Futbalový tím sa našiel",
-        'targetEmail': email,
-        'need-type': 'player-need',
-        'uuid': player_need_uuid,
-        'matches': matches
+        "subject": "Našiel sa tím",
+        "targetEmail": email,
+        "needType": "player-need",
+        "uuid": player_need_uuid,
+        "matches": matches
     }
 
 def get_matches(player_need_uuid):
@@ -70,12 +72,12 @@ def get_matches(player_need_uuid):
         with conn.cursor() as cursor:
             matches_sql = """
                 SELECT 
+                    tn.playerName AS 'Kontaktná osoba',
+                    tn.email AS 'Email',
+                    tn.phone AS 'Telefón',
                     d.districtName AS 'Okres',
                     tn.address AS 'Adresa',
                     tn.time AS 'Čas hry',
-                    tn.playerName AS 'Meno',
-                    tn.email AS 'Email',
-                    tn.phone AS 'Telefón',
                     tn.about AS 'Ďaľšie info',
                     DATE_FORMAT(CONVERT_TZ(tn.dateAdded, '+00:00', 'Europe/Bratislava'), '%%e. %%c. %%Y o %%k:%%i') AS 'Pridané'
                 FROM 
