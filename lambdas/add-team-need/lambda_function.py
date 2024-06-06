@@ -87,6 +87,7 @@ def lambda_handler(event, _):
             sns_client = boto3.client('sns', region_name='us-east-1')
             matched_team_need_topic_arn = os.environ['MATCHED_TEAM_NEED_TOPIC_ARN']
             matched_player_need_topic_arn = os.environ['MATCHED_PLAYER_NEED_TOPIC_ARN']
+            notification_topic_arn = os.environ['NOTIFICATION_TOPIC_ARN']
             
             for matched_player_need in matched_player_needs_result:
                 sns_client.publish(
@@ -108,6 +109,18 @@ def lambda_handler(event, _):
                 )
             else:
                 logger.info("team_need %s does not match any player_need", body_dict['uuid'])
+                sns_client.publish(
+                    TopicArn=notification_topic_arn,
+                    Message=json.dumps({
+                        "uuid": body_dict['uuid'],
+                        "needType": "team-need",
+                        "targetEmail": body_dict['email'],
+                        "notificationType": "creation",
+                        "subject": "Začali sme hľadať",
+                        "matches": []
+                    })
+                )
+                logger.info("notification created for team_need %s", body_dict['uuid'])
 
         return {
             'statusCode': 200,

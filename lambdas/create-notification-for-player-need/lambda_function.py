@@ -63,7 +63,8 @@ def create_notification(player_need_uuid, email, matches):
         "targetEmail": email,
         "needType": "player-need",
         "uuid": player_need_uuid,
-        "matches": matches
+        "matches": matches,
+        "notificationType": "match"
     }
 
 def get_matches(player_need_uuid):

@@ -1,5 +1,3 @@
-import os
-import uuid as uuidd
 import logging
 import boto3
 import json
@@ -40,8 +38,48 @@ def get_link(topicArn, need_type, uuid):
     
     return f"https://{subdomain}.futbal-spoluhrac.sk/{need_type}/{uuid}"
 
+def handle_creation(client, target_email, uuid, need_type, link, subject):
+    entity = "tím" if need_type == "player-need" else "spoluhráča"
+    part1 = f"Gratulujem, v tomto momente sme pre Teba začali hľadať {entity}."
+    part2 = f"Hľadanie môžeš kedykoľvek zrušiť na stránke {link}"
+    part3 = "Akonáhle pre Teba niečo nájdeme, pošleme Ti ďaľší e-mail. V ňom nájdeš aj kontakt. Na ďaľších detailoch sa už dohodnete spolu."
+    
+    body_html = f"{part1}<br><br>{part2}<br><br>{part3}"
+    body_text = f"{part1}\r\n\r\n{part2}\r\n\r\n{part3}"
+    
+    logger.info("going to send confirmation email for %s %s", need_type, uuid)
+    try:
+        client.send_email(
+            Destination={
+                'ToAddresses': [
+                    RECIPIENT, # target_email
+                ],
+            },
+            Message={
+                'Body': {
+                    'Html': {
+                        'Charset': CHARSET,
+                        'Data': body_html,
+                    },
+                    'Text': {
+                        'Charset': CHARSET,
+                        'Data': body_text,
+                    },
+                },
+                'Subject': {
+                    'Charset': CHARSET,
+                    'Data': subject,
+                },
+            },
+            Source=SENDER,
+        )
+    except ClientError as e:
+        logger.error(e.response['Error']['Message'])
+    else:
+        logger.info("confirmation email sent for %s %s", need_type, uuid)
+    
+
 def lambda_handler(event, _): 
-    call_id = str(uuidd.uuid4())
     client = boto3.client('ses',region_name=AWS_REGION)
     
     for record in event.get('Records', []):
@@ -59,8 +97,9 @@ def lambda_handler(event, _):
             need_type = message['needType']
             uuid = message['uuid']
             matches = message['matches']
+            notification_type = message['notificationType']
             
-            logger.info("received notification for %s %s", need_type, uuid)
+            logger.info("received notification of type %s for %s %s", notification_type, need_type, uuid)
         except KeyError as e:
             logger.error(f"Key error: {e} - Record: {record}")
             continue
@@ -71,11 +110,19 @@ def lambda_handler(event, _):
             logger.error(f"Unexpected error: {e} - Record: {record}")
             continue
 
-        if subject == None or target_email == None or need_type == None or uuid == None or matches == None or len(matches) == 0:
-            logger.error("not going to send email. none of the following can be 'None': subject, target_email, need_type, uuid, matches. matches must not be empty. uuid: %s", uuid)
+        if need_type == None or uuid == None or target_email == None or subject == None:
+            logger.error("not going to send email. none of the following can be 'None': need_type, target_email, subject, uuid. uuid: %s", uuid)
+            continue
+        link = get_link(record['Sns']['TopicArn'], need_type, uuid)
+        
+        if notification_type == "creation":
+            handle_creation(client, target_email, uuid, need_type, link, subject)
             continue
 
-        link = get_link(record['Sns']['TopicArn'], need_type, uuid)
+        if matches == None or len(matches) == 0:
+            logger.error("not going to send email. matches must not be empty. uuid: %s", uuid)
+            continue
+        
         end_search = f"Ak už nechceš dostávať ďaľšie emaily, svoje hľadanie môžeš kedykoľvek zrušiť na tomto linku: {link}"
         message_beginning = f"Neváhaj kontaktovať kohokoľvek zo zoznamu nižšie. {end_search}"
         message_ending = end_search
@@ -83,7 +130,7 @@ def lambda_handler(event, _):
         body_html = format_html(message_beginning, matches, message_ending)
         body_text = format_text(message_beginning, matches, message_ending)
 
-        logger.info("going to send email for %s %s", need_type, uuid)
+        logger.info("going to send email about match for %s %s", need_type, uuid)
 
         try:
             client.send_email(
@@ -113,7 +160,7 @@ def lambda_handler(event, _):
         except ClientError as e:
             logger.error(e.response['Error']['Message'])
         else:
-            logger.info("email sent for %s %s", need_type, uuid)
+            logger.info("email about match sent for %s %s", need_type, uuid)
             
     return {
         'statusCode': 200,

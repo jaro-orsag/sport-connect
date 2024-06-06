@@ -16,6 +16,10 @@ if __name__ == "__main__":
     matched_player_need_topic_arn = matched_player_need_topic_response['TopicArn']
     os.environ['MATCHED_PLAYER_NEED_TOPIC_ARN'] = matched_player_need_topic_arn
     
+    notification_topic_response = sns_client.create_topic(Name='notification')
+    notification_topic_response_arn =notification_topic_response['TopicArn']
+    os.environ['NOTIFICATION_TOPIC_ARN'] = notification_topic_response_arn
+    
     mock_body = """
     {
         "isActive": true,
