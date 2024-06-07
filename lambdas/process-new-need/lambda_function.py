@@ -3,6 +3,7 @@ import pymysql
 import os
 import logging
 import boto3
+from collections import defaultdict
 
 user_name = os.environ['USER_NAME']
 password = os.environ['PASSWORD']
@@ -66,12 +67,11 @@ def process_record(record):
         try:
             conn = get_db_connection()
             
-            logger.info("sending notification to new %s %s", need_type, uuid)
-            matching_entities_uuids = send_notification_about_matching_entities(conn, need_type, uuid)
+            logger.info("going to process new %s %s", need_type, uuid)
+            matching_entities_uuids = send_notification_about_matching_entities(conn, need_type, [uuid])
             
             logger.info("sending notifications to matching entities of new %s %s", need_type, uuid)
-            for matching_entity_uuid in matching_entities_uuids:            
-                send_notification_about_matching_entities(conn, get_complementary_need_type(need_type), matching_entity_uuid)
+            send_notification_about_matching_entities(conn, get_complementary_need_type(need_type), matching_entities_uuids[uuid])
         finally:
             if conn:
                 conn.close()
@@ -88,16 +88,23 @@ def get_complementary_need_type(need_type):
     else:
         raise_unsupported_need_type(need_type)
 
-def send_notification_about_matching_entities(conn, need_type, uuid):
-    matching_entities = get_matching_entities(conn, need_type, uuid)
-    matching_entities_uuids = [entity['uuid'] for entity in matching_entities]
+def send_notification_about_matching_entities(conn, parent_need_type, parent_entities_uuids):
+    matching_entities = get_matching_entities(conn, parent_need_type, parent_entities_uuids)
+    
+    matching_entities_grouped_by_parent_entity_uuid = defaultdict(list)
+    matching_uuids_grouped_by_parent_uuids = defaultdict(list)
+    for matching_entity in matching_entities:
+        parent_uuid = matching_entity['parentUuid']
+        matching_entities_grouped_by_parent_entity_uuid[parent_uuid].append(matching_entity)
+        matching_uuids_grouped_by_parent_uuids[parent_uuid].append(matching_entity['uuid'])
     
     sns_client = boto3.client('sns', region_name='us-east-1')
     notification_topic_arn = os.environ['NOTIFICATION_TOPIC_ARN']
     
-    create_and_send_notification(uuid, need_type, matching_entities, sns_client, notification_topic_arn)
+    for parent_uuid, matching_entities_group in matching_entities_grouped_by_parent_entity_uuid.items():
+        create_and_send_notification(parent_uuid, parent_need_type, matching_entities_group, sns_client, notification_topic_arn)
     
-    return matching_entities_uuids
+    return matching_uuids_grouped_by_parent_uuids
 
 
 def create_and_send_notification(uuid, need_type, matching_entities, sns_client, notification_topic_arn):
@@ -105,7 +112,7 @@ def create_and_send_notification(uuid, need_type, matching_entities, sns_client,
         logger.error("No matching entities found for %s %s, sending nothing", need_type, uuid)
         return
     
-    logger.info("sending notification about %s matching entities of %s %s", len(matching_entities), need_type, uuid)
+    logger.info("sending notification about %s matching entities to %s %s", len(matching_entities), need_type, uuid)
     notification = None
     if need_type == TEAM_NEED:
         email = matching_entities[0]['teamEmail']
@@ -151,11 +158,13 @@ def raise_unsupported_need_type(need_type):
     logger.error(message);
     raise Exception(message)
 
-def get_matching_teams(conn, uuid):
-    query = """
+def get_matching_teams(conn, uuids):
+    placeholders = ', '.join(['%s'] * len(uuids))
+    query = f"""
         SELECT 
             pn.email AS playerEmail,
             tn.uuid AS uuid,
+            pn.uuid AS parentUuid,
             tn.playerName AS 'Kontaktná osoba',
             tn.email AS 'Email',
             tn.phone AS 'Telefón',
@@ -175,21 +184,23 @@ def get_matching_teams(conn, uuid):
         WHERE
             tn.isActive 
             AND pn.isActive
-            AND pn.uuid=%s
+            AND pn.uuid IN ({placeholders})
         ORDER BY 
             tn.dateAdded DESC
     """
     with conn.cursor() as cursor:
-        cursor.execute(query, (uuid))
+        cursor.execute(query, uuids)
         teams = cursor.fetchall()
 
         return teams
 
-def get_matching_players(conn, uuid):
-    query = """
+def get_matching_players(conn, uuids):
+    placeholders = ', '.join(['%s'] * len(uuids))
+    query = f"""
         SELECT
             tn.email AS teamEmail,
             pn.uuid AS uuid,
+            tn.uuid AS parentUuid,
             pn.playerName AS 'Meno',
             pn.availability AS 'Vyhovujúce časy',
             pn.email AS 'Email',
@@ -205,12 +216,12 @@ def get_matching_players(conn, uuid):
         WHERE
             tn.isActive 
             AND pn.isActive
-            AND tn.uuid=%s
+            AND tn.uuid IN ({placeholders})
         ORDER BY 
             pn.dateAdded DESC
     """
     with conn.cursor() as cursor:
-        cursor.execute(query, (uuid))
+        cursor.execute(query, uuids)
         players = cursor.fetchall()
 
         return players
