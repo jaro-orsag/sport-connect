@@ -70,65 +70,19 @@ def lambda_handler(event, _):
             conn.commit()
 
         logger.info("added player_need %s", body_dict['uuid'])
-        
-        matched_team_needs = []
-        with conn.cursor() as cursor:
-            matched_team_needs_sql = """
-                SELECT 
-                    tn.uuid AS teamNeedUuid,
-                    tn.email AS teamNeedEmail
-                FROM 
-                    TeamNeed tn
-                    INNER JOIN PlayerNeedDistrict pnd
-                        ON tn.districtCode = pnd.districtCode
-                    INNER JOIN PlayerNeed pn
-                        ON pn.id = pnd.playerNeedId
-                WHERE
-                    tn.isActive 
-                    AND pn.isActive
-                    AND pn.uuid=%s
-            """
-            cursor.execute(matched_team_needs_sql, (body_dict['uuid']))
-            matched_team_needs = cursor.fetchall()
-
+    
         sns_client = boto3.client('sns', region_name='us-east-1')
-        matched_team_need_topic_arn = os.environ['MATCHED_TEAM_NEED_TOPIC_ARN']
-        matched_player_need_topic_arn = os.environ['MATCHED_PLAYER_NEED_TOPIC_ARN']
-        notification_topic_arn = os.environ['NOTIFICATION_TOPIC_ARN']
-
-        for matched_team_need in matched_team_needs:
-            sns_client.publish(
-                TopicArn=matched_team_need_topic_arn,
-                Message=json.dumps({
-                    "uuid": matched_team_need['teamNeedUuid'],
-                    "email": matched_team_need['teamNeedEmail']
-                })
-            )
-            logger.info("player_need %s matches team_need %s", body_dict['uuid'], matched_team_need['teamNeedUuid'])
-
-        if (len(matched_team_needs) > 0):
-            sns_client.publish(
-                TopicArn=matched_player_need_topic_arn,
-                Message=json.dumps({
-                    "uuid": body_dict['uuid'],
-                    "email": body_dict['email']
-                })
-            )
-        else:
-            logger.info("player_need %s does not match any team_need", body_dict['uuid'])
-            sns_client.publish(
-                TopicArn=notification_topic_arn,
-                Message=json.dumps({
-                    "uuid": body_dict['uuid'],
-                    "needType": "player-need",
-                    "targetEmail": body_dict['email'],
-                    "notificationType": "creation",
-                    "subject": "Začali sme hľadať",
-                    "matches": []
-                })
-            )
-            logger.info("notification created for player_need %s", body_dict['uuid'])
-
+        new_need_topic_arn = os.environ['NEW_NEED_TOPIC_ARN']
+        sns_client.publish(
+            TopicArn=new_need_topic_arn,
+            Message=json.dumps({
+                "uuid": body_dict['uuid'],
+                "needType": "player_need"
+            })
+        )
+        
+        logger.info("sent player_need %s for further processing", body_dict['uuid'])
+        
         return {
             'statusCode': 200,
             'body': json.dumps(body_dict)

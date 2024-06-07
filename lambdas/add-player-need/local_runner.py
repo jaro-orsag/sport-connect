@@ -8,18 +8,10 @@ if __name__ == "__main__":
     mock.start()
     sns_client = boto3.client('sns', region_name='us-east-1')
     
-    matched_team_need_topic_response = sns_client.create_topic(Name='matched-team-need')
-    matched_team_need_topic_arn = matched_team_need_topic_response['TopicArn']
-    os.environ['MATCHED_TEAM_NEED_TOPIC_ARN'] = matched_team_need_topic_arn
-    
-    matched_player_need_topic_response = sns_client.create_topic(Name='matched-player-need')
-    matched_player_need_topic_arn = matched_player_need_topic_response['TopicArn']
-    os.environ['MATCHED_PLAYER_NEED_TOPIC_ARN'] = matched_player_need_topic_arn
-    
-    notification_topic_response = sns_client.create_topic(Name='notification')
-    notification_topic_response_arn =notification_topic_response['TopicArn']
-    os.environ['NOTIFICATION_TOPIC_ARN'] = notification_topic_response_arn
-    
+    new_need_topic_response = sns_client.create_topic(Name='new-need')
+    new_need_topic_arn = new_need_topic_response['TopicArn']
+    os.environ['NEW_NEED_TOPIC_ARN'] = new_need_topic_arn
+
     mock_body = """
     {
         "isActive": true,
