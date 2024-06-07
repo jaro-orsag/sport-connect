@@ -2,7 +2,6 @@ import uuid
 import json
 import pymysql
 import os
-import sys
 import logging
 import pytz
 from datetime import datetime
@@ -18,7 +17,6 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 def get_current_datetime_in_utc():
-
     return datetime.now(pytz.utc)
 
 def get_db_connection():
@@ -32,31 +30,29 @@ def get_db_connection():
         raise Exception(message)
 
 def lambda_handler(event, _): 
+    try:       
+        body_str = event.get('body', '')
+        body_dict = json.loads(body_str)
 
-    body_str = event.get('body', '')
-    body_dict = json.loads(body_str)
+        body_dict['uuid'] = str(uuid.uuid4())
 
-    body_dict['uuid'] = str(uuid.uuid4())
+        if 'districtCodes' not in body_dict.keys() or not body_dict['districtCodes']: 
+            return {
+            'statusCode': 400,
+            'body': '\'districtCodes\' array must be defined and not empty.'
+        }
 
-    if 'districtCodes' not in body_dict.keys() or not body_dict['districtCodes']: 
-        return {
-        'statusCode': 400,
-        'body': '\'districtCodes\' array must be defined and not empty.'
-    }
-
-    if ('playerName' not in body_dict.keys() or not body_dict['playerName']
-        or 'availability' not in body_dict.keys() or not body_dict['availability']
-        or 'email' not in body_dict.keys() or not body_dict['email']): 
+        if ('playerName' not in body_dict.keys() or not body_dict['playerName']
+            or 'availability' not in body_dict.keys() or not body_dict['availability']
+            or 'email' not in body_dict.keys() or not body_dict['email']): 
+            
+            return {
+            'statusCode': 400,
+            'body': '\'playerName\', \'availability\' and \'email\' attributes must be defined and not empty.'
+        }
+            
+        utc_now = get_current_datetime_in_utc()
         
-        return {
-        'statusCode': 400,
-        'body': '\'playerName\', \'availability\' and \'email\' attributes must be defined and not empty.'
-    }
-        
-    utc_now = get_current_datetime_in_utc()
-    
-    conn = None
-    try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
             sql = "INSERT INTO PlayerNeed (uuid, isActive, playerName, availability, email, phone, about, isMarketingConsentGranted, dateMarketingConsentChanged, dateAdded) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
@@ -75,6 +71,7 @@ def lambda_handler(event, _):
 
         logger.info("added player_need %s", body_dict['uuid'])
         
+        matched_team_needs = []
         with conn.cursor() as cursor:
             matched_team_needs_sql = """
                 SELECT 
@@ -92,49 +89,57 @@ def lambda_handler(event, _):
                     AND pn.uuid=%s
             """
             cursor.execute(matched_team_needs_sql, (body_dict['uuid']))
-            matched_team_needs_result = cursor.fetchall()
-        
-            sns_client = boto3.client('sns', region_name='us-east-1')
-            matched_team_need_topic_arn = os.environ['MATCHED_TEAM_NEED_TOPIC_ARN']
-            matched_player_need_topic_arn = os.environ['MATCHED_PLAYER_NEED_TOPIC_ARN']
-            notification_topic_arn = os.environ['NOTIFICATION_TOPIC_ARN']
-            
-            for matched_team_need in matched_team_needs_result:
-                sns_client.publish(
-                    TopicArn=matched_team_need_topic_arn,
-                    Message=json.dumps({
-                        "uuid": matched_team_need['teamNeedUuid'],
-                        "email": matched_team_need['teamNeedEmail'],
-                    })
-                )
-                logger.info("player_need %s matches team_need %s", body_dict['uuid'], matched_team_need['teamNeedUuid'])
+            matched_team_needs = cursor.fetchall()
 
-            if (len(matched_team_needs_result) > 0):
-                sns_client.publish(
-                    TopicArn=matched_player_need_topic_arn,
-                    Message=json.dumps({
-                        "uuid": body_dict['uuid'],
-                        "email": body_dict['email']
-                    })
-                )
-            else:
-                logger.info("player_need %s does not match any team_need", body_dict['uuid'])
-                sns_client.publish(
-                    TopicArn=notification_topic_arn,
-                    Message=json.dumps({
-                        "uuid": body_dict['uuid'],
-                        "needType": "player-need",
-                        "targetEmail": body_dict['email'],
-                        "notificationType": "creation",
-                        "subject": "Začali sme hľadať",
-                        "matches": []
-                    })
-                )
-                logger.info("notification created for player_need %s", body_dict['uuid'])
+        sns_client = boto3.client('sns', region_name='us-east-1')
+        matched_team_need_topic_arn = os.environ['MATCHED_TEAM_NEED_TOPIC_ARN']
+        matched_player_need_topic_arn = os.environ['MATCHED_PLAYER_NEED_TOPIC_ARN']
+        notification_topic_arn = os.environ['NOTIFICATION_TOPIC_ARN']
+
+        for matched_team_need in matched_team_needs:
+            sns_client.publish(
+                TopicArn=matched_team_need_topic_arn,
+                Message=json.dumps({
+                    "uuid": matched_team_need['teamNeedUuid'],
+                    "email": matched_team_need['teamNeedEmail']
+                })
+            )
+            logger.info("player_need %s matches team_need %s", body_dict['uuid'], matched_team_need['teamNeedUuid'])
+
+        if (len(matched_team_needs) > 0):
+            sns_client.publish(
+                TopicArn=matched_player_need_topic_arn,
+                Message=json.dumps({
+                    "uuid": body_dict['uuid'],
+                    "email": body_dict['email']
+                })
+            )
+        else:
+            logger.info("player_need %s does not match any team_need", body_dict['uuid'])
+            sns_client.publish(
+                TopicArn=notification_topic_arn,
+                Message=json.dumps({
+                    "uuid": body_dict['uuid'],
+                    "needType": "player-need",
+                    "targetEmail": body_dict['email'],
+                    "notificationType": "creation",
+                    "subject": "Začali sme hľadať",
+                    "matches": []
+                })
+            )
+            logger.info("notification created for player_need %s", body_dict['uuid'])
 
         return {
             'statusCode': 200,
             'body': json.dumps(body_dict)
+        }
+
+    except Exception as e:
+        logger.error(f"An error occurred: {e}")
+        
+        return {
+            'statusCode': 500,
+            'body': "Internal Server Error"
         }
         
     finally:

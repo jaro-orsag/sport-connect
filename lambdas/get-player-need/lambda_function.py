@@ -1,7 +1,6 @@
 import json
 import pymysql
 import os
-import sys
 import logging
 import pytz
 
@@ -39,26 +38,28 @@ def int_to_bool(value):
         return True
     else:
         return False
-    
+
 def lambda_handler(event, _): 
-    path_parameters = event.get('pathParameters')
-        
-    if path_parameters is None or 'uuid' not in path_parameters:
-        return {
-            'statusCode': 400,
-            'body': '\'{uuid}\' path parameter must be defined and not empty.'
-        }
-    
-    uuid = path_parameters['uuid']
-    
-    conn = None
     try:
+        path_parameters = event.get('pathParameters')
+            
+        if path_parameters is None or 'uuid' not in path_parameters:
+            return {
+                'statusCode': 400,
+                'body': '\'{uuid}\' path parameter must be defined and not empty.'
+            }
+        
+        uuid = path_parameters['uuid']
+        logger.info("getting player-need %s", uuid)
+    
         conn = get_db_connection()
         with conn.cursor() as cursor:
             sql = "SELECT id, uuid, isActive, dateDeactivated, playerName, availability, email, phone, about, isMarketingConsentGranted, dateMarketingConsentChanged, dateAdded FROM PlayerNeed WHERE uuid=%s"
             cursor.execute(sql, (uuid))
             result = cursor.fetchone()
             if result is None:
+                logger.info("player-need %s not found", uuid)
+                
                 return {
                     'statusCode': 404,
                     'body': 'Record not found'
@@ -84,14 +85,22 @@ def lambda_handler(event, _):
                 'isMarketingConsentGranted': result['isMarketingConsentGranted'],
                 'dateMarketingConsentChanged': get_utc_datetime_in_local_zone(result['dateMarketingConsentChanged']),
                 'dateAdded': get_utc_datetime_in_local_zone(result['dateAdded']),
-                'districtCodes': district_codes,
-                
+                'districtCodes': district_codes
             }
             
-            return {
-                'statusCode': 200,
-                'body': json.dumps(response)
-            }
+        return {
+            'statusCode': 200,
+            'body': json.dumps(response)
+        }
+            
+    except Exception as e:
+        logger.error(f"An error occurred: {e}")
+        
+        return {
+            'statusCode': 500,
+            'body': "Internal Server Error"
+        }
+
     finally:
         if conn:
             conn.close()

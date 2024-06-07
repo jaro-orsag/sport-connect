@@ -86,6 +86,7 @@ def handle_creation(target_email, uuid, need_type, link, subject):
 def lambda_handler(event, _): 
     
     records = event.get('Records', [])
+    logger.info("received %s records", len(records))
     with ThreadPoolExecutor(max_workers=5) as executor:
         executor.map(process_record, records)
 
