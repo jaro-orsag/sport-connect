@@ -9,7 +9,6 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 SENDER = "futbal-spoluhráč.sk <hladanie@futbal-spoluhrac.sk>"
-RECIPIENT = "futbalspoluhrac@gmail.com"
 AWS_REGION = "us-east-1"
 CHARSET = "UTF-8"
 
@@ -52,31 +51,30 @@ def handle_creation(target_email, uuid, need_type, link, subject):
     
     logger.info("going to send confirmation email for %s %s", need_type, uuid)
     try:
-        logger.info("would send email")
-        # client.send_email(
-        #     Destination={
-        #         'ToAddresses': [
-        #             RECIPIENT, # target_email
-        #         ],
-        #     },
-        #     Message={
-        #         'Body': {
-        #             'Html': {
-        #                 'Charset': CHARSET,
-        #                 'Data': body_html,
-        #             },
-        #             'Text': {
-        #                 'Charset': CHARSET,
-        #                 'Data': body_text,
-        #             },
-        #         },
-        #         'Subject': {
-        #             'Charset': CHARSET,
-        #             'Data': subject,
-        #         },
-        #     },
-        #     Source=SENDER,
-        # )
+        client.send_email(
+            Destination={
+                'ToAddresses': [
+                    target_email
+                ],
+            },
+            Message={
+                'Body': {
+                    'Html': {
+                        'Charset': CHARSET,
+                        'Data': body_html,
+                    },
+                    'Text': {
+                        'Charset': CHARSET,
+                        'Data': body_text,
+                    },
+                },
+                'Subject': {
+                    'Charset': CHARSET,
+                    'Data': subject,
+                },
+            },
+            Source=SENDER,
+        )
     except ClientError as e:
         logger.error(e.response['Error']['Message'])
     else:
@@ -141,31 +139,30 @@ def process_record(record):
     logger.info("going to send email about match for %s %s", need_type, uuid)
 
     try:
-        logger.info("would send email")
-        # client.send_email(
-        #     Destination={
-        #         'ToAddresses': [
-        #             RECIPIENT, # target_email
-        #         ],
-        #     },
-        #     Message={
-        #         'Body': {
-        #             'Html': {
-        #                 'Charset': CHARSET,
-        #                 'Data': body_html,
-        #             },
-        #             'Text': {
-        #                 'Charset': CHARSET,
-        #                 'Data': body_text,
-        #             },
-        #         },
-        #         'Subject': {
-        #             'Charset': CHARSET,
-        #             'Data': subject,
-        #         },
-        #     },
-        #     Source=SENDER,
-        # )
+        client.send_email(
+            Destination={
+                'ToAddresses': [
+                    target_email
+                ],
+            },
+            Message={
+                'Body': {
+                    'Html': {
+                        'Charset': CHARSET,
+                        'Data': body_html,
+                    },
+                    'Text': {
+                        'Charset': CHARSET,
+                        'Data': body_text,
+                    },
+                },
+                'Subject': {
+                    'Charset': CHARSET,
+                    'Data': subject,
+                },
+            },
+            Source=SENDER,
+        )
     except ClientError as e:
         logger.error(e.response['Error']['Message'])
     else:
