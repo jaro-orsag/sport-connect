@@ -66,7 +66,8 @@ def lambda_handler(event, _):
             TopicArn=new_need_topic_arn,
             Message=json.dumps({
                 "uuid": body_dict['uuid'],
-                "needType": "team_need"
+                "needType": "team_need",
+                "email": body_dict['email']
             })
         )
         

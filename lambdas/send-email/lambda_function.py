@@ -38,7 +38,7 @@ def get_link(topicArn, need_type, uuid):
     else:
         subdomain = "www"
     
-    return f"https://{subdomain}.futbal-spoluhrac.sk/{need_type}/{uuid}"
+    return f"https://{subdomain}.futbal-spoluhrac.sk/{need_type.replace("_", "-")}/{uuid}"
 
 def handle_creation(target_email, uuid, need_type, link, subject):
     entity = "tím" if need_type == "player-need" else "spoluhráča"

@@ -57,6 +57,7 @@ def process_record(record):
             
             need_type = message['needType']
             uuid = message['uuid']
+            email = message['email']
         except KeyError as e:
             logger.error(f"Key error: {e} - Record: {record}")
             return
@@ -70,6 +71,10 @@ def process_record(record):
             logger.info("going to process new %s %s", need_type, uuid)
             matching_entities_uuids = send_notification_about_matching_entities(conn, need_type, [uuid])
             
+            if len(matching_entities_uuids[uuid]) == 0:
+                send_notification_about_creation(uuid, need_type, email)
+                return
+            
             logger.info("sending notifications to matching entities of new %s %s", need_type, uuid)
             send_notification_about_matching_entities(conn, get_complementary_need_type(need_type), matching_entities_uuids[uuid])
         finally:
@@ -79,6 +84,23 @@ def process_record(record):
     except Exception as e:
         logger.error(f"Unexpected error: {e} - Record: {record}")
         return
+
+def send_notification_about_creation(uuid, need_type, email):
+    sns_client = boto3.client('sns', region_name='us-east-1')
+    notification_topic_arn = os.environ['NOTIFICATION_TOPIC_ARN']
+    
+    sns_client.publish(
+        TopicArn=notification_topic_arn,
+        Message=json.dumps({
+            "uuid": uuid,
+            "needType": need_type,
+            "targetEmail": email,
+            "notificationType": "creation",
+            "subject": "Začali sme hľadať",
+            "matches": []
+        })
+    )
+    logger.info("notification created for new %s %s without matching entities", need_type, uuid)
 
 def get_complementary_need_type(need_type):
     if need_type == PLAYER_NEED:
@@ -143,7 +165,7 @@ def create_and_send_notification(uuid, need_type, matching_entities, sns_client,
     )
 
 def removeUnnecessaryKeys(matching_entities):
-    return [{k: v for k, v in entity.items() if k not in ['playerEmail', 'teamEmail', 'uuid']} for entity in matching_entities]
+    return [{k: v for k, v in entity.items() if k not in ['playerEmail', 'teamEmail', 'parentUuid', 'uuid']} for entity in matching_entities]
 
 def get_matching_entities(conn, need_type, uuid):
     if need_type == PLAYER_NEED:
