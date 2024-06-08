@@ -57,7 +57,10 @@ aws s3 cp s3://$BUCKET_NAME/assets/ s3://$BUCKET_NAME/assets/ --recursive --cach
 aws s3 cp s3://$BUCKET_NAME/assets/ s3://$BUCKET_NAME/assets/ --recursive --exclude "*" --include "*.html.gz" --include "*.css.gz" --include "*.js.gz" --content-encoding gzip --cache-control max-age=31536000 --metadata-directive REPLACE
 aws s3 cp s3://$BUCKET_NAME/assets/ s3://$BUCKET_NAME/assets/ --recursive --exclude "*" --include "*.html.br" --include "*.css.br" --include "*.js.br" --content-encoding br --cache-control max-age=31536000 --metadata-directive REPLACE
 
-# 8. Invalidate CDN
+# 8. Set correct content type for website thunbnail (TODO: this should be done in more systematic way for all image resources)
+aws s3 cp s3://$BUCKET_NAME/assets/thumbnail.png s3://$BUCKET_NAME/assets/thumbnail.png --content-type image/png --metadata-directive REPLACE
+
+# 9. Invalidate CDN
 echo "Going to invalidate/refresh current cloudfront distribution"
 
 PATHS="/*" # Paths to invalidate
