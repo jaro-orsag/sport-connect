@@ -3,6 +3,7 @@ import json
 import pymysql
 import os
 import logging
+from pythonjsonlogger import jsonlogger
 import pytz
 from datetime import datetime
 import boto3
@@ -12,9 +13,15 @@ password = os.environ['PASSWORD']
 host = os.environ['HOST']
 db_name = os.environ['DB_NAME']
 
-logging.basicConfig()
+# Configure the logging
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
+
+# Add the JSON formatter to the logger
+logHandler = logging.StreamHandler()
+formatter = jsonlogger.JsonFormatter()
+logHandler.setFormatter(formatter)
+logger.addHandler(logHandler)
 
 def get_current_datetime_in_utc():
     return datetime.now(pytz.utc)
@@ -68,9 +75,14 @@ def lambda_handler(event, _):
             sql = "INSERT INTO PlayerNeedDistrict (playerNeedId, districtCode) VALUES (%s, %s)"
             cursor.executemany(sql, player_need_district_code_pairs)
             conn.commit()
-
-        logger.info("added player_need %s", body_dict['uuid'])
-    
+            
+        logger.info("finished adding need", extra={
+            'uuid': body_dict['uuid'], 
+            'need_type': 'player_need', 
+            'operation': 'addition', 
+            'stage': 'finished'
+        })
+        
         sns_client = boto3.client('sns', region_name='us-east-1')
         new_need_topic_arn = os.environ['NEW_NEED_TOPIC_ARN']
         sns_client.publish(
@@ -82,7 +94,12 @@ def lambda_handler(event, _):
             })
         )
         
-        logger.info("sent player_need %s for further processing", body_dict['uuid'])
+        logger.info("published for further processing", extra={
+            'uuid': body_dict['uuid'], 
+            'need_type': 'player_need', 
+            'operation': 'addition', 
+            'stage': 'published'
+        })
         
         return {
             'statusCode': 200,

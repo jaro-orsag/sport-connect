@@ -2,6 +2,7 @@ import json
 import pymysql
 import os
 import logging
+from pythonjsonlogger import jsonlogger
 import boto3
 from collections import defaultdict
 
@@ -10,9 +11,15 @@ password = os.environ['PASSWORD']
 host = os.environ['HOST']
 db_name = os.environ['DB_NAME']
 
-logging.basicConfig()
+# Configure the logging
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
+
+# Add the JSON formatter to the logger
+logHandler = logging.StreamHandler()
+formatter = jsonlogger.JsonFormatter()
+logHandler.setFormatter(formatter)
+logger.addHandler(logHandler)
 
 PLAYER_NEED = "player_need"
 TEAM_NEED = "team_need"
@@ -68,14 +75,24 @@ def process_record(record):
         try:
             conn = get_db_connection()
             
-            logger.info("going to process new %s %s", need_type, uuid)
+            logger.info("matching new need", extra={
+                'uuid': uuid, 
+                'need_type': need_type, 
+                'operation': 'matching', 
+                'stage': 'started'
+            })
             matching_entities_uuids = send_notification_about_matching_entities(conn, need_type, [uuid])
             
             if len(matching_entities_uuids[uuid]) == 0:
                 send_notification_about_creation(uuid, need_type, email)
                 return
             
-            logger.info("sending notifications to matching entities of new %s %s", need_type, uuid)
+            logger.info("notifying matched entities", extra={
+                'uuid': uuid, 
+                'need_type': need_type, 
+                'operation': 'matching', 
+                'stage': 'notifying_matched_entities_started'
+            })
             send_notification_about_matching_entities(conn, get_complementary_need_type(need_type), matching_entities_uuids[uuid])
         finally:
             if conn:
@@ -100,7 +117,12 @@ def send_notification_about_creation(uuid, need_type, email):
             "matches": []
         })
     )
-    logger.info("notification created for new %s %s without matching entities", need_type, uuid)
+    logger.info("notifying about creation without matches", extra={
+        'uuid': uuid, 
+        'need_type': need_type, 
+        'operation': 'matching', 
+        'stage': 'notifying_without_matches_finished'
+    })
 
 def get_complementary_need_type(need_type):
     if need_type == PLAYER_NEED:
@@ -131,10 +153,14 @@ def send_notification_about_matching_entities(conn, parent_need_type, parent_ent
 
 def create_and_send_notification(uuid, need_type, matching_entities, sns_client, notification_topic_arn):
     if len(matching_entities) == 0:
-        logger.error("No matching entities found for %s %s, sending nothing", need_type, uuid)
+        logger.info("no matches found", extra={
+            'uuid': uuid, 
+            'need_type': need_type, 
+            'operation': 'matching', 
+            'stage': 'no_matches_found',
+        })
         return
     
-    logger.info("sending notification about %s matching entities to %s %s", len(matching_entities), need_type, uuid)
     notification = None
     if need_type == TEAM_NEED:
         email = matching_entities[0]['teamEmail']
@@ -163,6 +189,13 @@ def create_and_send_notification(uuid, need_type, matching_entities, sns_client,
         TopicArn=notification_topic_arn,
         Message=json.dumps(notification)
     )
+    logger.info("notifying about matches", extra={
+        'uuid': uuid, 
+        'need_type': need_type, 
+        'operation': 'matching', 
+        'stage': 'notifying_about_matches_finished',
+        'number_of_matches': len(matching_entities)
+    })
 
 def removeUnnecessaryKeys(matching_entities):
     return [{k: v for k, v in entity.items() if k not in ['playerEmail', 'teamEmail', 'parentUuid', 'uuid']} for entity in matching_entities]
