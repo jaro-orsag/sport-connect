@@ -1,8 +1,8 @@
 from datetime import datetime
 import pymysql
 import os
-import sys
 import logging
+from pythonjsonlogger import jsonlogger
 import pytz
 
 user_name = os.environ['USER_NAME']
@@ -10,9 +10,15 @@ password = os.environ['PASSWORD']
 host = os.environ['HOST']
 db_name = os.environ['DB_NAME']
 
-logging.basicConfig()
+# Configure the logging
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
+
+# Add the JSON formatter to the logger
+logHandler = logging.StreamHandler()
+formatter = jsonlogger.JsonFormatter()
+logHandler.setFormatter(formatter)
+logger.addHandler(logHandler)
 
 def get_db_connection():
     try:
@@ -50,7 +56,12 @@ def lambda_handler(event, _):
             conn.commit()
             cursor.close()
 
-        logger.info("deactivated player-need %s", uuid)
+        logger.info("deactivated player-need", extra={
+            'uuid': uuid, 
+            'need_type': "player_need", 
+            'operation': 'deactivation', 
+            'stage': 'finished'
+        })
         return {
             'statusCode': 204
         }

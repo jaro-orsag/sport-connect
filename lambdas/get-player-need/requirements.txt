@@ -8,5 +8,6 @@ platformdirs==4.2.0
 py4j==0.10.9.7
 pycparser==2.22
 PyMySQL==1.1.0
+python-json-logger==2.0.7
 pytz==2024.1
 userpath==1.9.2

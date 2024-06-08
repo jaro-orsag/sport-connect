@@ -2,6 +2,7 @@ import json
 import pymysql
 import os
 import logging
+from pythonjsonlogger import jsonlogger
 import pytz
 
 user_name = os.environ['USER_NAME']
@@ -9,9 +10,15 @@ password = os.environ['PASSWORD']
 host = os.environ['HOST']
 db_name = os.environ['DB_NAME']
 
-logging.basicConfig()
+# Configure the logging
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
+
+# Add the JSON formatter to the logger
+logHandler = logging.StreamHandler()
+formatter = jsonlogger.JsonFormatter()
+logHandler.setFormatter(formatter)
+logger.addHandler(logHandler)
 
 def get_db_connection():
     try:
@@ -50,7 +57,12 @@ def lambda_handler(event, _):
             }
         
         uuid = path_parameters['uuid']
-        logger.info("getting player-need %s", uuid)
+        logger.info("getting player-need", extra={
+            'uuid': uuid, 
+            'need_type': "player_need", 
+            'operation': 'get', 
+            'stage': 'started'
+        })
     
         conn = get_db_connection()
         with conn.cursor() as cursor:
@@ -58,7 +70,12 @@ def lambda_handler(event, _):
             cursor.execute(sql, (uuid))
             result = cursor.fetchone()
             if result is None:
-                logger.info("player-need %s not found", uuid)
+                logger.info("player-need not found", extra={
+                    'uuid': uuid, 
+                    'need_type': "player_need", 
+                    'operation': 'get', 
+                    'stage': 'not_found'
+                })
                 
                 return {
                     'statusCode': 404,
