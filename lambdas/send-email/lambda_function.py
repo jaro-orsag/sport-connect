@@ -1,12 +1,19 @@
 import logging
+from pythonjsonlogger import jsonlogger
 import boto3
 import json
 from botocore.exceptions import ClientError
 from concurrent.futures import ThreadPoolExecutor
 
-logging.basicConfig()
+# Configure the logging
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
+
+# Add the JSON formatter to the logger
+logHandler = logging.StreamHandler()
+formatter = jsonlogger.JsonFormatter()
+logHandler.setFormatter(formatter)
+logger.addHandler(logHandler)
 
 SENDER = "futbal-spoluhráč.sk <hladanie@futbal-spoluhrac.sk>"
 AWS_REGION = "us-east-1"
@@ -40,7 +47,7 @@ def get_link(topicArn, need_type, uuid):
     
     return f"https://{subdomain}.futbal-spoluhrac.sk/{need_type.replace("_", "-")}/{uuid}"
 
-def handle_creation(target_email, uuid, need_type, link, subject):
+def handle_creation(target_email, uuid, need_type, link, subject, notification_type):
     entity = "tím" if need_type == "player-need" else "spoluhráča"
     part1 = f"Gratulujem, v tomto momente sme pre Teba začali hľadať {entity}."
     part2 = f"Hľadanie môžeš kedykoľvek zrušiť na stránke {link}"
@@ -49,7 +56,6 @@ def handle_creation(target_email, uuid, need_type, link, subject):
     body_html = f"{part1}<br><br>{part2}<br><br>{part3}"
     body_text = f"{part1}\r\n\r\n{part2}\r\n\r\n{part3}"
     
-    logger.info("going to send confirmation email for %s %s", need_type, uuid)
     try:
         client.send_email(
             Destination={
@@ -75,6 +81,13 @@ def handle_creation(target_email, uuid, need_type, link, subject):
             },
             Source=SENDER,
         )
+        logger.info("sending email about creation finished", extra={
+            'uuid': uuid, 
+            'need_type': need_type, 
+            'operation': 'sending_email', 
+            'stage': 'finished',
+            'notification_type': notification_type 
+        })
     except ClientError as e:
         logger.error(e.response['Error']['Message'])
     else:
@@ -105,7 +118,13 @@ def process_record(record):
         matches = message['matches']
         notification_type = message['notificationType']
         
-        logger.info("received notification of type %s for %s %s", notification_type, need_type, uuid)
+        logger.info("sending email started", extra={
+            'uuid': uuid, 
+            'need_type': need_type, 
+            'operation': 'sending_email', 
+            'stage': 'started',
+            'notification_type': notification_type 
+        })
     except KeyError as e:
         logger.error(f"Key error: {e} - Record: {record}")
         return
@@ -122,7 +141,7 @@ def process_record(record):
     link = get_link(record['Sns']['TopicArn'], need_type, uuid)
     
     if notification_type == "creation":
-        handle_creation(target_email, uuid, need_type, link, subject)
+        handle_creation(target_email, uuid, need_type, link, subject, notification_type)
         return
 
     if matches == None or len(matches) == 0:
@@ -135,8 +154,6 @@ def process_record(record):
 
     body_html = format_html(message_beginning, matches, message_ending)
     body_text = format_text(message_beginning, matches, message_ending)
-
-    logger.info("going to send email about match for %s %s", need_type, uuid)
 
     try:
         client.send_email(
@@ -163,6 +180,13 @@ def process_record(record):
             },
             Source=SENDER,
         )
+        logger.info("sending email about match finished", extra={
+            'uuid': uuid, 
+            'need_type': need_type, 
+            'operation': 'sending_email', 
+            'stage': 'finished',
+            'notification_type': notification_type 
+        })
     except ClientError as e:
         logger.error(e.response['Error']['Message'])
     else:
