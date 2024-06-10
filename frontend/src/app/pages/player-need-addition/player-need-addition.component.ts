@@ -52,6 +52,7 @@ export class PlayerNeedAdditionComponent implements OnInit {
     districtsCtrl: FormControl;
     filteredDistricts: Observable<string[]>;
     @ViewChild('districtsInput') districtsInput!: ElementRef<HTMLInputElement>;
+    isSubmitting = false;
 
     playerNeedForm: FormGroup;
 
@@ -116,6 +117,10 @@ export class PlayerNeedAdditionComponent implements OnInit {
     }
 
     onSubmit(): void {
+        if (this.isSubmitting === true) {
+            return;
+        }
+
         if (this.playerNeedForm.invalid) {
             this.snackBar.open("Formulár nebol odoslaný. Najskôr vyplň všetky povinné polia.", "OK");
 
@@ -123,9 +128,11 @@ export class PlayerNeedAdditionComponent implements OnInit {
         }
 
         const playerNeed = this._mapFormToPlayerNeed(this.playerNeedForm.value);
+        this.isSubmitting = true;
         this.api.addPlayerNeed(playerNeed).subscribe(pn => {
             this.analyticsService.trackPurchase(pn.uuid!, "player_need");
             this.analyticsService.trackPlayerNeedAdditionFinish(pn.uuid!);
+            this.isSubmitting = false;
             this.router.navigate(["/player-need", pn.uuid], { state: { navigatedFromAddition: true } });
         });
     }

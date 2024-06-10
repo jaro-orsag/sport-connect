@@ -48,6 +48,7 @@ import { AnalyticsService } from '../../services/analytics.service';
 })
 export class TeamNeedAdditionComponent implements OnInit {
     @ViewChild('districtsInput') districtsInput!: ElementRef<HTMLInputElement>;
+    isSubmitting = false;
 
     teamNeedForm: FormGroup;
 
@@ -92,6 +93,10 @@ export class TeamNeedAdditionComponent implements OnInit {
     }
 
     onSubmit(): void {
+        if (this.isSubmitting === true) {
+            return;
+        }
+
         if (this.teamNeedForm.invalid) {
             this.snackBar.open("Formulár nebol odoslaný. Najskôr vyplň všetky povinné polia.", "OK");
 
@@ -99,9 +104,11 @@ export class TeamNeedAdditionComponent implements OnInit {
         }
 
         const teamNeed = this._mapFormToPlayerNeed(this.teamNeedForm.value);
+        this.isSubmitting = true;
         this.api.addTeamNeed(teamNeed).subscribe(tn => {
             this.analyticsService.trackPurchase(tn.uuid!, "team_need");
             this.analyticsService.trackTeamNeedAdditionFinish(tn.uuid!);
+            this.isSubmitting = false;
             this.router.navigate(["/team-need", tn.uuid], { state: { navigatedFromAddition: true } });
         });
     }
