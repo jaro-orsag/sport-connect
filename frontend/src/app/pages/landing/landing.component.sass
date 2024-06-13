@@ -1,14 +1,14 @@
-.scenario__steps-wrapper
+.scenarios-wrapper
     display: flex
     justify-content: center
 
-.scenario__steps-wrapper--xsmall
+.scenarios-wrapper--xsmall,
+.scenarios-wrapper--small
     flex-direction: column
     align-items: center
 
-.scenario__steps-wrapper--small,
-.scenario__steps-wrapper--medium,
-.scenario__steps-wrapper--large
+.scenarios-wrapper--medium,
+.scenarios-wrapper--large
     flex-direction: row
     align-items: flex-start
 
@@ -16,6 +16,16 @@
     display: flex
     justify-content: center
     align-items: center
+
+.scenario
+    min-height: 200px
+    margin: 5px
+
+.scenario__content
+    height: 100px
+
+.scenario-mat-card-actions
+    padding-top: 0px
 
 .scenario-action
     width: 200px

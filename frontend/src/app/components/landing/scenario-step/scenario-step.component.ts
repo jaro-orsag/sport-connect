@@ -11,13 +11,7 @@ import { Breakpoints } from '@angular/cdk/layout';
   styleUrl: './scenario-step.component.sass'
 })
 export class ScenarioStepComponent {
-    Breakpoints = Breakpoints;
-    
-    @Input() breakpoint!: string;
-
     @Input() icon!: string;
-
-    @Input() title!: string;
 
     @Input() description!: string;
 }

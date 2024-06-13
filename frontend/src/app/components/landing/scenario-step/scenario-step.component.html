@@ -1,16 +1,9 @@
-<mat-card class="step" [ngClass]="{
-    'step--xsmall': breakpoint === Breakpoints.XSmall,
-    'step--small': breakpoint === Breakpoints.Small,
-    'step--medium': breakpoint === Breakpoints.Medium,
-    'step--large': breakpoint === Breakpoints.Large
-  }">
-  <mat-card-content>
+<mat-card class="step">
+  <mat-card-content class="step__mat-card-content">
     <div class="step__contents-wrapper">
       <svg width="50" height="40">
         <use class="step__icon" [attr.xlink:href]="'#' + icon"></use>
       </svg>
-      
-      <span class="step__title">{{title}}</span>
       <span class="step__description">
         {{description}}
       </span>
