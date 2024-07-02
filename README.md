@@ -35,5 +35,5 @@ Each of them perform following tasks:
 * Invalidate/refresh cloudfcont distribution
 
 ## lambdas
-Python lambdas. See [./lambdas/README.md](./lambdas/README.md) for more info on how to run them locally and 
+Python lambdas. See [./lambdas/README.MD](./lambdas/README.MD) for more info on how to run them locally and 
 how to deploy them to aws.
