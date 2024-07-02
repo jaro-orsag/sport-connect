@@ -30,8 +30,6 @@ pip install requests
 pip freeze > requirements.txt
 ```
 
-Also see then next section "Running Locally".
-
 ## Running Locally
 
 1. Setup local mysql instance using docker-compose
